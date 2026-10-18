@@ -473,7 +473,7 @@ flowchart LR
 
 ## Notebook 8: AI Gateway Governance
 
-[foundry-demo-8-ai-gateway-governance.ipynb](foundry-demo-8-ai-gateway-governance.ipynb) uses one Azure API Management instance as the AI gateway in front of a shared Foundry resource. Two teams, **Claims** (generous capacity) and **Marketing** (a small pilot), each get their own product and subscription key. The platform team adds limits, attribution, safety, caching and tracing without changing application code. Every change goes through the native `azure-mgmt-apimanagement` SDK.
+[foundry-demo-8-ai-gateway-governance.ipynb](foundry-demo-8-ai-gateway-governance.ipynb) uses one Azure API Management instance as the AI gateway in front of a shared Foundry resource. Two teams, **Claims** (generous capacity) and **Marketing** (a small pilot), each get their own product and subscription key. The platform team adds limits, attribution, safety, caching and tracing without changing application code. Gateway resources use the native `azure-mgmt-apimanagement` SDK; instance diagnostic settings use `azure-mgmt-monitor` with the same credential and subscription.
 
 The notebook **does not deploy infrastructure**; it changes policies, products, subscriptions, backends and diagnostics on an existing instance.
 
@@ -532,9 +532,24 @@ sequenceDiagram
 
 - Use a **non-production** API Management instance on a **v2 tier** with a system-assigned managed identity. Step 0 saves the policy to `policy-backup-<api>.xml` and step 11 restores it. Prefer a model API you imported yourself over one created and managed by AI Gateway in Foundry.
 - Your account needs *API Management Service Contributor* and *Monitoring Contributor* on the instance and *Log Analytics Reader* on the workspace. The gateway's identity needs *Cognitive Services User* on the Foundry resource and on the Content Safety resource.
-- SDK 5.0.0 cannot model LLM logging or managed-identity backends, so those calls send JSON through the SDK on `APIM_ARM_API_VERSION`. The instance's diagnostic setting is created with the Azure CLI.
+- SDK 5.0.0 cannot model LLM logging or managed-identity backends, so those calls send JSON through the SDK on `APIM_ARM_API_VERSION`. The instance's diagnostic setting is listed, created and removed through the native Azure Monitor SDK, without invoking Azure CLI diagnostic-setting commands.
+- Set `LOG_ANALYTICS_WORKSPACE_RESOURCE_ID` to the full workspace ARM resource ID, not the workspace name or GUID. Rerun the dependency-install and setup cells after updating [requirements.txt](requirements.txt), before running step 3.
 - In Application Insights, turn on *custom metrics with dimensions*, or the token-metric dimensions are dropped. `LOG_LLM_MESSAGES=true` records prompts and completions in Log Analytics; leave it `false` unless your data policy allows it.
 - Step 5 needs **Azure Managed Redis with the RediSearch module**, which must be enabled when the database is created and requires the *Enterprise* clustering policy, the *NoEviction* eviction policy and access-key authentication. Flash Optimized does not support RediSearch; Balanced B0 is enough for the demo. It also needs an embeddings deployment in the same Foundry resource.
+
+### Reuse notebook 5's A2A agent in step 8a
+
+The flow is **notebook client -> API Management -> `claims-triage-foundry`**. Run notebook 5's Foundry inbound-A2A setup first; step 8a reuses `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_A2A_TARGET_AGENT`, rather than creating another agent or exposing the local notebook server.
+
+1. Import the target into API Management using **APIs -> + Add API -> A2A Agent**, with its version-specific card at `{project-endpoint}/agents/{target}/endpoint/protocols/a2a/agentCard/v1.0`. The runtime is the same URL without `/agentCard/v1.0`. Foundry requires Entra authentication for both URLs; if the import wizard cannot retrieve the card, configure authenticated discovery first. The runtime policy does not authenticate the import wizard.
+2. Enable **Subscription required**. Set all four `A2A_API_ID`, `A2A_RPC_URL`, `A2A_AGENT_CARD_URL` and `A2A_SUBSCRIPTION_KEY` values in [.env.example](.env.example)'s corresponding local settings. Copy the **gateway** runtime and discovery URLs from the imported API's Overview. An MCP API whose name contains `a2a` is not an A2A agent API.
+3. Grant the gateway's system-assigned identity **Foundry Agent Consumer** on the target agent or project. Step 8a adds `authentication-managed-identity` for `https://ai.azure.com`; the client's subscription key authenticates only to API Management. Run steps 0 and 4 first for setup and the Content Safety backend.
+4. Keep `A2A_PROTOCOL_VERSION=1.0` to match notebook 5. Native 1.0 import/card rewriting/message inspection must be verified on your gateway: [the APIM import documentation](https://learn.microsoft.com/azure/api-management/agent-to-agent-api) does not explicitly confirm 1.0 support. For an older native importer, explicitly select `0.3` and import `/agentCard/v0.3`; Foundry 0.3 is preview and not recommended for production. There is no automatic downgrade.
+5. Run the normal-claim and Prompt Shields checks. A normal claim must return a completed JSON-RPC task with an `ABC-1234` glass-repair artifact; HTTP 200 alone is insufficient. A safety pass requires a Content Safety rejection, not just an arbitrary 403. The optional `RUN_A2A_RATE_LIMIT_TEST=True` burst sends 12 concurrent claims and can incur model charges; it checks for a 429 carrying this policy's retry header. APIM rate limiting is approximate, not an exact promise that request 11 fails.
+
+To demonstrate **concierge agent -> gateway -> target agent**, also repoint the concierge's RemoteA2A connection to the gateway and configure its frontend credentials/discovery accordingly. Leaving the original direct-to-Foundry connection unchanged bypasses the gateway. The notebook does not modify that connection or assign roles. Step 11 restores the A2A policy; it does not undo manual connection, API import or RBAC changes. Step **8b** is independent: it governs an agent's **model calls**, not incoming A2A traffic.
+
+Offline regression tests execute the actual section 8a cells with mocked HTTP and management clients: `python -m unittest discover -s tests -p 'test_a2a_gateway.py' -v`. They check wire formats, policy preservation, discovery routing, response validation and governance-test outcomes without changing Azure resources.
 
 ## Prerequisites
 
@@ -576,7 +591,7 @@ Use [.env.example](.env.example) as the starting point for a root-level `.env`. 
 | `APIM_GATEWAY_URL` | Notebook 8: APIM **base** URL (`https://<apim>.azure-api.net`), without the imported API suffix; `INFERENCE_API_PATH` supplies the suffix |
 | `FOUNDRY_A2A_CONNECTION` | Notebook 5 Part 2: `RemoteA2A` connection the notebook creates; defaults to `claims-triage-a2a` |
 | `FOUNDRY_AGENT_NAME` | Notebook 5 Part 2: calling agent that carries the A2A tool; defaults to `concierge-agent` |
-| `FOUNDRY_A2A_TARGET_AGENT` | Notebook 5 Part 2: agent exposed over inbound A2A and used as the outbound target; defaults to `claims-triage-foundry` |
+| `FOUNDRY_A2A_TARGET_AGENT` | Notebook 5 Part 2: agent exposed over inbound A2A and used as the outbound target; notebook 8 step 8a reuses it behind the gateway; defaults to `claims-triage-foundry` |
 | `CONTENTUNDERSTANDING_ENDPOINT` | Notebook 6: Foundry resource endpoint, `https://<resource>.services.ai.azure.com/` |
 | `CONTENTUNDERSTANDING_KEY` | Notebook 6, optional: API key; leave unset to use Entra ID |
 | `CU_COMPLETION_MODEL` / `CU_EMBEDDING_MODEL` | Notebook 6: model **names** the analyzers request; the resource defaults map them to deployments |

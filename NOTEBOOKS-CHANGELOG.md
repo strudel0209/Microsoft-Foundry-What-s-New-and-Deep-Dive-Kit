@@ -8,6 +8,15 @@ appended, never rewritten. Deck editions are logged in `decks/CHANGELOG.md`, not
 
 ---
 
+## 2026-10-15 · notebook 8 — reuse notebook 5's Foundry A2A target through the gateway
+
+**Paired deck:** Microsoft Foundry AI Gateway · step 8, slide 7
+**Dependency changes:** none; tests use the Python standard library
+**Env changes:** added `A2A_PROTOCOL_VERSION=1.0`; step 8a reuses `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_A2A_TARGET_AGENT`. Documented all-or-none gateway settings, authenticated card import, subscription requirements and the gateway identity's Foundry Agent Consumer role.
+**Behavior:** version-matched 1.0 requests by default; explicit preview 0.3 compatibility without automatic downgrade. Checks native A2A API type, gateway URLs, rewritten card interfaces, completed JSON-RPC task state and the policy-linked glass artifact. Preserves original routing/inheritance with XML-based policy composition, applies per-subscription/API POST limits and Content Safety, and adds managed-identity backend authentication for `https://ai.azure.com`. Discovery does not consume the demo's POST budget. The optional 12-request burst is billable and requires a policy-specific retry header to confirm throttling. Documents manual concierge connection rewiring separately from model-call governance in 8b.
+**Regression:** 16 offline unit tests pass against the notebook's actual cells, covering both protocol shapes, partial/unsafe settings, policy backup/reapplication, self-closing inbound sections, discovery bypass, HTTP/JSON-RPC failures, artifact checks, safety evidence and burst outcomes. Static gate findings are unchanged from the pre-edit baseline: 2 FAIL, 33 WARN, 27 INFO; no new findings.
+**Open verify items:** live authenticated import, native APIM A2A 1.0 compatibility, RBAC, card rewriting and actual Content Safety/rate-limit enforcement must be rehearsed on the target non-production gateway. No Azure resources, connections or role assignments were changed during development.
+
 ## 2026-10-11 · notebooks 1 and 8 — environment and documentation consistency
 
 **Paired decks:** Microsoft Foundry what's-new edition 2026-10 and Microsoft Foundry AI Gateway

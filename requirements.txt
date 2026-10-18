@@ -15,6 +15,7 @@ azure-mgmt-authorization>=4.0.0,<5
 azure-mgmt-cognitiveservices>=14.1.0,<15
 azure-mgmt-botservice>=2.0.0,<3
 azure-mgmt-apimanagement>=5.0.0,<6     # AI gateway notebook: products, subscriptions, policies, backends
+azure-mgmt-monitor>=6.0.2,<7          # AI gateway notebook: instance diagnostic settings
 
 # --- Toolbox verification over MCP (NB1 cell 3) ---
 mcp>=1.10.0
