@@ -18,7 +18,7 @@ metadata:
 
 # Deck Companion Notebook
 
-> Version 1.0.1 · 2026-10-11 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.1.0 · 2026-10-22 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview

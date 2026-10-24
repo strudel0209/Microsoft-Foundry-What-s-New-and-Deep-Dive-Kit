@@ -2,7 +2,82 @@
 
 One entry per dated edition, newest first. Each entry lists what changed since the previous edition, the source consulted for each change, the run date, and any items still to verify before presenting. Maintained by the `foundry-whats-new-deck` skill; entries are appended, never rewritten.
 
-Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 25 slides · 16:9 · speaker notes on every slide.
+Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 26 slides from edition 2026-10-22 (25 before) · 16:9 · speaker notes on every slide.
+
+---
+
+## Edition 2026-10-22
+
+**File:** `Microsoft-Foundry-Whats-New-2026-10-22.pptx`
+**Run date:** 2026-10-22 · **Baseline:** 2026-10-13 · **Last sweep:** 2026-09-16 · **Next detect run due:** 2026-11-05
+**Structure:** CHANGED — one slide added at position 12 (section 03, after "Tools, Toolboxes and Skills"). Deck is now 26 slides; slides 12–25 of the previous edition become 13–26. Section 03 holds four slides (11–14). Base: the repository copy of edition 2026-10, which already carries the 2026-10-13 slide 7 changes and the hand-written speaker notes.
+
+### Changes since edition 2026-10-13
+| Slide | Change | Status | Source (fetched this run) |
+|---|---|---|---|
+| 12 | NEW SLIDE — "Browser automation tool": agent → toolbox → Playwright Workspace → websites flow, human oversight (Live View, Take control, screenshot recording), setup paths, prerequisites, regions, governance, comparison with computer use | GA 19 Oct 2026 (private website browsing preview) | learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/browser-automation · devblogs.microsoft.com/foundry/browser-automation-tool-ga/ |
+| 2 | Agenda ranges 11–14, 15–20, 21–24, 25–26; section 03 lists the browser automation tool | — | — |
+| 3 | Voice agents* added to Agent Runtime; A2A and browser automation unmarked (GA); Insights* added to Observability | mixed | devblogs.microsoft.com/foundry/whats-new-in-microsoft-foundry-september-2026/ |
+| 4 | A2A and tool search unmarked (GA); second-person wording removed | GA | as above |
+| 6 | azd extension azure.ai.agents beta.18, azd 1.34.2 or later; notes add Foundry Local 2.1 | preview | as above |
+| 7 | claude-fable-5-1 status `available` → `Preview*`; "who bills you" wording removed | preview | learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/claude-models |
+| 9 | Flex supported models: gpt-6.1-sol, GPT-6 and GPT-5.6 families (was gpt-5.6-sol only) | preview | learn.microsoft.com/en-us/azure/foundry/openai/how-to/flex-processing (updated 10/12/2026) |
+| 10 | Routing pool adds gpt-6-astra, claude-fable-5-1, claude-opus-5, claude-sonnet-5, grok-4.6, Fireworks FW-GLM-5.3 / 5.3-Flash / FW-Kimi-K3; preview footnote added; notes rewritten | GA | learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router |
+| 11 | Tool search, A2A and browser automation unmarked (GA); prompt-agent toolboxes marked preview | mixed | devblogs September roundup · learn…/agents/how-to/tools/tool-search |
+| 15 | Prompt agent box adds "text or voice*"; second-person wording removed | preview | learn.microsoft.com/en-us/azure/foundry/agents/overview · agents/quickstarts/prompt-voice-agent |
+| 18 | Agent Framework current releases python-1.22.0 and dotnet-1.25.0 | breaking change — open-source SDK | github.com/microsoft/agent-framework/releases |
+| 21 | Insights* added to Monitoring; cross-references corrected to slides 24, 23, 22 | preview | learn.microsoft.com/en-us/azure/foundry/observability/how-to/agent-insights (updated 10/21/2026) |
+| 24 | Notes only: Insights on top of stored traces | preview | as above |
+| 25 | Title renamed "Changes since Build 2026"; timeline rewritten (3 Apr dropped, new dot 29 Sep – 19 Oct); still-preview band updated | mixed | devblogs September roundup · browser automation GA post |
+| 26 | References add browser automation, voice agent configuration, Insights, September roundup and browser automation post; verify list in notes | — | — |
+| 12–26 | Footer page numbers shifted by one | — | — |
+
+### Detected but not applied
+| Item | Reason |
+|---|---|
+| Voice agents in Foundry Agent Service (preview) | Importance test Gate 2 not met (no own announcement, preview); the kit has a Voice Live deep-dive deck — covered as text patches on slides 3 and 15 |
+| Insights in Foundry (preview) | Gate 2 not met (no capability-reference row, preview) — text patches on slides 3 and 21, notes on slide 24 |
+| gpt-chat-latest 2026-10-07 snapshot (preview), sora-2, claude-opus-5-5-fast | No new rows added to the slide 7 table by earlier instruction; opus-5-5-fast mentioned in notes |
+| MAI-Image-2.6 public preview (September roundup) | Conflicts with the 2026-10-13 run; listed as a verify item |
+| Rubric evaluation, synthetic data, Agent Optimizer GA | Announced as targets only |
+| Content Understanding toolkit and CLI, Speech LLM 2607 | Out of scope for this deck |
+
+Open verify items:
+- Date from which Flex processing applies to the GPT-6 models (Learn lists the models, not a date).
+- GA of rubric evaluation, synthetic dataset generation and Agent Optimizer.
+- Capability reference (updated 2026-08-27) still labels browser automation as preview.
+- MAI-Image-2.6 status; claude-fable-5-1 lifecycle.
+- **Carried over:** pre-existing second-person wording on slides 5, 8, 14, 16, 20, 22, 23 and 24; text at 6.5–7.0pt on slides 23 and 24.
+
+---
+
+## Edition 2026-10-13
+
+**File:** `Microsoft-Foundry-Whats-New-2026-10-13.pptx`
+**Run date:** 2026-10-13 · **Baseline:** 2026-10-07 · **Last sweep:** 2026-09-16 · **Next detect run due:** 2026-10-27
+**Structure:** unchanged — 25 slides. Requested update: slide 7 table keeps only current new entries; models superseded since the table was set are replaced by their successors in the same rows (no rows added).
+
+### Changes since edition 2026-10
+| Slide | Change | Status | Source (fetched this run) |
+|---|---|---|---|
+| 7 | Row `gpt-5.6 sol · terra · luna` → `gpt-6.1-sol` (GA · 29 Sep 2026; 1,050,000 tokens; multi-agent orchestration*) | GA | learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/models-sold-directly-by-azure |
+| 7 | Row `gpt-6 astra · luna · sol` → `gpt-6 astra · luna` (gpt-6-sol carries no NEW flag; succeeded by gpt-6.1-sol) | GA | as above |
+| 7 | Row `Claude Opus 5` → `Claude 5.5 family` (Opus · Sonnet · Haiku; GA · 22 Sep–7 Oct 2026; 1M / 128k) | GA | learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/claude-models (updated 09/22/2026) · anthropic.com/claude-opus-5-5 · support.claude.com release notes |
+| 7 | MAI family list `Thinking-1 · Image-2.6 · Transcribe-2 · Voice-2` → `Thinking-1 · Transcribe-2 · Voice-2` (MAI-Image-2.6 not in Foundry) | preview | github.com/microsoft-foundry/model-releases (CHANGELOG, models/microsoft-ai) |
+| 7 | Row `grok-4.6` (preview) → `grok-4.7` (GA · Oct 2026; 500,000 tokens; six-month minimum availability) | GA | learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/use-foundry-models-grok (updated 10/06/2026) · ai.azure.com/catalog/models/grok-4.7 |
+| 7 | Footnote and source line name provider announcements alongside Microsoft Learn; speaker notes rewritten (195 words) | — | — |
+
+### Items detected but not applied
+| Item | Reason |
+|---|---|
+| Microsoft-Decision-1 (preview, text classification) | no room without adding a row; no Microsoft Learn page found to verify it |
+| claude-fable-5-1 status "available" | Learn lists Hosted on Anthropic infrastructure: Preview — correction proposed, awaiting approval |
+| slide 7 "who bills you" (subtitle, card labels) | pre-existing second-person wording; outside this request |
+| gpt-5.6 references on slides 9, 10 and 24 | facts about Flex processing, Model Router and the timeline, not new-model lists |
+
+### Verify before presenting
+- grok-4.7 release date in Foundry (provider posts report 7 October 2026; Learn page updated 6 October).
+- claude-fable-5-1 lifecycle (preview on Anthropic infrastructure).
 
 ---
 

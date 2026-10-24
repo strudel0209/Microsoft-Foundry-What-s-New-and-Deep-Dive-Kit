@@ -6,6 +6,29 @@ existing decks, notebooks or `kit.yaml`; MINOR = new rule, mode or script; PATCH
 A change to the shared visual system or to the Slide wording rules updates **both** deck skills
 (and `scripts/deck_lib.py`) in the same release.
 
+## 1.1.0 · 2026-10-22 — what's-new deck edition 2026-10-22
+
+**foundry-whats-new-deck** (`SKILL.md` + `scripts/deck_qa.py`)
+- Deck contract now 26 slides: new slide 12 "Browser automation tool" in section 03 (11–14);
+  section 04 is 15–20, section 05 21–24, wrap-up 25–26. Slide map, Step 1 source mapping,
+  promotion ladder, placement examples, Step 3 slide numbers and Step 4 provenance renumbered.
+- Slide 25 renamed "Changes since Build 2026"; timeline rule: eight dots, drop the oldest,
+  equal body heights. Slide 21 "→ slide n" links must be updated when slides move.
+- Speaker-notes rule replaced by the presenter's style (about 230–500 words; opening line, "The
+  core idea is that …", bold ordinal steps, questions folded into prose, verify items as
+  sentences, closing takeaway). Hand-written notes are amended, not replaced. The
+  `Presenter note:` / `Likely question:` labels are retired.
+- New "Direct update request" mode (detect, propose and apply in one pass into a new dated
+  edition) and "User-directed slide" rule (a new slide on the user's explicit direction when
+  Gate 2 fails); worked examples from the 22 October run (browser automation, voice agents,
+  Insights).
+- DETECT also reads single-feature posts on the Foundry blog and handles a lagging Learn
+  what's-new page.
+- `deck_qa.py`: notes target 200–550 words; warns on "Likely question:" / "Presenter note:".
+
+**azure-ai-deep-dive-deck, deck-companion-notebook**
+- Version line only (shared kit version); no content change.
+
 ## 1.0.1 · 2026-10-11 — kit consistency corrections
 
 **All three skills**

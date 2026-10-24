@@ -8,8 +8,8 @@
 kit:
   name: Microsoft Foundry What's New and Deep-Dive Kit
   manifest_version: 1
-  skills_version: 1.0.1          # see skills/CHANGELOG.md
-  updated: 2026-10-11
+  skills_version: 1.1.0          # see skills/CHANGELOG.md
+  updated: 2026-10-22
   python_kernel: "3.12"          # notebooks (devcontainer)
   hosted_agent_runtime: ["3.13"]   # agent/azure.yaml and private-agent/azure.yaml — separate from the kernel
 
@@ -36,12 +36,14 @@ naming:
 next_notebook_number: 9
 
 decks:
-  - file: Microsoft-Foundry-Whats-New-2026-10.pptx
+  - file: Microsoft-Foundry-Whats-New-2026-10-22.pptx
     kind: whats-new
-    edition: 2026-10
-    slides: 25
+    edition: 2026-10-22
+    slides: 26
     maintained_by: foundry-whats-new-deck
     pairs_with: [1]
+    previous_edition: Microsoft-Foundry-Whats-New-2026-10.pptx   # 25 slides; kept as the rollback, includes the 2026-10-13 slide 7 changes
+    note: slide 12 "Browser automation tool" added; former slides 12-25 are now 13-26
   - file: "Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx"
     kind: deep-dive
     legacy_name: true
@@ -85,7 +87,7 @@ decks:
 notebooks:
   - n: 1
     file: foundry-demo-1-what-is-new.ipynb
-    deck: Microsoft-Foundry-Whats-New-2026-10.pptx
+    deck: Microsoft-Foundry-Whats-New-2026-10-22.pptx   # slide references still follow edition 2026-10 — see known_issues
     env_block: core
   - n: 2
     file: foundry-demo-2-hosted-agents.ipynb
@@ -138,4 +140,6 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "azure-ai-projects used with preview surfaces (.beta., *PreviewTool) without a minor cap"
   - "azure-search-documents floors at 11.6.0 with no upper bound while 12.0.0 is out"
   - "README has no Notebook 4 section (notebook 4 appears only in the tables and the Repository Guide)"
-  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-09-29 whose files are not in decks/ (only the 2026-10 edition is published); history kept on purpose"
+  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-09-29 and 2026-10-13 whose files are not in decks/ (editions 2026-10 and 2026-10-22 are published; the 2026-10-13 changes are contained in the 2026-10 file); history kept on purpose"
+  - "NB1 slide references were written against what's-new edition 2026-10 (25 slides); from slide 12 onwards they are one lower than in edition 2026-10-22 — run deck-companion-notebook DECK REFRESH MODE"
+  - "What's-new edition 2026-10-22: second-person wording remains on slides 5, 8, 14, 16, 20, 22, 23 and 24, text at 6.5-7.0pt on slides 23 and 24, and the notes of slides 1 and 5 still use the retired label style"

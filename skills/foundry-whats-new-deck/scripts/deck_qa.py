@@ -21,7 +21,8 @@ BADGES = r"^\s*(GA|Preview|PREVIEW|Public preview|Generally available)\s*$"
 VERIFY = r"(Presenter note|\bverify\b[^.]*before presenting|\[verify|\bTODO\b|\bTBD\b)"
 TITLE_Y_EMU = int(0.51 * 914400)
 MIN_PT = 7.5
-NOTES_MIN, NOTES_MAX = 120, 200
+NOTES_MIN, NOTES_MAX = 200, 550   # foundry-whats-new-deck notes style since 1.1.0 (presenter style, ~230-500 words)
+NOTES_LABELS = r"(Likely question:|Presenter note:)"
 
 
 def shapes_flat(shapes):
@@ -106,6 +107,8 @@ def check(path):
             fails.append(f"slide {i}: no speaker notes")
         elif not (NOTES_MIN <= n_words <= NOTES_MAX):
             warns.append(f"slide {i}: notes {n_words} words (target {NOTES_MIN}-{NOTES_MAX})")
+        if re.search(NOTES_LABELS, notes):
+            warns.append(f"slide {i}: notes use a 'Likely question:' or 'Presenter note:' label — fold it into the prose")
         title = find_title(s)
         if i > 1 and title and looks_like_sentence(title):
             warns.append(f"slide {i}: title may be a sentence — use a short noun phrase: '{title}'")
