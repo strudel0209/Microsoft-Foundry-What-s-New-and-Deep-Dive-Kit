@@ -18,7 +18,7 @@ metadata:
 
 # Foundry "What's New" Deck — maintain and refresh
 
-> Version 1.1.0 · 2026-10-22 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.2.0 · 2026-10-30 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview
@@ -90,8 +90,10 @@ GitHub. Points specific to this skill:
   edition than your baseline has appeared (another contributor ran the skill), stop and re-base on
   it — never fork the edition line. One edition per month; a second run in the same month appends
   `-<dd>`.
-- **Presenter line on slide 1** stays as it is unless the running user asks to put their own name
-  (from `GetMyDetails`) on the edition they present.
+- **Presenter line on slide 1** follows "Presenter line" in the kit setup of
+  `azure-ai-deep-dive-deck`: the edition in `output/` carries the running user's name
+  (`kit.local.yaml` → `presenter`, else `GetMyDetails`); the copy uploaded to `decks/` has the
+  presenter line removed in place, so the shared edition never names a person.
 - **QA script:** `scripts/deck_qa.py <deck> --render <dir>` runs the text checks of Step 3 item
   10 and renders the slides; inspect the images of every changed slide.
 

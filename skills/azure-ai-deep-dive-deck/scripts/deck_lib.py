@@ -16,7 +16,7 @@ Usage
     chrome(s, "01 · Overview", "Hosted agent anatomy", "One plain subtitle",
            "Source: learn.microsoft.com/azure/foundry/...", 2)
     notes(s, "120-200 words ...")
-    prs.save("decks/hosted-agents-deep-dive-2026-10.pptx")
+    prs.save("decks/Microsoft Foundry Hosted Agents.pptx")
 
 The presenter line is never hard-coded: pass the running user's name and role.
 Change the palette or geometry here only together with Section 2 of both deck skills.
@@ -445,7 +445,38 @@ def title_slide(prs, title, subtitle, facts, presenter, date_label,
         x = 1.0 + i * 3.7
         textbox(s, x, 4.56, 3.5, 0.18, k.upper(), size=7.5, color=TEAL, bold=True, spacing=1.2)
         textbox(s, x, 4.80, 3.5, 0.52, v, size=9.5, color=LIGHTB, line=1.28)
-    if presenter:
-        textbox(s, 1.0, 6.45, 8.0, 0.2, presenter, size=9.5, color=LIGHTB)
+    tb = textbox(s, 1.0, 6.45, 8.0, 0.2, presenter or "", size=9.5, color=LIGHTB)
+    tb.name = "Presenter"   # removed in the kit copy; filled per user by set_presenter()
     textbox(s, 9.2, 6.45, SW - 1.0 - 9.2, 0.2, date_label, size=9.5, color=LIGHTB, align='r')
     return s
+
+
+def set_presenter(prs, text):
+    """Fill the title slide's presenter line for the person running the skill. Uses the shape
+    named 'Presenter'; when the deck has none, adds one at the standard title-slide position.
+    With no text ("" or None) the shape is removed, as in the shared kit copy. Returns the shape
+    or None."""
+    s = prs.slides[0]
+    if not text:
+        for sh in list(s.shapes):
+            if sh.name == "Presenter":
+                sh._element.getparent().remove(sh._element)
+        return None
+    for sh in s.shapes:
+        if sh.name == "Presenter" and sh.has_text_frame:
+            tf = sh.text_frame
+            p = tf.paragraphs[0]
+            for extra in list(tf.paragraphs[1:]):
+                extra._p.getparent().remove(extra._p)
+            runs = p.runs
+            if runs:
+                runs[0].text = text
+                for r in runs[1:]:
+                    r._r.getparent().remove(r._r)
+            else:
+                r = p.add_run(); r.text = text
+                _fmt_run(r, 9.5, LIGHTB)
+            return sh
+    tb = textbox(s, 1.0, 6.45, 8.0, 0.2, text, size=9.5, color=LIGHTB)
+    tb.name = "Presenter"
+    return tb

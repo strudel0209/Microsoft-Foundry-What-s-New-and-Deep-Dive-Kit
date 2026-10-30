@@ -19,7 +19,7 @@ metadata:
 
 # Azure AI Deep-Dive Deck
 
-> Version 1.1.0 · 2026-10-22 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.2.0 · 2026-10-30 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview
@@ -51,7 +51,7 @@ User: "Build me a deep-dive deck on Model Router — I'm presenting to a custome
                "Presenter note: verify … before presenting" in the notes.
 4. OUTLINE   → map onto the Section 1 arc, drop what does not apply, show the slide map.
 5. BUILD     → slide-by-slide spec built with scripts/deck_lib.py (python-pptx);
-               save output/model-router-deep-dive-2026-09.pptx
+               save "output/Microsoft Foundry Model Router.pptx"
 6. QA        → scripts/deck_qa.py + render every slide to an image and inspect; fix;
                max three passes.
 7. HANDOFF   → file name, slide count, defaults applied, pattern + Learn URL, verify list;
@@ -96,17 +96,40 @@ folder to the Cowork task. The skill works with or without the kit:
    (`paths.decks`, `paths.deck_changelog`, `paths.deep_dive_register`), deck naming, the
    deck ↔ notebook pairs, environment variables and known issues. Never rely on a copy from an
    earlier session.
-3. **Presenter line.** Take the presenter's name and role from the running user's profile
-   (`GetMyDetails`: display name and job title), unless the contributor's git-ignored
-   `kit.local.yaml` sets `presenter`. Never hard-code a person's name in a shared file.
+3. **Presenter line.** The title slide carries a presenter line in a shape named `Presenter`
+   (`deck_lib.title_slide` creates it; `deck_lib.set_presenter` fills it, adding it at the
+   standard position when the deck has none, or removes it when given no text).
+   - **Personal copy (`output/`).** Fill it for the person running the skill: `presenter` in
+     their git-ignored `kit.local.yaml` when set, otherwise their Microsoft 365 profile
+     (`GetMyDetails`: display name · job title). Ask nothing; the date line stays as built.
+   - **Shared copy (kit `decks/`).** Never carries a person's name. After the upload, open the
+     kit file on `live`, find the presenter line on slide 1 with `GetArtifactModel` and remove
+     it (`delete_shape`; live editing refuses an empty `set_text`), then confirm it is gone.
+     Editing in place keeps any sensitivity label; never upload an unlabelled copy to achieve
+     this.
+   - **Personalise a kit deck.** On "put my name on <deck>" (or before presenting any deck from
+     `decks/`), copy the deck from `decks/` to `output/` and fill the `Presenter` shape as for a
+     personal copy. Nothing else changes and nothing is uploaded back to the kit.
+   Never hard-code a person's name in a shared file, script or deck.
 4. **Layout code.** Build new slides with `scripts/deck_lib.py` (python-pptx; once installed, at
    `/mnt/user-config/skills/azure-ai-deep-dive-deck/scripts/`); it implements the
    visual system exactly. Run `scripts/deck_qa.py <deck> --render <dir>` before inspecting the
    rendered slides; its checks are necessary, not sufficient.
 5. **Delivery.** Always save to `output/`. Upload into the kit's `decks/` folder only when the
-   user asks, with `UploadFileContent`, after re-reading the target folder; never overwrite a
-   file there — a new dated name every time. Cowork never pushes to GitHub: the contributor
-   commits on a branch and opens a pull request.
+   user asks, with `UploadFileContent`, after re-reading the target folder. Never overwrite a
+   file there: the what's-new deck gets a new dated name for every edition
+   (`naming.whats_new_deck`); a deep-dive deck is named `Microsoft Foundry <Subject>.pptx`
+   (`naming.deep_dive_deck`, see Step 5), so when that name already exists in `decks/` the new
+   edition stays in `output/` and the contributor replaces the kit file in the pull request —
+   git history is the rollback. Cowork never pushes to GitHub: the contributor commits on a
+   branch and opens a pull request.
+   **Sensitivity labels.** OneDrive or Office can apply a Microsoft Purview sensitivity label,
+   sometimes with encryption, when a file is saved. Cowork cannot read policy intent or change a
+   label, and never removes or works around one (for example by uploading an unlabelled copy
+   instead of the labelled file). After every upload, report the label shown on the file; when
+   it is encrypted or not suitable for a public repository, tell the contributor to set the
+   correct label in PowerPoint (Home → Sensitivity) before committing, and add a
+   `known_issues` line to `kit.yaml` until it is done.
 6. **Optional companions.** Hand-offs to other kit skills (`azure-ai-deep-dive-deck`,
    `foundry-whats-new-deck`, `deck-companion-notebook`) are offered only when that skill is
    installed; otherwise name it and point to `skills/` in the kit repository.
@@ -242,7 +265,16 @@ and the notes for every slide — and build it with `scripts/deck_lib.py` (`set_
 `title_slide`, `chrome`, `card`, `box`, `labelled`, `legend`, `step`, `rowtable`, `pfoot`, …).
 If the build is delegated to the `pptx` capability, pass it the spec **and** the path of
 `deck_lib.py`. **Set notes at build time, not afterwards.** Save as
-`output/<topic-kebab-case>-deep-dive-<yyyy>-<mm>.pptx`; if that name exists, append `-<dd>`.
+`output/Microsoft Foundry <Subject>.pptx` (`kit.yaml` → `naming.deep_dive_deck`):
+
+- `<Subject>` is the deck's topic in Title Case, as on the title slide but without the leading
+  "Microsoft" or "Microsoft Foundry" — e.g. "Microsoft Foundry Copilot Harness Prompt Agents.pptx",
+  "Microsoft Foundry Hosted Agents.pptx", "Microsoft Foundry Voice Live-Voice Agents.pptx".
+- No "deep dive", no date and no version in the file name; the edition date lives in the
+  deep-dive register and in `kit.yaml` → `decks[].edition`.
+- Spaces are allowed; a hyphen joins two names of one subject; never use `\ / : * ? " < > |`.
+- If that name already exists in `output/`, append ` <yyyy-mm-dd>` for the working copy only;
+  the kit file keeps the plain name (Delivery, rule 5 of the kit setup).
 
 ### Step 6 — QA (mandatory, never skip)
 Run `python scripts/deck_qa.py <deck> --render working/render/` (text checks: fonts below 7.5pt,
@@ -259,7 +291,7 @@ rendered image is.**
 State: the file name; the slide count; the defaults applied; the diagram pattern followed with its
 Learn URL; and every open verify item. When a kit is attached, offer to **register the deck**:
 an entry in the deep-dive register (`kit.yaml` → `paths.deep_dive_register`, default
-`decks/DEEP-DIVE-DECKS.md`) using its template — **dated editions, never overwritten** — plus a
+`decks/DEEP-DIVE-DECKS.md`) using its template — **one entry per edition, never rewritten** — plus a
 `decks:` entry for `kit.yaml`, both shown as a diff and applied only on approval.
 If `deck-companion-notebook` is installed, offer a companion Python notebook for the kit (one step
 per slide concept, paired to this deck's slide numbers).
@@ -328,14 +360,15 @@ this service every day.
 
 ## Output format
 
-- **File:** `output/<topic-kebab-case>-deep-dive-<yyyy>-<mm>.pptx` (same name in the kit's `decks/`)
+- **File:** `output/Microsoft Foundry <Subject>.pptx` (same name in the kit's `decks/`; Step 5)
 - **Size:** 12–18 slides per Section 1; 16:9; Segoe UI; the Section 2 palette and geometry.
 - **Slide bodies:** chips, key-value rows, numbered cards and parallel-row comparison
   tables — never paragraphs. Bullet lines are one idea each, minimum 7.5pt.
 - **Every slide** carries 120–200 words of notes; every diagram is shapes-with-text plus a legend.
 - **Handoff message sections:** file name and slide count; defaults applied; architecture
   pattern followed and its Learn URL; open verify items; offer kit registration (deep-dive
-  register entry + `kit.yaml` deck entry) and, if installed, a companion notebook.
+  register entry + `kit.yaml` deck entry) and, if installed, a companion notebook; after an
+  upload, the sensitivity label the file carries.
 
 ---
 
@@ -349,7 +382,10 @@ this service every day.
 - **Never reproduce Learn or GitHub content verbatim** beyond a short quoted snippet — summarise
   and link.
 - **Never copy third-party logos or licensed imagery.**
-- **Never overwrite an existing deck in `output/`** — use a new dated file name.
+- **Never overwrite an existing deck in `output/` or in the kit's `decks/`** — append a date to the
+  `output/` copy; a kit file is replaced only by the contributor's pull request.
+- **Never change, remove or work around a sensitivity label** — report it and leave the change
+  to the file's owner.
 - **No confidential, unannounced or roadmap material.** Public documentation only.
 - **If research tools are unavailable, say so and stop** rather than producing an unverified deck.
 - **Deliver the file and its caveats together;** never report the deck complete while QA is

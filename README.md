@@ -8,7 +8,7 @@ These are hands-on presentation demos, not production application templates. Not
 
 | Notebook | Focus | What you demonstrate |
 | --- | --- | --- |
-| [Notebook 1: Foundry platform features](foundry-demo-1-what-is-new.ipynb) | Call models and assemble a managed prompt agent | Model Router, priority processing, toolboxes, conversations, memory, tracing, evaluation, and guardrails |
+| [Notebook 1: Foundry platform features](foundry-demo-1-what-is-new.ipynb) | Call models and assemble a managed prompt agent | Model Router, priority processing, Decisions API, toolboxes, conversations, memory, tracing, evaluation, and guardrails |
 | [Notebook 2: Hosted agents and operations](foundry-demo-2-hosted-agents.ipynb) | Interact with services deployed beforehand | Custom agent code, a procurement briefing workflow, background execution, steering, recovery, and telemetry |
 | [Notebook 3: Private hosted agent to Teams](foundry-demo-3-hosted-agent-private-nework.ipynb) | Provision a private Foundry project and publish to Teams | VNet-injected Foundry, private endpoint access, azd source deployment, Azure Bot Service, the Activity Protocol route, and Microsoft 365 publishing |
 | [Notebook 4: Prompt caching](foundry-demo-4-promp-caching.ipynb) | Observe cache reads and writes on the public project | Cold/warm calls, prefix sensitivity, prompt layout, append-only history, explicit breakpoints with `prompt_cache_key`, and reuse ratios |
@@ -122,6 +122,7 @@ The skill reads `kit.yaml`, maps slides to steps, sources code from Microsoft Le
 | Connect | Authenticate with `DefaultAzureCredential` and connect to a Foundry project without embedding an API key. |
 | Model calls and routing | Call a chat deployment, then a Model Router deployment through the Responses API. |
 | Priority processing | Compare requests using different service tiers and inspect elapsed time. This is a demonstration, not a controlled latency benchmark. |
+| Decisions API | Optional: send one request with a predicate, a choice and a score question to a `gpt-6-luna` deployment and read the typed answers, including refusals. Skipped when `FOUNDRY_DECISIONS_NAME` is empty. |
 | Toolboxes and prompt agents | Create a versioned toolbox with web search, tool search, Microsoft Learn MCP, and Foundry IQ MCP connections. Inspect exposed tools, promote the toolbox version, and attach it to a prompt agent. |
 | Conversations | Send multiple turns on one conversation and inspect stored messages and tool-related items. |
 | Memory | Create a memory store backed by chat and embedding deployments, attach a memory tool to a new agent version, and test preference recall across separate conversations. |
@@ -583,6 +584,7 @@ Use [.env.example](.env.example) as the starting point for a root-level `.env`. 
 | `FOUNDRY_MODEL_NAME` | Chat deployment in notebooks 1, 4 and 5 (Part 2); notebook 5 defaults to `gpt-5-mini` when unset. Notebook 4's demo 5 needs GPT-5.6 or later on Standard |
 | `FOUNDRY_ROUTER_NAME` | Notebook 1 Model Router deployment |
 | `FOUNDRY_EMBEDDING_NAME` | Notebook 1 memory embedding deployment |
+| `FOUNDRY_DECISIONS_NAME` | Notebook 1, optional: `gpt-6-luna` deployment for the Decisions API step (2b); blank skips the step |
 | `AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING` | Notebook 1: required opt-in for client-side generative AI tracing; the example and dev container use `true`, and the tracing cell explicitly sets it before instrumentation |
 | `OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT` | Notebook 1: whether prompts and completions are captured in traces; the example, dev container and tracing cell use `false`. Keep capture disabled unless explicitly needed and permitted for development |
 | `HOSTED_AGENT_NAME` | Notebook 2 hosted assistant; defaults to `demo-hosted-agent` |

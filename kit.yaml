@@ -8,8 +8,8 @@
 kit:
   name: Microsoft Foundry What's New and Deep-Dive Kit
   manifest_version: 1
-  skills_version: 1.1.0          # see skills/CHANGELOG.md
-  updated: 2026-10-22
+  skills_version: 1.2.0          # see skills/CHANGELOG.md
+  updated: 2026-10-30
   python_kernel: "3.12"          # notebooks (devcontainer)
   hosted_agent_runtime: ["3.13"]   # agent/azure.yaml and private-agent/azure.yaml — separate from the kernel
 
@@ -26,69 +26,69 @@ paths:
 
 naming:
   whats_new_deck: "Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx"
-  deep_dive_deck: "<topic-kebab-case>-deep-dive-<yyyy>-<mm>[-<dd>].pptx"
+  deep_dive_deck: "Microsoft Foundry <Subject>.pptx"   # Title Case subject, no "deep dive", no date; edition in decks[].edition
   notebook: "foundry-demo-<n>-<topic>.ipynb"
   rule: >-
-    New files use these patterns. Files listed below with legacy_name: true keep their
-    current names until a dedicated renaming pull request updates the README links and
-    notebook references in one change. Never rename or renumber another contributor's file.
+    New files use these patterns. A deep-dive deck keeps one file name across editions: a new
+    edition replaces the file in a pull request and gets a new register entry (git history is
+    the rollback). The what's-new deck gets a new dated file per edition. Never rename or
+    renumber another contributor's file.
 
 next_notebook_number: 9
 
 decks:
-  - file: Microsoft-Foundry-Whats-New-2026-10-22.pptx
+  - file: Microsoft-Foundry-Whats-New-2026-10-26.pptx
     kind: whats-new
-    edition: 2026-10-22
-    slides: 26
+    edition: 2026-10-26
+    slides: 27
     maintained_by: foundry-whats-new-deck
     pairs_with: [1]
-    previous_edition: Microsoft-Foundry-Whats-New-2026-10.pptx   # 25 slides; kept as the rollback, includes the 2026-10-13 slide 7 changes
-    note: slide 12 "Browser automation tool" added; former slides 12-25 are now 13-26
+    previous_edition: Microsoft-Foundry-Whats-New-2026-10.pptx   # edition 2026-10-22 (26 slides); removed from decks/ on 2026-10-30 — the rollback is git history
+    note: slide 11 "Decision models" added in 2026-10-26 and slide 12 "Browser automation tool" in 2026-10-22; edition 2026-10 slide 11 is now 12 and slides 12-25 are now 14-27
   - file: "Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx"
     kind: deep-dive
-    legacy_name: true
     source_build: guardrails-tuning-deep-dive-2026-10 (refactored with azure-ai-deep-dive-deck; replaces the V4 build)
     slides: 14
     pairs_with: [1]
     note: guardrails section of notebook 1; test data from github.com/strudel0209/foundry-content-safety-eval
   - file: "Microsoft Foundry Hosted Agents.pptx"
     kind: deep-dive
-    legacy_name: true
     source_build: hosted-agents-deep-dive-2026-10 (second build)
     slides: 7
     pairs_with: [2, 3]
   - file: "Microsoft Foundry Prompt Caching.pptx"
     kind: deep-dive
-    legacy_name: true
     pairs_with: [4]
     note: not built with the kit skills
   - file: "Microsoft Foundry Agent2Agent-A2A.pptx"
     kind: deep-dive
-    legacy_name: true
     pairs_with: [5]
   - file: "Microsoft Foundry Content-Understanding.pptx"
     kind: deep-dive
-    legacy_name: true
     slides: 12
     pairs_with: [6]
   - file: "Microsoft Foundry Voice Live-Voice Agents.pptx"
     kind: deep-dive
-    legacy_name: true
     source_build: voice-live-voice-agents-deep-dive-2026-10 (second build)
     slides: 9
     pairs_with: [7]
   - file: "Microsoft Foundry AI Gateway.pptx"
     kind: deep-dive
-    legacy_name: true
     source_build: ai-gateway-deep-dive-2026-10 (second build)
     slides: 9
     pairs_with: [8]
+  - file: "Microsoft Foundry Copilot Harness Prompt Agents.pptx"
+    kind: deep-dive
+    edition: 2026-10
+    slides: 7
+    pairs_with: []          # no companion notebook yet
+    note: Microsoft Copilot harness for prompt agents (preview); compares standard prompt agents, harness agents and hosted agents
 
 notebooks:
   - n: 1
     file: foundry-demo-1-what-is-new.ipynb
-    deck: Microsoft-Foundry-Whats-New-2026-10-22.pptx   # slide references still follow edition 2026-10 — see known_issues
-    env_block: core
+    deck: Microsoft-Foundry-Whats-New-2026-10-26.pptx   # slide references still follow edition 2026-10, except step 2b (slide 11 of 2026-10-26) — see known_issues
+    env_block: core + FOUNDRY_DECISIONS_NAME (optional, step 2b)
   - n: 2
     file: foundry-demo-2-hosted-agents.ipynb
     deck: "Microsoft Foundry Hosted Agents.pptx"
@@ -126,6 +126,7 @@ env:
   FOUNDRY_MODEL_NAME:       {meaning: "chat model deployment name (or the Model Router deployment)", notebooks: [1, 4, 5]}
   FOUNDRY_ROUTER_NAME:      {meaning: "Model Router deployment name", notebooks: [1]}
   FOUNDRY_EMBEDDING_NAME:   {meaning: "embedding model deployment name", notebooks: [1]}
+  FOUNDRY_DECISIONS_NAME:   {meaning: "optional gpt-6-luna deployment name for the Decisions API step; blank skips the step", notebooks: [1]}
   FOUNDRY_PROJECT_NAME:     {meaning: "Foundry project name matching FOUNDRY_PROJECT_ENDPOINT; NB1 derives it when blank or unset, NB7 requires it for Voice Live with an agent", notebooks: [1, 7]}
   FOUNDRY_ACCOUNT_NAME:     {meaning: "optional NB1 override of the Foundry account name; blank or unset derives it from FOUNDRY_PROJECT_ENDPOINT", notebooks: [1]}
   AZURE_SUBSCRIPTION_ID:    {meaning: "shared subscription containing the kit's Foundry and API Management resources; PRIVATE_DEMO_SUBSCRIPTION_ID must use the same subscription", notebooks: [1, 8]}
@@ -140,6 +141,7 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "azure-ai-projects used with preview surfaces (.beta., *PreviewTool) without a minor cap"
   - "azure-search-documents floors at 11.6.0 with no upper bound while 12.0.0 is out"
   - "README has no Notebook 4 section (notebook 4 appears only in the tables and the Repository Guide)"
-  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-09-29 and 2026-10-13 whose files are not in decks/ (editions 2026-10 and 2026-10-22 are published; the 2026-10-13 changes are contained in the 2026-10 file); history kept on purpose"
-  - "NB1 slide references were written against what's-new edition 2026-10 (25 slides); from slide 12 onwards they are one lower than in edition 2026-10-22 — run deck-companion-notebook DECK REFRESH MODE"
-  - "What's-new edition 2026-10-22: second-person wording remains on slides 5, 8, 14, 16, 20, 22, 23 and 24, text at 6.5-7.0pt on slides 23 and 24, and the notes of slides 1 and 5 still use the retired label style"
+  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-10-22 whose files are no longer in decks/ (only edition 2026-10-26 is); history kept on purpose"
+  - "NB1 slide references were written against what's-new edition 2026-10 (25 slides); references to slide 11 are one lower and to slides 12-25 two lower than in edition 2026-10-26 (slides 1-10 unchanged) — run deck-companion-notebook DECK REFRESH MODE"
+  - "Microsoft Foundry Copilot Harness Prompt Agents.pptx carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
+  - "What's-new edition 2026-10-26: second-person wording remains on slides 5, 8, 15, 17, 21, 23, 24 and 25, text at 6.5-7.0pt on slides 24 and 25, and the notes of slides 1 and 5 still use the retired label style"

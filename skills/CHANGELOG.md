@@ -6,6 +6,34 @@ existing decks, notebooks or `kit.yaml`; MINOR = new rule, mode or script; PATCH
 A change to the shared visual system or to the Slide wording rules updates **both** deck skills
 (and `scripts/deck_lib.py`) in the same release.
 
+## 1.2.0 · 2026-10-30 — deck file names, presenter line and sensitivity labels
+
+**azure-ai-deep-dive-deck** (`SKILL.md` + `scripts/deck_lib.py` docstring)
+- Deep-dive decks are named `Microsoft Foundry <Subject>.pptx`, matching the decks already in
+  `decks/`: subject in Title Case, no "deep dive", no date. The edition date moves to the
+  deep-dive register and `kit.yaml` → `decks[].edition`. Replaces
+  `<topic-kebab-case>-deep-dive-<yyyy>-<mm>.pptx`.
+- Delivery: a deep-dive deck whose name already exists in `decks/` is not uploaded again; the
+  new edition stays in `output/` and the contributor replaces the kit file in the pull request.
+  The what's-new deck keeps its dated names.
+- Sensitivity labels: Cowork reports the label on every uploaded file and never changes,
+  removes or works around one; an unsuitable label becomes a `kit.yaml` known issue until the
+  owner changes it in PowerPoint.
+
+- Presenter line (kit setup, rule 3, shared by both deck skills): the `output/` copy carries the
+  running user's name from `kit.local.yaml` → `presenter` or the Microsoft 365 profile; the copy
+  in the kit's `decks/` has the presenter line removed in place after upload; "put my name
+  on <deck>" personalises a kit deck into `output/`.
+- `deck_lib.py`: `title_slide` always creates a shape named `Presenter`; new `set_presenter()`
+  fills it (adding it to decks that have none) or removes it.
+
+**deck-companion-notebook**
+- Step 1 reads a deep-dive deck's edition from `kit.yaml` / the register instead of the file
+  name; the notebook topic is the deck subject in kebab case.
+
+**foundry-whats-new-deck**
+- Presenter line on slide 1 follows the shared kit rule: personal in `output/`, removed in `decks/`.
+
 ## 1.1.0 · 2026-10-22 — what's-new deck edition 2026-10-22
 
 **foundry-whats-new-deck** (`SKILL.md` + `scripts/deck_qa.py`)

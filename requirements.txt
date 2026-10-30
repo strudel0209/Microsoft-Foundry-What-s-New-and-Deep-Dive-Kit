@@ -3,7 +3,7 @@
 
 # --- Core: project client, OpenAI-compatible surface, identity (NB1 cells 0–4, NB2 all) ---
 azure-ai-projects[voice]>=2.7.0,<3  # [voice] adds the realtime transport for NB7 voice agents
-openai>=3.0.0                    # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway
+openai>=3.26.0,<4                # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway; NB1 step 2b Decisions API needs >=3.26.0
 azure-identity>=1.25.3           # Includes subscription-scoped AzureCliCredential for NB3
 requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints
 

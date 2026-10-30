@@ -8,6 +8,16 @@ appended, never rewritten. Deck editions are logged in `decks/CHANGELOG.md`, not
 
 ---
 
+## 2026-10-26 · foundry-demo-1-what-is-new.ipynb — updated (step 2b, Decisions API)
+
+**Paired deck:** Microsoft-Foundry-Whats-New-2026-10-26.pptx · edition 2026-10-26 · slide map: step 2b → slide 11 (decision models). Other steps keep their edition 2026-10 slide numbers (see `kit.yaml` → `known_issues`)
+**Change:** new optional step 2b after Priority Processing (one markdown and one code cell). One Decisions API request to a `gpt-6-luna` deployment asks a predicate, a choice and a score question about a support message and prints the typed answers, handling refusals. Calls the resource route `https://<account>.services.ai.azure.com/openai/v1/` with a Microsoft Entra ID token; the step is skipped when `FOUNDRY_DECISIONS_NAME` is empty. Microsoft-Decision-1 (preview) is mentioned only, not demonstrated. Added the optional deployment to the "Before you start" list.
+**Dependency changes:** `openai>=3.0.0` → `openai>=3.26.0,<4` (the `decisions` resource needs 3.26.0 or later as per official documentation; major-version cap per the kit pin policy). Breaking changes reviewed between 3.0.0 and 3.37.0: the 3.37.0 Decisions type change keeps string instructions and user-message inputs (step 2b uses only those); the 3.1.0 MCP tool-call error change touches no notebook; the 3.0.0 HTTPX2 change was already absorbed (floor 3.0.0, `httpx` pinned). The long-running agent's own `openai>=3.0.0` stays compatible
+**Env changes:** added `FOUNDRY_DECISIONS_NAME` (optional, notebook 1); no existing variable reused or renamed
+**Regression:** 8/8 notebooks parse; static gate unchanged from the pre-edit baseline (2 FAIL, 30 WARN, 27 INFO, all pre-existing) except one informational overlap warning: `openai` is specified in both the root and the long-running agent requirements, and the two ranges intersect · pre-existing: notebook 5 per-package installs (cells 2 and 23) · resolver: resolved by reading, not executed · new step not executed against Azure
+**Open verify items:** `decision.usage.total_tokens` attribute in the Python library; whether the Foundry User role covers the `/openai/v1/decisions` route (the v1 API documentation names Cognitive Services OpenAI User); Decisions API region rollout for the demo resource
+**Last dependency audit:** none yet
+
 ## 2026-10-15 · notebook 8 — reuse notebook 5's Foundry A2A target through the gateway
 
 **Paired deck:** Microsoft Foundry AI Gateway · step 8, slide 7

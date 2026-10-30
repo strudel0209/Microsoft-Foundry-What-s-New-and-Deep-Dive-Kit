@@ -1,11 +1,23 @@
 # Deep-dive decks · register
 
-One entry per deep-dive deck edition, newest first. Maintained by the `azure-ai-deep-dive-deck`
+One entry per deep-dive deck edition, newest first. Since kit skills 1.2.0, deck files are named
+`Microsoft Foundry <Subject>.pptx` without a date; older entries keep their original headings. Maintained by the `azure-ai-deep-dive-deck`
 skill (path in `kit.yaml` → `paths.deep_dive_register`); entries are appended, never rewritten.
 A new edition of a deck gets a new dated file and a new entry — the previous edition is the
 rollback. `Conformance` states whether the deck meets the skill version named.
 
 ---
+
+## Microsoft Foundry Copilot Harness Prompt Agents · edition 2026-10
+
+**Kit file:** `Microsoft Foundry Copilot Harness Prompt Agents.pptx` (renamed on 2026-10-30, before its first commit, under kit skills 1.2.0) · **Sources verified:** 2026-10-29 · **Slides:** 7
+**Pairs with:** none yet
+**Sources:** learn.microsoft.com/azure/foundry/agents/how-to/use-tools-skills-copilot-harness · concepts/limits-quotas-regions · concepts/prompt-agents · concepts/hosted-agents · agents/overview · devblogs.microsoft.com/foundry/microsoft-copilot-harness-in-foundry · blogs.microsoft.com/blog/2026/10/28/introducing-the-microsoft-copilot-harness-unlocking-the-potential-of-truly-multi-model-agentic-work
+**Conformance:** skill 1.1.0 — `deck_qa.py` 0 FAIL, 0 WARN; every slide inspected as a rendered image. Shortened 30-minute arc by request (6–7 slides): no agenda slide; overview, architecture, comparison, selection, limits and references. The architecture diagram follows the documented components, because no Azure Architecture Center pattern exists for the harness yet
+**Open verify items:**
+- Prompt-agent column on slide 4 ("tools such as Code Interpreter run in their own environment"): the prompt-agents concept page could not be fetched in full during the build.
+- Harness regions, models and request constraints on slide 6: preview values, likely to change.
+- Sandbox pricing from 2026-12-01 (Foundry Blog announcement) against the Foundry pricing page once published.
 
 ## guardrails-tuning-deep-dive-2026-10 · edition 2026-10
 
@@ -76,9 +88,9 @@ rollback. `Conformance` states whether the deck meets the skill version named.
 
 <!-- Template — copy, fill in, insert directly under the header (newest first).
 
-## <topic-kebab-case>-deep-dive-<yyyy>-<mm> · edition <yyyy>-<mm>[-<dd>]
+## Microsoft Foundry <Subject> · edition <yyyy>-<mm>[-<dd>]
 
-**Kit file:** `<file name in decks/>` · **Sources verified:** <yyyy-mm-dd> · **Slides:** <n>
+**Kit file:** `Microsoft Foundry <Subject>.pptx` · **Sources verified:** <yyyy-mm-dd> · **Slides:** <n>
 **Pairs with:** notebook <n> | none yet
 **Sources:** <Learn and GitHub paths fetched during the build>
 **Conformance:** skill <version> — `deck_qa.py` <n> FAIL, <n> WARN

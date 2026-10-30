@@ -18,7 +18,7 @@ metadata:
 
 # Deck Companion Notebook
 
-> Version 1.1.0 · 2026-10-22 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.2.0 · 2026-10-30 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview
@@ -331,8 +331,10 @@ Extract with `python-pptx` (or `python scripts/office/unpack.py`): slide numbers
 status asterisks (`*` = preview in both deck skills), speaker notes, every
 `Presenter note: verify …` item, and every source URL in footers and notes. For a
 `foundry-whats-new-deck` deck, take the edition from the file name
-(`Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx`); for an `azure-ai-deep-dive-deck` deck,
-from `<topic>-deep-dive-<yyyy>-<mm>.pptx`.
+(`Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx`); for an `azure-ai-deep-dive-deck` deck
+(`Microsoft Foundry <Subject>.pptx`, no date in the name), from `kit.yaml` → `decks[].edition`
+or the newest entry for that file in the deep-dive register. The notebook topic is `<Subject>`
+in kebab case (e.g. `copilot-harness-prompt-agents`).
 
 ### Step 2 — MAP SLIDES TO STEPS
 - One step per **demonstrable** concept, ordered simple → complex along the ladder:

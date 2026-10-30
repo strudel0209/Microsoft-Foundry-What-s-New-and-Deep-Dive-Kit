@@ -4,5 +4,7 @@
 # Private Python package index, used by the dependency check instead of PyPI when reachable.
 # pip_index_url: https://<your-private-feed>/pypi/simple/
 
-# Presenter line override (default: name and job title from the Microsoft 365 profile).
-# presenter: "<Name> · <Role>"
+# Presenter line on the title slide of every deck the skills build or personalise for you
+# (default: display name and job title from your Microsoft 365 profile). The copy saved to the
+# kit's decks/ folder never carries a name; ask "put my name on <deck>" to get a personal copy.
+# presenter: "<Name> · <Role> · <Organisation>"

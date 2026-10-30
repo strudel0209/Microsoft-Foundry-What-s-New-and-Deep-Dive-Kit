@@ -2,7 +2,34 @@
 
 One entry per dated edition, newest first. Each entry lists what changed since the previous edition, the source consulted for each change, the run date, and any items still to verify before presenting. Maintained by the `foundry-whats-new-deck` skill; entries are appended, never rewritten.
 
-Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 26 slides from edition 2026-10-22 (25 before) · 16:9 · speaker notes on every slide.
+Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 27 slides from edition 2026-10-26 (26 from 2026-10-22, 25 before) · 16:9 · speaker notes on every slide.
+
+---
+
+## Edition 2026-10-26
+
+**File:** `Microsoft-Foundry-Whats-New-2026-10-26.pptx`
+**Run date:** 2026-10-26 · **Baseline:** 2026-10-22 · **Last sweep:** 2026-09-16 · **Next detect run due:** 2026-11-09
+**Structure:** CHANGED — one slide added at position 11 (section 02, after Model Router), on the user's request. Deck is now 27 slides; slides 11–26 of the previous edition become 12–27. Section 02 holds five slides (7–11). Base: the repository copy of edition 2026-10-22 (renamed in OneDrive to Microsoft-Foundry-Whats-New-2026-10.pptx), including the presenter's edit to slide 1.
+
+### Changes since edition 2026-10-22
+| Slide | Change | Status | Source (fetched this run) |
+|---|---|---|---|
+| 11 | NEW SLIDE — "Decision models": Azure OpenAI Decisions API (gpt-6-luna, /openai/v1/decisions, text/JSON/images, up to 400 questions) compared with Microsoft-Decision-1 (preview, /providers/microsoft/v1/systemone, text/JSON, 32,768 tokens); request and response sample; the three answer types and refusals; when to use, what to use instead, design rules | Decisions API rolling out in Azure; Microsoft-Decision-1 preview | learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions (updated 10/22/2026) · learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/use-foundry-models-microsoft-decision (updated 10/09/2026) · ai.azure.com/catalog/models/Microsoft-Decision-1 |
+| 2 | Agenda ranges 7–11, 12–15, 16–21, 22–25, 26–27; section 02 lists decision models | — | — |
+| 7 | Notes only: Microsoft-Decision-1 is covered on slide 11, not in the table | — | — |
+| 22 | "→ slide n" links corrected to 25, 24, 23 | — | — |
+| 26 | Timeline dot 8 widened to 29 Sep – 22 Oct (Microsoft-Decision-1 preview 9 Oct, Decisions API 22 Oct); still-preview band adds Microsoft-Decision-1 | mixed | as above · openai.com/index/decisions-api (22 Oct 2026) |
+| 27 | References add how-to/decisions and use-foundry-models-microsoft-decision; notes updated | — | — |
+| 11–27 | Footer page numbers shifted by one | — | — |
+
+### Placement rationale
+Gate 1 passes (Microsoft-Decision-1 and the Decisions API sat at depth level 0; Microsoft-Decision-1 was logged as "detected but not applied" on 2026-10-13). Gate 2: 2/5 — own announcements (Microsoft Foundry blog 9 Oct, OpenAI 22 Oct) and an explicit contrast with structured outputs and function calling hold; no capability-reference row, no concept page, Microsoft-Decision-1 in preview. The slide was added under the user-directed slide rule: the user asked for what it is, when to use it, format and output, which a card cannot hold. Section 02 had room (four slides). It follows Model Router, the neighbouring concept of choosing a model per request.
+
+Open verify items:
+- Status of the Decisions API in Azure (Learn page shows no preview label; OpenAI GA 22 Oct 2026; Azure rollout in progress, East US 2 excluded).
+- Request limit for Microsoft-Decision-1 (Learn gives none; slide says "several named questions").
+- **Carried over:** items from edition 2026-10-22.
 
 ---
 
