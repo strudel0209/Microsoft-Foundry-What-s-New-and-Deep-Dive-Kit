@@ -1,0 +1,6 @@
+# Games operations sample generator
+pandas>=2.0
+numpy>=1.24
+reportlab>=4.0        # PDF documents; without it documents are written as Markdown
+pyarrow>=14.0         # optional, for --format parquet
+azure-eventhub>=5.11  # optional, for stream_simulator.py to an Eventstream custom endpoint

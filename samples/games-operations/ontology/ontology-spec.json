@@ -1,0 +1,1111 @@
+{
+  "name": "GamesOperationsOntology",
+  "items": {
+    "lakehouse": "GamesLakehouse",
+    "eventhouse": "GamesEventhouse",
+    "kql_database": "GamesKQL",
+    "semantic_model": "Games Operations Model",
+    "ontology": "GamesOperationsOntology"
+  },
+  "notes": [
+    "Static entity bindings use the lakehouse; time series use the eventhouse; metrics come from DAX measures in the semantic model.",
+    "Property value types follow the supported ontology types: string, integer, double, boolean, datetime. Entity keys are string."
+  ],
+  "entity_types": [
+    {
+      "name": "NOC",
+      "description": "A national committee and its delegation at the Games.",
+      "table": "noc",
+      "key": "noc_code",
+      "display": "noc_name",
+      "properties": [
+        {
+          "name": "NocCode",
+          "column": "noc_code",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "noc_name",
+          "type": "string"
+        },
+        {
+          "name": "Region",
+          "column": "region",
+          "type": "string"
+        },
+        {
+          "name": "DelegationSize",
+          "column": "delegation_size",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "name": "Athlete",
+      "description": "A competitor entered by a national committee.",
+      "table": "athlete",
+      "key": "athlete_id",
+      "display": "family_name",
+      "properties": [
+        {
+          "name": "AthleteId",
+          "column": "athlete_id",
+          "type": "string"
+        },
+        {
+          "name": "GivenName",
+          "column": "given_name",
+          "type": "string"
+        },
+        {
+          "name": "FamilyName",
+          "column": "family_name",
+          "type": "string"
+        },
+        {
+          "name": "Category",
+          "column": "gender_category",
+          "type": "string"
+        },
+        {
+          "name": "BirthYear",
+          "column": "birth_year",
+          "type": "integer"
+        },
+        {
+          "name": "NocCode",
+          "column": "noc_code",
+          "type": "string"
+        },
+        {
+          "name": "DisciplineCode",
+          "column": "discipline_code",
+          "type": "string"
+        }
+      ],
+      "time_series": [
+        {
+          "source": "eventhouse",
+          "item": "GamesKQL",
+          "table": "TimingEvents",
+          "key_column": "AthleteId",
+          "timestamp_column": "Timestamp",
+          "properties": [
+            {
+              "name": "SessionId",
+              "column": "SessionId",
+              "type": "string"
+            },
+            {
+              "name": "EventId",
+              "column": "EventId",
+              "type": "string"
+            },
+            {
+              "name": "Checkpoint",
+              "column": "Checkpoint",
+              "type": "string"
+            },
+            {
+              "name": "LapNumber",
+              "column": "LapNumber",
+              "type": "integer"
+            },
+            {
+              "name": "SplitTimeS",
+              "column": "SplitTimeS",
+              "type": "double"
+            },
+            {
+              "name": "ShootingMisses",
+              "column": "ShootingMisses",
+              "type": "integer"
+            },
+            {
+              "name": "RankAtCheckpoint",
+              "column": "RankAtCheckpoint",
+              "type": "integer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Discipline",
+      "description": "A discipline within a sport, played at one home venue.",
+      "table": "discipline",
+      "key": "discipline_code",
+      "display": "discipline_name",
+      "properties": [
+        {
+          "name": "DisciplineCode",
+          "column": "discipline_code",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "discipline_name",
+          "type": "string"
+        },
+        {
+          "name": "Sport",
+          "column": "sport_name",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "ScoringType",
+          "column": "scoring_type",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "description": "A medal event, for example Women's 10 km Pursuit.",
+      "table": "event",
+      "key": "event_id",
+      "display": "event_name",
+      "properties": [
+        {
+          "name": "EventId",
+          "column": "event_id",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "event_name",
+          "type": "string"
+        },
+        {
+          "name": "DisciplineCode",
+          "column": "discipline_code",
+          "type": "string"
+        },
+        {
+          "name": "Category",
+          "column": "gender_category",
+          "type": "string"
+        },
+        {
+          "name": "IsTeamEvent",
+          "column": "is_team_event",
+          "type": "boolean"
+        },
+        {
+          "name": "MedalDate",
+          "column": "medal_date",
+          "type": "datetime"
+        },
+        {
+          "name": "HasQualification",
+          "column": "has_qualification",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "Session",
+      "description": "A ticketed competition session at a venue.",
+      "table": "session",
+      "key": "session_id",
+      "display": "session_id",
+      "properties": [
+        {
+          "name": "SessionId",
+          "column": "session_id",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "CompetitionDay",
+          "column": "competition_day",
+          "type": "integer"
+        },
+        {
+          "name": "SessionDate",
+          "column": "session_date",
+          "type": "datetime"
+        },
+        {
+          "name": "StartTimeUtc",
+          "column": "start_time_utc",
+          "type": "datetime"
+        },
+        {
+          "name": "EndTimeUtc",
+          "column": "end_time_utc",
+          "type": "datetime"
+        },
+        {
+          "name": "SessionType",
+          "column": "session_type",
+          "type": "string"
+        },
+        {
+          "name": "Status",
+          "column": "session_status",
+          "type": "string"
+        },
+        {
+          "name": "StatusReason",
+          "column": "status_reason",
+          "type": "string"
+        }
+      ],
+      "secondary_bindings": [
+        {
+          "table": "session_ticketing",
+          "join_column": "session_id",
+          "properties": [
+            {
+              "name": "SeatsAvailable",
+              "column": "seats_available",
+              "type": "integer"
+            },
+            {
+              "name": "TicketsSold",
+              "column": "tickets_sold",
+              "type": "integer"
+            },
+            {
+              "name": "ScannedEntries",
+              "column": "scanned_entries",
+              "type": "integer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Result",
+      "description": "A ranked result recorded in a session; team results have no athlete.",
+      "table": "result",
+      "key": "result_id",
+      "display": "result_id",
+      "properties": [
+        {
+          "name": "ResultId",
+          "column": "result_id",
+          "type": "string"
+        },
+        {
+          "name": "EventId",
+          "column": "event_id",
+          "type": "string"
+        },
+        {
+          "name": "SessionId",
+          "column": "session_id",
+          "type": "string"
+        },
+        {
+          "name": "NocCode",
+          "column": "noc_code",
+          "type": "string"
+        },
+        {
+          "name": "AthleteId",
+          "column": "athlete_id",
+          "type": "string"
+        },
+        {
+          "name": "Rank",
+          "column": "result_rank",
+          "type": "integer"
+        },
+        {
+          "name": "Mark",
+          "column": "mark",
+          "type": "double"
+        },
+        {
+          "name": "MarkUnit",
+          "column": "mark_unit",
+          "type": "string"
+        },
+        {
+          "name": "Medal",
+          "column": "medal",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Venue",
+      "description": "A competition venue with its operating limits.",
+      "table": "venue",
+      "key": "venue_id",
+      "display": "venue_name",
+      "properties": [
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "venue_name",
+          "type": "string"
+        },
+        {
+          "name": "Cluster",
+          "column": "cluster_name",
+          "type": "string"
+        },
+        {
+          "name": "Environment",
+          "column": "environment",
+          "type": "string"
+        },
+        {
+          "name": "SeatingCapacity",
+          "column": "seating_capacity",
+          "type": "integer"
+        },
+        {
+          "name": "GateCount",
+          "column": "gate_count",
+          "type": "integer"
+        },
+        {
+          "name": "WindLimitMs",
+          "column": "wind_limit_ms",
+          "type": "double"
+        },
+        {
+          "name": "CrowdDensityLimit",
+          "column": "crowd_density_limit",
+          "type": "double"
+        },
+        {
+          "name": "Latitude",
+          "column": "latitude",
+          "type": "double"
+        },
+        {
+          "name": "Longitude",
+          "column": "longitude",
+          "type": "double"
+        }
+      ],
+      "time_series": [
+        {
+          "source": "eventhouse",
+          "item": "GamesKQL",
+          "table": "VenueConditions",
+          "key_column": "VenueId",
+          "timestamp_column": "Timestamp",
+          "properties": [
+            {
+              "name": "WindSpeedMs",
+              "column": "WindSpeedMs",
+              "type": "double"
+            },
+            {
+              "name": "WindGustMs",
+              "column": "WindGustMs",
+              "type": "double"
+            },
+            {
+              "name": "AirTempC",
+              "column": "AirTempC",
+              "type": "double"
+            },
+            {
+              "name": "SnowTempC",
+              "column": "SnowTempC",
+              "type": "double"
+            },
+            {
+              "name": "HumidityPct",
+              "column": "HumidityPct",
+              "type": "double"
+            },
+            {
+              "name": "VisibilityM",
+              "column": "VisibilityM",
+              "type": "integer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Gate",
+      "description": "A spectator gate and its queueing plaza.",
+      "table": "gate",
+      "key": "gate_id",
+      "display": "gate_name",
+      "properties": [
+        {
+          "name": "GateId",
+          "column": "gate_id",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "gate_name",
+          "type": "string"
+        },
+        {
+          "name": "PlazaAreaM2",
+          "column": "plaza_area_m2",
+          "type": "integer"
+        },
+        {
+          "name": "MaxEntriesPerMin",
+          "column": "max_entries_per_min",
+          "type": "integer"
+        }
+      ],
+      "time_series": [
+        {
+          "source": "eventhouse",
+          "item": "GamesKQL",
+          "table": "GateFlow",
+          "key_column": "GateId",
+          "timestamp_column": "Timestamp",
+          "properties": [
+            {
+              "name": "EntriesPerMin",
+              "column": "EntriesPerMin",
+              "type": "integer"
+            },
+            {
+              "name": "QueueingPersons",
+              "column": "QueueingPersons",
+              "type": "integer"
+            },
+            {
+              "name": "DensityPersonsPerM2",
+              "column": "DensityPersonsPerM2",
+              "type": "double"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Asset",
+      "description": "Venue equipment, with criticality and service history.",
+      "table": "asset",
+      "key": "asset_id",
+      "display": "asset_name",
+      "properties": [
+        {
+          "name": "AssetId",
+          "column": "asset_id",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "asset_name",
+          "type": "string"
+        },
+        {
+          "name": "AssetType",
+          "column": "asset_type",
+          "type": "string"
+        },
+        {
+          "name": "Criticality",
+          "column": "criticality",
+          "type": "string"
+        },
+        {
+          "name": "OperationalStatus",
+          "column": "operational_status",
+          "type": "string"
+        },
+        {
+          "name": "IsMonitored",
+          "column": "is_monitored",
+          "type": "boolean"
+        },
+        {
+          "name": "SupplierId",
+          "column": "supplier_id",
+          "type": "string"
+        },
+        {
+          "name": "InstallDate",
+          "column": "install_date",
+          "type": "datetime"
+        },
+        {
+          "name": "LastServiceDate",
+          "column": "last_service_date",
+          "type": "datetime"
+        }
+      ],
+      "time_series": [
+        {
+          "source": "eventhouse",
+          "item": "GamesKQL",
+          "table": "AssetTelemetry",
+          "key_column": "AssetId",
+          "timestamp_column": "Timestamp",
+          "properties": [
+            {
+              "name": "TemperatureC",
+              "column": "TemperatureC",
+              "type": "double"
+            },
+            {
+              "name": "PowerKw",
+              "column": "PowerKw",
+              "type": "double"
+            },
+            {
+              "name": "StatusCode",
+              "column": "StatusCode",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supplier",
+      "description": "A contractor that maintains venue assets.",
+      "table": "supplier",
+      "key": "supplier_id",
+      "display": "supplier_name",
+      "properties": [
+        {
+          "name": "SupplierId",
+          "column": "supplier_id",
+          "type": "string"
+        },
+        {
+          "name": "Name",
+          "column": "supplier_name",
+          "type": "string"
+        },
+        {
+          "name": "ServiceCategory",
+          "column": "service_category",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "Finding",
+      "description": "An inspection finding extracted from an inspection report (AI functions).",
+      "table": "finding",
+      "key": "finding_id",
+      "display": "finding_id",
+      "properties": [
+        {
+          "name": "FindingId",
+          "column": "finding_id",
+          "type": "string"
+        },
+        {
+          "name": "DocumentId",
+          "column": "document_id",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "AssetId",
+          "column": "asset_id",
+          "type": "string"
+        },
+        {
+          "name": "InspectionDate",
+          "column": "inspection_date",
+          "type": "datetime"
+        },
+        {
+          "name": "Severity",
+          "column": "severity",
+          "type": "string"
+        },
+        {
+          "name": "Category",
+          "column": "category",
+          "type": "string"
+        },
+        {
+          "name": "Description",
+          "column": "description",
+          "type": "string"
+        },
+        {
+          "name": "Recommendation",
+          "column": "recommendation",
+          "type": "string"
+        },
+        {
+          "name": "Status",
+          "column": "finding_status",
+          "type": "string"
+        },
+        {
+          "name": "DueDate",
+          "column": "due_date",
+          "type": "datetime"
+        }
+      ]
+    },
+    {
+      "name": "Document",
+      "description": "A controlled document: manual, inspection report, plan or policy.",
+      "table": "document_register",
+      "key": "document_id",
+      "display": "title",
+      "properties": [
+        {
+          "name": "DocumentId",
+          "column": "document_id",
+          "type": "string"
+        },
+        {
+          "name": "Title",
+          "column": "title",
+          "type": "string"
+        },
+        {
+          "name": "DocumentType",
+          "column": "document_type",
+          "type": "string"
+        },
+        {
+          "name": "VenueId",
+          "column": "venue_id",
+          "type": "string"
+        },
+        {
+          "name": "Version",
+          "column": "version",
+          "type": "string"
+        },
+        {
+          "name": "Status",
+          "column": "document_status",
+          "type": "string"
+        },
+        {
+          "name": "EffectiveDate",
+          "column": "effective_date",
+          "type": "datetime"
+        },
+        {
+          "name": "Sensitivity",
+          "column": "sensitivity",
+          "type": "string"
+        },
+        {
+          "name": "OneLakePath",
+          "column": "onelake_path",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "relationship_types": [
+    {
+      "name": "represents",
+      "source": "Athlete",
+      "target": "NOC",
+      "binding_table": "athlete",
+      "source_key_column": "athlete_id",
+      "target_key_column": "noc_code",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "practises",
+      "source": "Athlete",
+      "target": "Discipline",
+      "binding_table": "athlete",
+      "source_key_column": "athlete_id",
+      "target_key_column": "discipline_code",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isEnteredIn",
+      "source": "Athlete",
+      "target": "Event",
+      "binding_table": "entry",
+      "source_key_column": "athlete_id",
+      "target_key_column": "event_id",
+      "cardinality": "many-to-many"
+    },
+    {
+      "name": "belongsTo",
+      "source": "Event",
+      "target": "Discipline",
+      "binding_table": "event",
+      "source_key_column": "event_id",
+      "target_key_column": "discipline_code",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isContestedIn",
+      "source": "Event",
+      "target": "Session",
+      "binding_table": "session_event",
+      "source_key_column": "event_id",
+      "target_key_column": "session_id",
+      "cardinality": "many-to-many"
+    },
+    {
+      "name": "isHeldAt",
+      "source": "Session",
+      "target": "Venue",
+      "binding_table": "session",
+      "source_key_column": "session_id",
+      "target_key_column": "venue_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isHomeVenueOf",
+      "source": "Venue",
+      "target": "Discipline",
+      "binding_table": "discipline",
+      "source_key_column": "venue_id",
+      "target_key_column": "discipline_code",
+      "cardinality": "one-to-many"
+    },
+    {
+      "name": "isResultOf",
+      "source": "Result",
+      "target": "Event",
+      "binding_table": "result",
+      "source_key_column": "result_id",
+      "target_key_column": "event_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isRecordedIn",
+      "source": "Result",
+      "target": "Session",
+      "binding_table": "result",
+      "source_key_column": "result_id",
+      "target_key_column": "session_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isCreditedTo",
+      "source": "Result",
+      "target": "NOC",
+      "binding_table": "result",
+      "source_key_column": "result_id",
+      "target_key_column": "noc_code",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isAchievedBy",
+      "source": "Result",
+      "target": "Athlete",
+      "binding_table": "result",
+      "source_key_column": "result_id",
+      "target_key_column": "athlete_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "servesVenue",
+      "source": "Gate",
+      "target": "Venue",
+      "binding_table": "gate",
+      "source_key_column": "gate_id",
+      "target_key_column": "venue_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isInstalledAt",
+      "source": "Asset",
+      "target": "Venue",
+      "binding_table": "asset",
+      "source_key_column": "asset_id",
+      "target_key_column": "venue_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isMaintainedBy",
+      "source": "Asset",
+      "target": "Supplier",
+      "binding_table": "asset",
+      "source_key_column": "asset_id",
+      "target_key_column": "supplier_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "concernsVenue",
+      "source": "Finding",
+      "target": "Venue",
+      "binding_table": "finding",
+      "source_key_column": "finding_id",
+      "target_key_column": "venue_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "concernsAsset",
+      "source": "Finding",
+      "target": "Asset",
+      "binding_table": "finding",
+      "source_key_column": "finding_id",
+      "target_key_column": "asset_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "isRecordedInDocument",
+      "source": "Finding",
+      "target": "Document",
+      "binding_table": "finding",
+      "source_key_column": "finding_id",
+      "target_key_column": "document_id",
+      "cardinality": "many-to-one"
+    },
+    {
+      "name": "covers",
+      "source": "Document",
+      "target": "Venue",
+      "binding_table": "document_register",
+      "source_key_column": "document_id",
+      "target_key_column": "venue_id",
+      "cardinality": "many-to-one"
+    }
+  ],
+  "metrics": [
+    {
+      "name": "Gold Medals",
+      "semantic_model": "Games Operations Model",
+      "home_table": "result",
+      "dax": "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Gold\" )",
+      "used_by": "NOC"
+    },
+    {
+      "name": "Silver Medals",
+      "semantic_model": "Games Operations Model",
+      "home_table": "result",
+      "dax": "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Silver\" )",
+      "used_by": "NOC"
+    },
+    {
+      "name": "Bronze Medals",
+      "semantic_model": "Games Operations Model",
+      "home_table": "result",
+      "dax": "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Bronze\" )",
+      "used_by": "NOC"
+    },
+    {
+      "name": "Total Medals",
+      "semantic_model": "Games Operations Model",
+      "home_table": "result",
+      "dax": "[Gold Medals] + [Silver Medals] + [Bronze Medals]",
+      "used_by": "NOC"
+    },
+    {
+      "name": "Tickets Sold",
+      "semantic_model": "Games Operations Model",
+      "home_table": "session_ticketing",
+      "dax": "SUM ( 'session_ticketing'[tickets_sold] )",
+      "used_by": "Session, Venue"
+    },
+    {
+      "name": "Seats Available",
+      "semantic_model": "Games Operations Model",
+      "home_table": "session_ticketing",
+      "dax": "SUM ( 'session_ticketing'[seats_available] )",
+      "used_by": "Session, Venue"
+    },
+    {
+      "name": "Sell-Through Rate",
+      "semantic_model": "Games Operations Model",
+      "home_table": "session_ticketing",
+      "dax": "DIVIDE ( [Tickets Sold], [Seats Available] )",
+      "used_by": "Session, Venue"
+    },
+    {
+      "name": "Attendance Rate",
+      "semantic_model": "Games Operations Model",
+      "home_table": "session_ticketing",
+      "dax": "DIVIDE ( SUM ( 'session_ticketing'[scanned_entries] ), CALCULATE ( [Tickets Sold], NOT ISBLANK ( 'session_ticketing'[scanned_entries] ) ) )",
+      "used_by": "Session, Venue"
+    },
+    {
+      "name": "Completed Sessions",
+      "semantic_model": "Games Operations Model",
+      "home_table": "session",
+      "dax": "CALCULATE ( COUNTROWS ( 'session' ), 'session'[session_status] = \"Completed\" )",
+      "used_by": "Venue"
+    }
+  ],
+  "rules": [
+    {
+      "name": "WindHold",
+      "statement": "An outdoor Session must not start, or must be interrupted, when its Venue's WindGustMs is above the Venue's WindLimitMs for three consecutive minutes.",
+      "references": [
+        "Session",
+        "Venue.WindGustMs",
+        "Venue.WindLimitMs",
+        "Session isHeldAt Venue"
+      ]
+    },
+    {
+      "name": "GateOvercrowding",
+      "statement": "A Gate is overcrowded when its DensityPersonsPerM2 stays above the Venue's CrowdDensityLimit for five minutes or more.",
+      "references": [
+        "Gate.DensityPersonsPerM2",
+        "Venue.CrowdDensityLimit",
+        "Gate servesVenue Venue"
+      ]
+    },
+    {
+      "name": "SessionAtRisk",
+      "statement": "A Scheduled Session is at operational risk when its Venue has an Open Finding of High severity that concerns an Asset with Criticality Critical.",
+      "references": [
+        "Session",
+        "Finding.Severity",
+        "Finding.Status",
+        "Asset.Criticality",
+        "Finding concernsAsset Asset",
+        "Session isHeldAt Venue"
+      ]
+    },
+    {
+      "name": "ServiceOverdue",
+      "statement": "An Asset with Criticality Critical is overdue for service when its LastServiceDate is more than 30 days before today.",
+      "references": [
+        "Asset.Criticality",
+        "Asset.LastServiceDate"
+      ]
+    },
+    {
+      "name": "AuthoritativeManual",
+      "statement": "Only a Document with Status Current is authoritative for operating limits; Superseded documents must not be used.",
+      "references": [
+        "Document.Status",
+        "Document covers Venue"
+      ]
+    }
+  ],
+  "semantic_model": {
+    "name": "Games Operations Model",
+    "storage_mode": "Direct Lake on OneLake",
+    "tables": [
+      "noc",
+      "athlete",
+      "discipline",
+      "event",
+      "venue",
+      "session",
+      "session_event",
+      "session_ticketing",
+      "result",
+      "security_noc_user"
+    ],
+    "relationships": [
+      {
+        "from_table": "athlete",
+        "from_column": "noc_code",
+        "to_table": "noc",
+        "to_column": "noc_code",
+        "state": "active"
+      },
+      {
+        "from_table": "result",
+        "from_column": "noc_code",
+        "to_table": "noc",
+        "to_column": "noc_code",
+        "state": "active"
+      },
+      {
+        "from_table": "result",
+        "from_column": "athlete_id",
+        "to_table": "athlete",
+        "to_column": "athlete_id",
+        "state": "inactive (avoids an ambiguous path NOC→Result)"
+      },
+      {
+        "from_table": "result",
+        "from_column": "event_id",
+        "to_table": "event",
+        "to_column": "event_id",
+        "state": "active"
+      },
+      {
+        "from_table": "result",
+        "from_column": "session_id",
+        "to_table": "session",
+        "to_column": "session_id",
+        "state": "active"
+      },
+      {
+        "from_table": "event",
+        "from_column": "discipline_code",
+        "to_table": "discipline",
+        "to_column": "discipline_code",
+        "state": "active"
+      },
+      {
+        "from_table": "session",
+        "from_column": "venue_id",
+        "to_table": "venue",
+        "to_column": "venue_id",
+        "state": "active"
+      },
+      {
+        "from_table": "session_ticketing",
+        "from_column": "session_id",
+        "to_table": "session",
+        "to_column": "session_id",
+        "state": "active (one-to-one)"
+      },
+      {
+        "from_table": "session_event",
+        "from_column": "session_id",
+        "to_table": "session",
+        "to_column": "session_id",
+        "state": "active"
+      },
+      {
+        "from_table": "session_event",
+        "from_column": "event_id",
+        "to_table": "event",
+        "to_column": "event_id",
+        "state": "inactive (bridge; use in DAX when needed)"
+      }
+    ],
+    "roles": [
+      {
+        "name": "NOC delegation viewer",
+        "table": "noc",
+        "filter": "'noc'[noc_code] IN CALCULATETABLE ( VALUES ( 'security_noc_user'[noc_code] ), 'security_noc_user'[user_principal_name] = USERPRINCIPALNAME () )",
+        "note": "Filters NOC, and through relationships athletes and results, to the user's delegation."
+      },
+      {
+        "name": "Games-wide viewer",
+        "table": null,
+        "filter": null,
+        "note": "No filter."
+      }
+    ]
+  }
+}

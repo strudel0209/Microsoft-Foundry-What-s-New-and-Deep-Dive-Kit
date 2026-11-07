@@ -1,0 +1,63 @@
+// Games operations sample: eventhouse setup
+// Run in the KQL database GamesKQL (eventhouse GamesEventhouse). All timestamps are UTC.
+
+// 1. Tables
+.create-merge table VenueConditions (Timestamp:datetime, VenueId:string, WindSpeedMs:real, WindGustMs:real, AirTempC:real, SnowTempC:real, HumidityPct:real, VisibilityM:int)
+
+.create-merge table GateFlow (Timestamp:datetime, GateId:string, VenueId:string, EntriesPerMin:int, QueueingPersons:int, DensityPersonsPerM2:real)
+
+.create-merge table AssetTelemetry (Timestamp:datetime, AssetId:string, VenueId:string, TemperatureC:real, PowerKw:real, StatusCode:string)
+
+.create-merge table TimingEvents (Timestamp:datetime, SessionId:string, EventId:string, AthleteId:string, Bib:int, Checkpoint:string, LapNumber:int, SplitTimeS:real, ShootingMisses:int, RankAtCheckpoint:int)
+
+// 2. Column descriptions (shown to agents and in the OneLake catalog)
+.alter-merge table VenueConditions column-docstrings (Timestamp:"Reading time (UTC)", VenueId:"Venue", WindSpeedMs:"Mean wind speed, m/s (outdoor)", WindGustMs:"Wind gust, m/s (outdoor)", AirTempC:"Air temperature, degrees C", SnowTempC:"Snow surface temperature, degrees C (outdoor)", HumidityPct:"Relative humidity, percent", VisibilityM:"Visibility, metres")
+.alter-merge table GateFlow column-docstrings (Timestamp:"Reading time (UTC)", GateId:"Gate", VenueId:"Venue", EntriesPerMin:"Spectators scanned in the minute", QueueingPersons:"People in the gate plaza", DensityPersonsPerM2:"Plaza density, persons per square metre")
+.alter-merge table AssetTelemetry column-docstrings (Timestamp:"Reading time (UTC)", AssetId:"Asset", VenueId:"Venue", TemperatureC:"Process temperature (brine, supply air, coolant), degrees C", PowerKw:"Power draw, kW", StatusCode:"OK, WARNING or ALARM")
+.alter-merge table TimingEvents column-docstrings (Timestamp:"Time the athlete passed the checkpoint (UTC)", SessionId:"Session", EventId:"Event", AthleteId:"Athlete", Bib:"Bib number", Checkpoint:"Checkpoint name", LapNumber:"Lap number", SplitTimeS:"Elapsed time since start, seconds", ShootingMisses:"Misses at a shooting stage (biathlon)", RankAtCheckpoint:"Rank at the checkpoint")
+
+// 3. CSV ingestion mappings for the historical files in output/eventhouse/ (header row, ordinal columns)
+.create-or-alter table VenueConditions ingestion csv mapping "VenueConditions_csv" '[{"column":"Timestamp","Properties":{"Ordinal":"0"}}, {"column":"VenueId","Properties":{"Ordinal":"1"}}, {"column":"WindSpeedMs","Properties":{"Ordinal":"2"}}, {"column":"WindGustMs","Properties":{"Ordinal":"3"}}, {"column":"AirTempC","Properties":{"Ordinal":"4"}}, {"column":"SnowTempC","Properties":{"Ordinal":"5"}}, {"column":"HumidityPct","Properties":{"Ordinal":"6"}}, {"column":"VisibilityM","Properties":{"Ordinal":"7"}}]'
+.create-or-alter table GateFlow ingestion csv mapping "GateFlow_csv" '[{"column":"Timestamp","Properties":{"Ordinal":"0"}}, {"column":"GateId","Properties":{"Ordinal":"1"}}, {"column":"VenueId","Properties":{"Ordinal":"2"}}, {"column":"EntriesPerMin","Properties":{"Ordinal":"3"}}, {"column":"QueueingPersons","Properties":{"Ordinal":"4"}}, {"column":"DensityPersonsPerM2","Properties":{"Ordinal":"5"}}]'
+.create-or-alter table AssetTelemetry ingestion csv mapping "AssetTelemetry_csv" '[{"column":"Timestamp","Properties":{"Ordinal":"0"}}, {"column":"AssetId","Properties":{"Ordinal":"1"}}, {"column":"VenueId","Properties":{"Ordinal":"2"}}, {"column":"TemperatureC","Properties":{"Ordinal":"3"}}, {"column":"PowerKw","Properties":{"Ordinal":"4"}}, {"column":"StatusCode","Properties":{"Ordinal":"5"}}]'
+.create-or-alter table TimingEvents ingestion csv mapping "TimingEvents_csv" '[{"column":"Timestamp","Properties":{"Ordinal":"0"}}, {"column":"SessionId","Properties":{"Ordinal":"1"}}, {"column":"EventId","Properties":{"Ordinal":"2"}}, {"column":"AthleteId","Properties":{"Ordinal":"3"}}, {"column":"Bib","Properties":{"Ordinal":"4"}}, {"column":"Checkpoint","Properties":{"Ordinal":"5"}}, {"column":"LapNumber","Properties":{"Ordinal":"6"}}, {"column":"SplitTimeS","Properties":{"Ordinal":"7"}}, {"column":"ShootingMisses","Properties":{"Ordinal":"8"}}, {"column":"RankAtCheckpoint","Properties":{"Ordinal":"9"}}]'
+
+// 4. JSON mappings for the live stream (Eventstream custom endpoint; route by EventType)
+.create-or-alter table VenueConditions ingestion json mapping "VenueConditions_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"WindSpeedMs","Properties":{"Path":"$.WindSpeedMs"}}, {"column":"WindGustMs","Properties":{"Path":"$.WindGustMs"}}, {"column":"AirTempC","Properties":{"Path":"$.AirTempC"}}, {"column":"SnowTempC","Properties":{"Path":"$.SnowTempC"}}, {"column":"HumidityPct","Properties":{"Path":"$.HumidityPct"}}, {"column":"VisibilityM","Properties":{"Path":"$.VisibilityM"}}]'
+.create-or-alter table GateFlow ingestion json mapping "GateFlow_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"GateId","Properties":{"Path":"$.GateId"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"EntriesPerMin","Properties":{"Path":"$.EntriesPerMin"}}, {"column":"QueueingPersons","Properties":{"Path":"$.QueueingPersons"}}, {"column":"DensityPersonsPerM2","Properties":{"Path":"$.DensityPersonsPerM2"}}]'
+.create-or-alter table AssetTelemetry ingestion json mapping "AssetTelemetry_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"AssetId","Properties":{"Path":"$.AssetId"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"TemperatureC","Properties":{"Path":"$.TemperatureC"}}, {"column":"PowerKw","Properties":{"Path":"$.PowerKw"}}, {"column":"StatusCode","Properties":{"Path":"$.StatusCode"}}]'
+.create-or-alter table TimingEvents ingestion json mapping "TimingEvents_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"SessionId","Properties":{"Path":"$.SessionId"}}, {"column":"EventId","Properties":{"Path":"$.EventId"}}, {"column":"AthleteId","Properties":{"Path":"$.AthleteId"}}, {"column":"Bib","Properties":{"Path":"$.Bib"}}, {"column":"Checkpoint","Properties":{"Path":"$.Checkpoint"}}, {"column":"LapNumber","Properties":{"Path":"$.LapNumber"}}, {"column":"SplitTimeS","Properties":{"Path":"$.SplitTimeS"}}, {"column":"ShootingMisses","Properties":{"Path":"$.ShootingMisses"}}, {"column":"RankAtCheckpoint","Properties":{"Path":"$.RankAtCheckpoint"}}]'
+
+// 5. Streaming ingestion for low-latency live data
+// Verify the current streaming ingestion guidance for Eventstream destinations before enabling.
+// .alter database GamesKQL policy streamingingestion enable
+
+// 6. Queries used by the demo and the evaluation set
+// Wind gust limit exceedances by venue and day (limits from the venue table in the lakehouse; inline here)
+let WindLimits = datatable(VenueId:string, WindLimitMs:real)
+  ["V05",12.0, "V06",14.0, "V07",4.5, "V08",15.0, "V09",10.0, "V10",16.0];
+VenueConditions
+| join kind=inner WindLimits on VenueId
+| where WindGustMs > WindLimitMs
+| summarize Minutes=count(), From=min(Timestamp), To=max(Timestamp), PeakGust=max(WindGustMs)
+    by VenueId, Day=startofday(Timestamp)
+| order by Day asc
+
+// Gates above the crowd density limit (4.0 persons per square metre) for five minutes or more
+GateFlow
+| where DensityPersonsPerM2 > 4.0
+| summarize Minutes=count(), From=min(Timestamp), To=max(Timestamp), Peak=max(DensityPersonsPerM2)
+    by GateId, VenueId, Day=startofday(Timestamp)
+| where Minutes >= 5
+
+// Latest status of every monitored asset
+AssetTelemetry
+| summarize arg_max(Timestamp, TemperatureC, PowerKw, StatusCode) by AssetId, VenueId
+| where StatusCode != "OK"
+
+// Live leaderboard: leader at the latest checkpoint of a session
+let s = "S-V05-D09-2";
+TimingEvents
+| where SessionId == s
+| summarize arg_max(Timestamp, Checkpoint, SplitTimeS) by AthleteId, Bib
+| top 10 by SplitTimeS desc
