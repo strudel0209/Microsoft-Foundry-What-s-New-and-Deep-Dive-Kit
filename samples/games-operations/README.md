@@ -26,7 +26,7 @@ the same data model: `ioc` (Olympic wording, for the IOC workshop) and `neutral`
 
 ```bash
 pip install -r requirements.txt
-python generator/generate.py --out output --theme ioc
+python generator/generate.py --out output --theme neutral
 python generator/stream_simulator.py --dry-run --speed 20 --minutes 5
 ```
 
@@ -45,7 +45,7 @@ Output layout:
 
 | Option | Default | Purpose |
 |---|---|---|
-| `--theme` | `ioc` | `ioc` or `neutral` wording |
+| `--theme` | `neutral` | `neutral` or `ioc` wording |
 | `--start-date` | `2026-11-16` | Opening day (day 1). The default makes 24 November 2026 competition day 9 |
 | `--as-of` | day 9, 11:00 UTC | Data cut-off: sessions before it are completed and have results and telemetry |
 | `--seed` | `2026` | Random seed; output is deterministic for the same seed and dates |

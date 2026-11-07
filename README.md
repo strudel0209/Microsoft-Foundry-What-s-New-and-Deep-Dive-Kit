@@ -32,6 +32,14 @@ The [decks/](decks/) folder holds the PowerPoint presentations that accompany th
 | [Microsoft Foundry Voice Live-Voice Agents.pptx](<decks/Microsoft Foundry Voice Live-Voice Agents.pptx>) | Notebook 7: Voice Live and voice agents |
 | [Microsoft Foundry AI Gateway.pptx](<decks/Microsoft Foundry AI Gateway.pptx>) | Notebook 8: AI gateway governance |
 
+## Samples
+
+The [samples/](samples/) folder holds synthetic datasets shared by notebooks and decks. Generated output is not committed: each sample regenerates it the same way for the same seed and dates.
+
+| Sample | What it provides | Used by |
+| --- | --- | --- |
+| [games-operations](samples/games-operations/) | Games-time operations data for a Fabric IQ ontology: lakehouse tables, eventhouse telemetry, semantic model design, PDF documents, a live stream simulator and an evaluation set with computed answers | Notebook 9 and the end-to-end deck (planned) |
+
 ## Generate Decks and Notebooks with Cowork
 
 The [skills/](skills/) folder holds three Microsoft 365 Copilot Cowork skills that produce every deck and notebook in this repository the same way. Anyone with Cowork enabled and a clone of this repository can build a new deck, refresh the what's-new deck, or add a companion notebook that matches the existing ones.
@@ -682,6 +690,7 @@ Notebook 3's private environment (VNet, private endpoint, model, hosted compute,
 - [NOTEBOOKS-CHANGELOG.md](NOTEBOOKS-CHANGELOG.md): notebook additions, updates and dependency audits (owned by `deck-companion-notebook`).
 - [kit.yaml](kit.yaml): kit manifest read by the skills; [kit.local.yaml.example](kit.local.yaml.example): template for personal, git-ignored settings.
 - [skills/](skills/): the three Cowork skills, their scripts, and [skills/CHANGELOG.md](skills/CHANGELOG.md).
+- [samples/games-operations/](samples/games-operations/): synthetic Games operations data generator, Fabric setup notebook and KQL script, and the ontology design (see its README).
 - [private-agent/azure.yaml](private-agent/azure.yaml): isolated azd manifest deploying `demo-hosted-agent` to the private project.
 - [docs/private-teams-architecture.svg](docs/private-teams-architecture.svg): notebook 3 architecture diagram (official Azure and Microsoft 365 icons).
 - [requirements.txt](requirements.txt): shared local dependencies.

@@ -1,8 +1,8 @@
 """Generate the synthetic Games operations sample.
 
 Usage (local or in a Fabric notebook):
-    python generate.py --out ../output --theme ioc
-    python generate.py --out ../output --theme neutral --start-date 2026-11-16 --seed 2026
+    python generate.py --out ../output --theme neutral
+    python generate.py --out ../output --theme ioc --start-date 2026-11-16 --seed 2026
 
 Writes lakehouse and eventhouse tables (CSV, optionally Parquet), synthetic PDF documents,
 an evaluation question set with computed answers, the ontology specification and a manifest.
@@ -53,7 +53,7 @@ def _write(df: pd.DataFrame, cols, path_no_ext: str, fmt: str, iso_z: bool):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", default="output", help="Output folder")
-    p.add_argument("--theme", default="ioc", choices=["ioc", "neutral"])
+    p.add_argument("--theme", default="neutral", choices=["neutral", "ioc"])
     p.add_argument("--seed", type=int, default=2026)
     p.add_argument("--start-date", default="2026-11-16", help="Opening day (day 1), YYYY-MM-DD")
     p.add_argument("--as-of", default=None,
