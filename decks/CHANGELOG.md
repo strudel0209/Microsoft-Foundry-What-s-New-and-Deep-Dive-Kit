@@ -6,6 +6,17 @@ Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pa
 
 ---
 
+## Kit note 2026-11-05 · deep-dive deck added (not a what's-new edition)
+
+**File:** `Microsoft Foundry Fabric IQ Ontologies for Agents.pptx` (17 slides) · **Register entry:** `DEEP-DIVE-DECKS.md` → edition 2026-11
+**Effect on the what's-new deck:** none — no slide, slide number or source of edition 2026-10-26 changes. Fabric IQ, Foundry IQ knowledge sources, Work IQ and Web IQ now have a deep-dive deck the next what's-new edition can point to instead of covering them in cards.
+**Facts the next DETECT run should pick up (verified on Learn 2026-11-04):**
+- Fabric data agent tool in Foundry Agent Service deprecated on 6 November 2026; the Fabric IQ tool (preview) replaces it.
+- Old Fabric IQ ontology experience retires on 31 January 2027.
+- Indexed OneLake knowledge source available in REST 2026-04-01; document-level permissions only in 2026-08-01-preview.
+
+---
+
 ## Edition 2026-10-26
 
 **File:** `Microsoft-Foundry-Whats-New-2026-10-26.pptx`

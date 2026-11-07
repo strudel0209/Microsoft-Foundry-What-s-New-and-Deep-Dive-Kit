@@ -9,7 +9,11 @@ kit:
   name: Microsoft Foundry What's New and Deep-Dive Kit
   manifest_version: 1
   skills_version: 1.2.0          # see skills/CHANGELOG.md
+<<<<<<< Updated upstream
   updated: 2026-11-07
+=======
+  updated: 2026-11-05
+>>>>>>> Stashed changes
   python_kernel: "3.12"          # notebooks (devcontainer)
   hosted_agent_runtime: ["3.13"]   # agent/azure.yaml and private-agent/azure.yaml — separate from the kernel
 
@@ -84,6 +88,12 @@ decks:
     slides: 7
     pairs_with: []          # no companion notebook yet
     note: Microsoft Copilot harness for prompt agents (preview); compares standard prompt agents, harness agents and hosted agents
+  - file: "Microsoft Foundry Fabric IQ Ontologies for Agents.pptx"
+    kind: deep-dive
+    edition: 2026-11
+    slides: 17
+    pairs_with: []          # no companion notebook yet
+    note: Fabric IQ ontologies with structured and unstructured data for Foundry, Copilot Studio and Microsoft 365 Copilot agents; customer-neutral kit copy (first built for a customer session); carries the Microsoft sensitivity label from OneDrive, no encryption
 
 notebooks:
   - n: 1

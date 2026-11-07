@@ -8,6 +8,20 @@ rollback. `Conformance` states whether the deck meets the skill version named.
 
 ---
 
+## Microsoft Foundry Fabric IQ Ontologies for Agents · edition 2026-11
+
+**Kit file:** `Microsoft Foundry Fabric IQ Ontologies for Agents.pptx` · **Sources verified:** 2026-11-04 · **Slides:** 17
+**Pairs with:** none yet
+**Sources:** learn.microsoft.com/fabric/iq/ontology/overview · resources-glossary · how-to-bind-data · concepts-agent-integration · how-to-create-agent-foundry-iq · how-to-create-agent-copilot-studio · how-to-use-ontology-mcp-server · how-to-use-ontology-graph · fabric/onelake/unify-data · fabric/data-science/ai-functions/overview · fabric/data-science/data-agent-microsoft-copilot-studio-tool · azure/foundry/agents/concepts/what-is-foundry-iq · azure/foundry/agents/how-to/tools/fabric-iq · azure/foundry/agents/how-to/tools/work-iq · azure/foundry/agents/how-to/publish-copilot · azure/search/agentic-knowledge-source-how-to-onelake · microsoft-iq · web-iq/overview · webiq.microsoft.ai documentation (Web IQ APIs)
+**Conformance:** skill 1.2.0 — `deck_qa.py` 0 FAIL on the build; two review rounds with the presenter, applied in place on the live deck; every changed slide inspected as a rendered image. First built for a customer architecture session; the kit copy is customer-neutral (customer name removed from slides and speaker notes on 2026-11-05) and the demo storyline (slide 14) uses a synthetic venue-operations scenario. Covers whether ontologies can use unstructured or non-Fabric data: ontology binding reads seven Fabric source types only; data held elsewhere reaches OneLake through mirroring or shortcuts; documents reach agents through AI functions extraction (facts as tables) and a Foundry IQ knowledge base (full text), side by side with the ontology
+**Open verify items:**
+- Fabric data agent tool in Foundry Agent Service is deprecated on 6 November 2026; check that the Fabric IQ tool (slides 10, 16) has left preview or kept its status.
+- Old ontology experience retires on 31 January 2027 (slide 16); recheck before presenting after that date.
+- Document-level permissions on the indexed OneLake knowledge source exist only in REST 2026-08-01-preview (slides 12, 16); check for a generally available API version.
+- Ontology MCP endpoint does not accept service principals (known issue on Learn, slide 12); recheck the known-issues page.
+- Web IQ is limited access and needs a paid Azure subscription; the Auto API is beta (slide 4).
+- Speaker notes on the agenda slide reference slide numbers of the 17-slide edition; recheck if slides are merged (slides 10–11 and 16 were offered for consolidation).
+
 ## Microsoft Foundry Copilot Harness Prompt Agents · edition 2026-10
 
 **Kit file:** `Microsoft Foundry Copilot Harness Prompt Agents.pptx` (renamed on 2026-10-30, before its first commit, under kit skills 1.2.0) · **Sources verified:** 2026-10-29 · **Slides:** 7
