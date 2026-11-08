@@ -1,14 +1,18 @@
 // Games operations sample: eventhouse setup
 // Run in the KQL database GamesKQL (eventhouse GamesEventhouse). All timestamps are UTC.
+// Optional live ingestion setup: ../README.md#optional-persist-live-events-in-eventhouse-tables
+// These commands create tables and mappings, not Eventstream destinations or routing.
 
 // 1. Tables
-.create-merge table VenueConditions (Timestamp:datetime, VenueId:string, WindSpeedMs:real, WindGustMs:real, AirTempC:real, SnowTempC:real, HumidityPct:real, VisibilityM:int)
+// Whole numbers are long: Eventstream sends JSON whole numbers as long, and an int column would make it add
+// a second column with a _1 suffix instead of writing to the existing one.
+.create-merge table VenueConditions (Timestamp:datetime, VenueId:string, WindSpeedMs:real, WindGustMs:real, AirTempC:real, SnowTempC:real, HumidityPct:real, VisibilityM:long)
 
-.create-merge table GateFlow (Timestamp:datetime, GateId:string, VenueId:string, EntriesPerMin:int, QueueingPersons:int, DensityPersonsPerM2:real)
+.create-merge table GateFlow (Timestamp:datetime, GateId:string, VenueId:string, EntriesPerMin:long, QueueingPersons:long, DensityPersonsPerM2:real)
 
 .create-merge table AssetTelemetry (Timestamp:datetime, AssetId:string, VenueId:string, TemperatureC:real, PowerKw:real, StatusCode:string)
 
-.create-merge table TimingEvents (Timestamp:datetime, SessionId:string, EventId:string, AthleteId:string, Bib:int, Checkpoint:string, LapNumber:int, SplitTimeS:real, ShootingMisses:int, RankAtCheckpoint:int)
+.create-merge table TimingEvents (Timestamp:datetime, SessionId:string, EventId:string, AthleteId:string, Bib:long, Checkpoint:string, LapNumber:long, SplitTimeS:real, ShootingMisses:long, RankAtCheckpoint:long)
 
 // 2. Column descriptions (shown to agents and in the OneLake catalog)
 .alter-merge table VenueConditions column-docstrings (Timestamp:"Reading time (UTC)", VenueId:"Venue", WindSpeedMs:"Mean wind speed, m/s (outdoor)", WindGustMs:"Wind gust, m/s (outdoor)", AirTempC:"Air temperature, degrees C", SnowTempC:"Snow surface temperature, degrees C (outdoor)", HumidityPct:"Relative humidity, percent", VisibilityM:"Visibility, metres")
@@ -23,6 +27,8 @@
 .create-or-alter table TimingEvents ingestion csv mapping "TimingEvents_csv" '[{"column":"Timestamp","Properties":{"Ordinal":"0"}}, {"column":"SessionId","Properties":{"Ordinal":"1"}}, {"column":"EventId","Properties":{"Ordinal":"2"}}, {"column":"AthleteId","Properties":{"Ordinal":"3"}}, {"column":"Bib","Properties":{"Ordinal":"4"}}, {"column":"Checkpoint","Properties":{"Ordinal":"5"}}, {"column":"LapNumber","Properties":{"Ordinal":"6"}}, {"column":"SplitTimeS","Properties":{"Ordinal":"7"}}, {"column":"ShootingMisses","Properties":{"Ordinal":"8"}}, {"column":"RankAtCheckpoint","Properties":{"Ordinal":"9"}}]'
 
 // 4. JSON mappings for the live stream (Eventstream custom endpoint; route by EventType)
+// The simulator emits VenueConditions, GateFlow and TimingEvents only; AssetTelemetry is historical.
+// JSON mappings do not filter events. Use one EventType-filtered route per live destination table.
 .create-or-alter table VenueConditions ingestion json mapping "VenueConditions_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"WindSpeedMs","Properties":{"Path":"$.WindSpeedMs"}}, {"column":"WindGustMs","Properties":{"Path":"$.WindGustMs"}}, {"column":"AirTempC","Properties":{"Path":"$.AirTempC"}}, {"column":"SnowTempC","Properties":{"Path":"$.SnowTempC"}}, {"column":"HumidityPct","Properties":{"Path":"$.HumidityPct"}}, {"column":"VisibilityM","Properties":{"Path":"$.VisibilityM"}}]'
 .create-or-alter table GateFlow ingestion json mapping "GateFlow_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"GateId","Properties":{"Path":"$.GateId"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"EntriesPerMin","Properties":{"Path":"$.EntriesPerMin"}}, {"column":"QueueingPersons","Properties":{"Path":"$.QueueingPersons"}}, {"column":"DensityPersonsPerM2","Properties":{"Path":"$.DensityPersonsPerM2"}}]'
 .create-or-alter table AssetTelemetry ingestion json mapping "AssetTelemetry_json" '[{"column":"Timestamp","Properties":{"Path":"$.Timestamp"}}, {"column":"AssetId","Properties":{"Path":"$.AssetId"}}, {"column":"VenueId","Properties":{"Path":"$.VenueId"}}, {"column":"TemperatureC","Properties":{"Path":"$.TemperatureC"}}, {"column":"PowerKw","Properties":{"Path":"$.PowerKw"}}, {"column":"StatusCode","Properties":{"Path":"$.StatusCode"}}]'

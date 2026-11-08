@@ -32,7 +32,7 @@ def _props(table, renames, skip=()):
 
 def _ts(table, key_col, props):
     cols = {c: ty for c, ty, _ in EVENTHOUSE_TABLES[table]}
-    tmap = {"datetime": "datetime", "string": "string", "real": "double", "int": "integer"}
+    tmap = {"datetime": "datetime", "string": "string", "real": "double", "int": "integer", "long": "integer"}
     return dict(source="eventhouse", item=ITEMS["kql_database"], table=table, key_column=key_col,
                 timestamp_column="Timestamp",
                 properties=[dict(name=p, column=p, type=tmap[cols[p]]) for p in props])
@@ -80,6 +80,14 @@ ENTITY_TYPES = [
                                       "session_id": "SessionId", "noc_code": "NocCode",
                                       "athlete_id": "AthleteId", "result_rank": "Rank", "mark": "Mark",
                                       "mark_unit": "MarkUnit", "medal": "Medal"})),
+    dict(name="Entry", description="An athlete's entry in one event, with the bib number.",
+         table="entry", key="entry_id", display="entry_id",
+         properties=_props("entry", {"entry_id": "EntryId", "athlete_id": "AthleteId", "event_id": "EventId",
+                                     "bib": "Bib"})),
+    dict(name="SessionEvent", description="One event contested in one session, with the phase (for example Final).",
+         table="session_event", key="session_event_id", display="session_event_id",
+         properties=_props("session_event", {"session_event_id": "SessionEventId", "session_id": "SessionId",
+                                             "event_id": "EventId", "phase": "Phase"})),
     dict(name="Venue", description="A competition venue with its operating limits.",
          table="venue", key="venue_id", display="venue_name",
          properties=_props("venue", {"venue_id": "VenueId", "venue_name": "Name", "cluster_name": "Cluster",
@@ -126,9 +134,11 @@ ENTITY_TYPES = [
 RELATIONSHIP_TYPES = [
     ("represents", "Athlete", "NOC", "athlete", "athlete_id", "noc_code", "many-to-one"),
     ("practises", "Athlete", "Discipline", "athlete", "athlete_id", "discipline_code", "many-to-one"),
-    ("isEnteredIn", "Athlete", "Event", "entry", "athlete_id", "event_id", "many-to-many"),
+    ("hasEntry", "Athlete", "Entry", "entry", "athlete_id", "entry_id", "one-to-many"),
+    ("entersEvent", "Entry", "Event", "entry", "entry_id", "event_id", "many-to-one"),
     ("belongsTo", "Event", "Discipline", "event", "event_id", "discipline_code", "many-to-one"),
-    ("isContestedIn", "Event", "Session", "session_event", "event_id", "session_id", "many-to-many"),
+    ("schedules", "Session", "SessionEvent", "session_event", "session_id", "session_event_id", "one-to-many"),
+    ("concernsEvent", "SessionEvent", "Event", "session_event", "session_event_id", "event_id", "many-to-one"),
     ("isHeldAt", "Session", "Venue", "session", "session_id", "venue_id", "many-to-one"),
     ("isHomeVenueOf", "Venue", "Discipline", "discipline", "venue_id", "discipline_code", "one-to-many"),
     ("isResultOf", "Result", "Event", "result", "result_id", "event_id", "many-to-one"),
@@ -144,36 +154,59 @@ RELATIONSHIP_TYPES = [
     ("covers", "Document", "Venue", "document_register", "document_id", "venue_id", "many-to-one"),
 ]
 
-# Semantic model: Direct Lake over the lakehouse tables
+# Semantic model: Direct Lake over ALL lakehouse tables. It feeds the reports and row-level security AND is
+# the source for "Generate ontology", which turns each table into an entity type, each relationship into a
+# relationship type (bound when the "one" side column is marked as key) and each measure into a metric on the
+# entity type of the table the measure lives on.
 SEMANTIC_MODEL = dict(
     name=ITEMS["semantic_model"],
-    tables=["noc", "athlete", "discipline", "event", "venue", "session", "session_event",
-            "session_ticketing", "result", "security_noc_user"],
+    tables=["noc", "athlete", "discipline", "event", "venue", "gate", "session", "session_event",
+            "session_ticketing", "entry", "result", "asset", "supplier", "document_register", "finding",
+            "security_noc_user"],
+    optional_tables=["finding"],          # present only after AI functions extraction or --include-findings-table
+    keys={"noc": "noc_code", "athlete": "athlete_id", "discipline": "discipline_code", "event": "event_id",
+          "venue": "venue_id", "gate": "gate_id", "session": "session_id", "session_event": "session_event_id",
+          "session_ticketing": "session_id", "entry": "entry_id", "result": "result_id", "asset": "asset_id",
+          "supplier": "supplier_id", "document_register": "document_id", "finding": "finding_id"},
+    # (from table, from column, to table, to column, state). All many-to-one, single direction, unless noted.
+    # Inactive relationships avoid two filter paths between the same tables.
     relationships=[
         ("athlete", "noc_code", "noc", "noc_code", "active"),
         ("result", "noc_code", "noc", "noc_code", "active"),
-        ("result", "athlete_id", "athlete", "athlete_id", "inactive (avoids an ambiguous path NOC→Result)"),
         ("result", "event_id", "event", "event_id", "active"),
         ("result", "session_id", "session", "session_id", "active"),
+        ("result", "athlete_id", "athlete", "athlete_id", "inactive"),
         ("event", "discipline_code", "discipline", "discipline_code", "active"),
+        ("athlete", "discipline_code", "discipline", "discipline_code", "inactive"),
+        ("discipline", "venue_id", "venue", "venue_id", "inactive"),
         ("session", "venue_id", "venue", "venue_id", "active"),
         ("session_ticketing", "session_id", "session", "session_id", "active (one-to-one)"),
         ("session_event", "session_id", "session", "session_id", "active"),
-        ("session_event", "event_id", "event", "event_id", "inactive (bridge; use in DAX when needed)"),
+        ("session_event", "event_id", "event", "event_id", "inactive"),
+        ("entry", "athlete_id", "athlete", "athlete_id", "active"),
+        ("entry", "event_id", "event", "event_id", "active"),
+        ("gate", "venue_id", "venue", "venue_id", "active"),
+        ("asset", "venue_id", "venue", "venue_id", "active"),
+        ("asset", "supplier_id", "supplier", "supplier_id", "active"),
+        ("document_register", "venue_id", "venue", "venue_id", "active"),
+        ("finding", "venue_id", "venue", "venue_id", "active"),
+        ("finding", "asset_id", "asset", "asset_id", "inactive"),
+        ("finding", "document_id", "document_register", "document_id", "inactive"),
     ],
+    # (name, home table, DAX, format string, shown on entity type)
     measures=[
-        ("Gold Medals", "result", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Gold\" )", "NOC"),
-        ("Silver Medals", "result", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Silver\" )", "NOC"),
-        ("Bronze Medals", "result", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Bronze\" )", "NOC"),
-        ("Total Medals", "result", "[Gold Medals] + [Silver Medals] + [Bronze Medals]", "NOC"),
-        ("Tickets Sold", "session_ticketing", "SUM ( 'session_ticketing'[tickets_sold] )", "Session, Venue"),
-        ("Seats Available", "session_ticketing", "SUM ( 'session_ticketing'[seats_available] )", "Session, Venue"),
-        ("Sell-Through Rate", "session_ticketing", "DIVIDE ( [Tickets Sold], [Seats Available] )", "Session, Venue"),
-        ("Attendance Rate", "session_ticketing",
+        ("Gold Medals", "noc", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Gold\" )", "0", "NOC"),
+        ("Silver Medals", "noc", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Silver\" )", "0", "NOC"),
+        ("Bronze Medals", "noc", "CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = \"Bronze\" )", "0", "NOC"),
+        ("Total Medals", "noc", "[Gold Medals] + [Silver Medals] + [Bronze Medals]", "0", "NOC"),
+        ("Tickets Sold", "session", "SUM ( 'session_ticketing'[tickets_sold] )", "#,0", "Session"),
+        ("Seats Available", "session", "SUM ( 'session_ticketing'[seats_available] )", "#,0", "Session"),
+        ("Sell-Through Rate", "session", "DIVIDE ( [Tickets Sold], [Seats Available] )", "0.0%", "Session"),
+        ("Attendance Rate", "session",
          "DIVIDE ( SUM ( 'session_ticketing'[scanned_entries] ), "
-         "CALCULATE ( [Tickets Sold], NOT ISBLANK ( 'session_ticketing'[scanned_entries] ) ) )", "Session, Venue"),
-        ("Completed Sessions", "session",
-         "CALCULATE ( COUNTROWS ( 'session' ), 'session'[session_status] = \"Completed\" )", "Venue"),
+         "CALCULATE ( [Tickets Sold], NOT ISBLANK ( 'session_ticketing'[scanned_entries] ) ) )", "0.0%", "Session"),
+        ("Completed Sessions", "venue",
+         "CALCULATE ( COUNTROWS ( 'session' ), 'session'[session_status] = \"Completed\" )", "0", "Venue"),
     ],
     roles=[
         dict(name="NOC delegation viewer", table="noc",
@@ -182,6 +215,13 @@ SEMANTIC_MODEL = dict(
              note="Filters NOC, and through relationships athletes and results, to the user's delegation."),
         dict(name="Games-wide viewer", table=None, filter=None, note="No filter."),
     ],
+    hidden_tables=["security_noc_user"],
+)
+
+# Generated entity types to remove or fold after "Generate ontology"
+GENERATION_CLEANUP = dict(
+    delete=["security_noc_user"],
+    fold=[dict(table="session_ticketing", into="Session", join_column="session_id")],
 )
 
 RULES = [
@@ -233,6 +273,15 @@ def validate():
             errors.append(f"{n}: unknown entity")
         if sk not in lh[tbl] or tk not in lh[tbl]:
             errors.append(f"{n}: binding columns missing in {tbl}")
+    for t, c in SEMANTIC_MODEL["keys"].items():
+        if c not in lh.get(t, set()):
+            errors.append(f"semantic model key {t}.{c} missing")
+    for a, b, c, d, _ in SEMANTIC_MODEL["relationships"]:
+        if b not in lh.get(a, set()) or d not in lh.get(c, set()):
+            errors.append(f"semantic model relationship {a}.{b} -> {c}.{d} has a missing column")
+    for _, tb, _, _, _ in SEMANTIC_MODEL["measures"]:
+        if tb not in SEMANTIC_MODEL["tables"]:
+            errors.append(f"measure home table {tb} not in the model")
     return errors
 
 
@@ -247,12 +296,14 @@ def to_json_dict():
         relationship_types=[dict(name=n, source=s, target=t, binding_table=tb, source_key_column=sk,
                                  target_key_column=tk, cardinality=c)
                             for n, s, t, tb, sk, tk, c in RELATIONSHIP_TYPES],
-        metrics=[dict(name=n, semantic_model=ITEMS["semantic_model"], home_table=tb, dax=dax, used_by=u)
-                 for n, tb, dax, u in SEMANTIC_MODEL["measures"]],
+        metrics=[dict(name=n, semantic_model=ITEMS["semantic_model"], home_table=tb, dax=dax, format_string=f,
+                      entity_type=u) for n, tb, dax, f, u in SEMANTIC_MODEL["measures"]],
         rules=RULES,
         semantic_model=dict(name=SEMANTIC_MODEL["name"], storage_mode="Direct Lake on OneLake",
-                            tables=SEMANTIC_MODEL["tables"],
+                            tables=SEMANTIC_MODEL["tables"], keys=SEMANTIC_MODEL["keys"],
+                            hidden_tables=SEMANTIC_MODEL["hidden_tables"],
                             relationships=[dict(from_table=a, from_column=b, to_table=c, to_column=d, state=e)
                                            for a, b, c, d, e in SEMANTIC_MODEL["relationships"]],
                             roles=SEMANTIC_MODEL["roles"]),
+        generation_cleanup=GENERATION_CLEANUP,
     )

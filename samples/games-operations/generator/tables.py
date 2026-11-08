@@ -152,6 +152,7 @@ def build_tables(start_date: date, as_of: datetime, seed: int = 2026) -> GamesDa
             r["session_status"] = "Scheduled"
     session = pd.DataFrame(session_rows).sort_values(["session_date", "start_time_utc", "venue_id"])
     session_event = pd.DataFrame(se_rows)
+    session_event.insert(0, "session_event_id", session_event.session_id + "|" + session_event.event_id)
 
     # ---------------- athletes and entries
     athletes, entries = [], []

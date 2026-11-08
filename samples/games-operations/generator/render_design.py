@@ -51,15 +51,15 @@ SOURCES = """## 2. Sources and how each reaches the ontology
 |---|---|---|---|
 | Lakehouse | `{lakehouse}` | {n_lh} Delta tables: master data, schedule, results, assets, document register, extracted findings, row-level security mapping | Static entity and relationship bindings |
 | Eventhouse | `{eventhouse}` / `{kql}` | {n_eh} tables: venue conditions, gate flow, asset telemetry, live timing | Time series bindings on Venue, Gate, Asset and Athlete |
-| Semantic model | `{sm}` (Direct Lake) | Medal, ticketing and attendance measures; row-level security by NOC | Metrics (DAX measures referenced by the ontology) |
+| Semantic model | `{sm}` (Direct Lake) | All lakehouse tables with keys and relationships; medal, ticketing and attendance measures; row-level security by NOC | Source for **Generate ontology**: entity types, bindings, relationship types and metrics |
 | Documents | Lakehouse **Files** | {n_docs} PDF manuals, inspection reports, transport plans and policies | Path A: AI functions extract findings into the `finding` table. Path B: full text indexed for Foundry IQ |
 
 **Why this split.** As per official documentation, ontology binding reads data that is already in Fabric
-(eventhouse, KQL database, lakehouse, mirrored database, semantic model, SQL database, warehouse). Static
-bindings use the lakehouse so every entity type and relationship comes from one source type, which keeps the
-pilot simple. The eventhouse adds live state as time series. The semantic model stays the owner of the
-business calculations and the row-level security, and the ontology reuses its measures as metrics instead of
-redefining them.
+(eventhouse, KQL database, lakehouse, mirrored database, semantic model, SQL database, warehouse). The ontology is
+generated from a Direct Lake semantic model over the lakehouse: generation creates the entity types with data
+bindings to the backing lakehouse tables, relationship types (bound when the key of the "one" side is marked), and
+metrics from the DAX measures. The semantic model stays the owner of the business calculations and the row-level
+security. The eventhouse adds live state as time series bindings, added after generation.
 
 ```mermaid
 flowchart LR
@@ -74,13 +74,24 @@ flowchart LR
   PDF --> FILES[Lakehouse Files]
   FILES -- AI functions --> LH
   LH --> SM[Games Operations Model]
-  LH --> ONT{{GamesOperationsOntology}}
-  EH --> ONT
-  SM -- metrics --> ONT
+  SM -- generate: entity types, bindings, metrics --> ONT{{GamesOperationsOntology}}
+  LH -. bound tables .-> ONT
+  EH -- time series --> ONT
   FILES -- indexed OneLake knowledge source --> KB[Foundry IQ knowledge base]
   ONT -- Fabric Ontology knowledge source --> KB
 ```
 """
+
+
+def match_text(n, src, tgt, tb, sk, tk):
+    """Origin property and target property that an ontology relationship type matches on."""
+    tables = {e["name"]: (e["table"], e["key"]) for e in o.ENTITY_TYPES}
+    (st, skey), (tt, tkey) = tables[src], tables[tgt]
+    if tb == st:
+        return f"{src}.`{tk}` = {tgt}.`{tkey}`"
+    if tb == tt:
+        return f"{src}.`{skey}` = {tgt}.`{sk}`"
+    return f"via `{tb}`: {src}.`{sk}`, {tgt}.`{tk}`"
 
 
 def entity_section():
@@ -94,7 +105,9 @@ def entity_section():
             extra = " + `" + "`, `".join(b["table"] for b in e["secondary_bindings"]) + "` (secondary)"
         out.append(f"| **{e['name']}** | `{e['key']}` (string) | `{e['table']}`{extra} | {ts} | {e['description']} |")
     out += ["", "Entity keys are strings, which the ontology supports as key types (string or integer). "
-            "Property names are business names; the column each one binds to is shown below.", ""]
+            "Generation names properties after the source columns; the business names below are aliases used in "
+            "this document and in agent instructions. Entry and SessionEvent are their own entity types because "
+            "an ontology relationship links two entity types through matching properties.", ""]
     for e in o.ENTITY_TYPES:
         out += [f"### {e['name']}", "", "| Property | Type | Bound column | Description |", "|---|---|---|---|"]
         desc = {c: d for c, _, d in LAKEHOUSE_TABLES[e["table"]]}
@@ -117,10 +130,10 @@ def entity_section():
 def relationship_section():
     out = ["## 4. Relationship types", "",
            "Each relationship is bound to the lakehouse table that holds both keys.", "",
-           "| Relationship | Source → target | Binding table | Source key → target key | Cardinality |",
+           "| Relationship | Source → target | Binding table | Matching properties | Cardinality |",
            "|---|---|---|---|---|"]
     for n, s, t, tb, sk, tk, c in o.RELATIONSHIP_TYPES:
-        out.append(f"| {s} **{n}** {t} | {s} → {t} | `{tb}` | `{sk}` → `{tk}` | {c} |")
+        out.append(f"| {s} **{n}** {t} | {s} → {t} | `{tb}` | {match_text(n, s, t, tb, sk, tk)} | {c} |")
     out += ["", "```mermaid", "erDiagram"]
     for n, s, t, tb, sk, tk, c in o.RELATIONSHIP_TYPES:
         card = {"many-to-one": "}o--||", "one-to-many": "||--o{", "many-to-many": "}o--o{"}[c]
@@ -133,9 +146,11 @@ def metrics_section():
     out = ["## 5. Metrics (semantic model measures)", "",
            f"Defined once in **{o.SEMANTIC_MODEL['name']}** and referenced by the ontology as metrics; the "
            "semantic model keeps ownership of the DAX expression.", "",
-           "| Metric | Home table | DAX | Used with |", "|---|---|---|---|"]
-    for n, tb, dax, u in o.SEMANTIC_MODEL["measures"]:
-        out.append(f"| {n} | `{tb}` | `{dax}` | {u} |")
+           "A measure appears as a metric on the entity type of the table it lives on, so medal measures live on "
+           "`noc`, ticketing measures on `session` and session counts on `venue`.", "",
+           "| Metric | Home table (entity type) | DAX | Format |", "|---|---|---|---|"]
+    for n, tb, dax, f, u in o.SEMANTIC_MODEL["measures"]:
+        out.append(f"| {n} | `{tb}` ({u}) | `{dax}` | `{f}` |")
     return "\n".join(out) + "\n"
 
 
@@ -151,17 +166,22 @@ def rules_section():
 def semantic_model_section():
     sm = o.SEMANTIC_MODEL
     out = ["## 7. Semantic model", "",
-           f"**{sm['name']}**, Direct Lake over `{o.ITEMS['lakehouse']}`. Tables: "
-           + ", ".join(f"`{t}`" for t in sm["tables"]) + ". Hide `security_noc_user` from report view.", "",
+           f"**{sm['name']}**, Direct Lake on OneLake over `{o.ITEMS['lakehouse']}`, built by "
+           "`fabric/03_build_semantic_model.ipynb`. Tables: " + ", ".join(f"`{t}`" for t in sm["tables"])
+           + f" (`finding` only when it exists). Hidden: {', '.join(f'`{t}`' for t in sm['hidden_tables'])}.", "",
+           "**Key columns** (marked so generation binds relationship types and sets entity type keys): "
+           + ", ".join(f"`{t}[{c}]`" for t, c in sm["keys"].items()) + ".", "",
            "| From | To | State |", "|---|---|---|"]
     for a, b, c, d, e in sm["relationships"]:
         out.append(f"| `{a}[{b}]` | `{c}[{d}]` | {e} |")
-    out += ["", "**Roles (row-level security)**", "", "| Role | Table | Filter | Purpose |", "|---|---|---|---|"]
+    out += ["", "Relationships are many-to-one and single direction unless noted. Inactive relationships avoid two "
+            "filter paths between the same tables.", "",
+            "**Roles (row-level security)**", "", "| Role | Table | Filter | Purpose |", "|---|---|---|---|"]
     for r in sm["roles"]:
         out.append(f"| {r['name']} | {('`' + r['table'] + '`') if r['table'] else '-'} | "
                    f"{('`' + r['filter'] + '`') if r['filter'] else '-'} | {r['note']} |")
-    out += ["", "Replace the three placeholder sign-in names in `security_noc_user` with real test accounts "
-            "before the permission test (evaluation question Q14).", ""]
+    out += ["", "Set the test users in the `TEST_USERS` parameter of the build notebook before the permission test "
+            "(evaluation question Q14). Row-level security applies only to users with Viewer-level access.", ""]
     return "\n".join(out)
 
 
@@ -210,49 +230,54 @@ for the default seed and dates; `manifest.json` records them for every run.
 
 BUILD = """## 10. Build steps
 
-1. **Generate** the data locally (`python generator/generate.py --out output --theme ioc`) or in Fabric with
+1. **Generate** the data locally (`python generator/generate.py --out output`) or in Fabric with
    `fabric/01_load_lakehouse.ipynb` (option B).
 2. **Lakehouse.** Create `GamesLakehouse`, upload the sample to `Files/games_ops/`, run
    `fabric/01_load_lakehouse.ipynb`.
-3. **Eventhouse.** Create `GamesEventhouse` with the KQL database `GamesKQL`, run
-   `fabric/02_eventhouse_setup.kql`, ingest the CSV files from `output/eventhouse/` with the `<Table>_csv`
-   mappings. For live data, create an Eventstream with a custom endpoint, route by `EventType` to the four
-   tables (JSON mappings `<Table>_json`), and run `generator/stream_simulator.py`.
-4. **Findings (path A).** Run the AI functions extraction notebook (next deliverable) to write the `finding`
-   table, or regenerate with `--include-findings-table`.
-5. **Semantic model.** Create `Games Operations Model` (Direct Lake) over the lakehouse tables in section 7,
-   add the relationships, measures and roles.
-6. **Ontology.** Create `GamesOperationsOntology`. Add the entity types in section 3 and bind each to its
-   lakehouse table; add the time series bindings from `GamesKQL`; add the relationship types in section 4;
-   add the metrics from the semantic model; add the rules in section 6; refresh the ontology.
-   Optional accelerator: generate the competition entity types from the semantic model, then rebind them to
-   the lakehouse tables as in section 3.
-7. **Publish and test.** Publish the ontology, try the questions in `eval/questions.csv` in the ontology agent,
-   then connect the agents.
-8. **Source control.** Export the finished definition with the Fabric REST API `getDefinition` (TMDL format) and
-   commit it, so the ontology can be recreated with `updateDefinition` or a deployment pipeline in another
-   workspace or tenant.
+3. **Eventhouse.** Create `GamesEventhouse`, run `fabric/02_eventhouse_setup.kql` in its KQL database, ingest the
+   CSV files from `output/eventhouse/`. For optional live ingestion, follow the
+   [Eventstream-to-Eventhouse walkthrough](../README.md#optional-persist-live-events-in-eventhouse-tables):
+   load the simulator connection from the root `.env`, route by `EventType` to `TimingEvents`,
+   `VenueConditions` and `GateFlow`, and configure an Eventhouse destination for each route.
+   `AssetTelemetry` is historical only; no Eventhouse destination is needed for Eventstream preview.
+4. **Findings (path A).** Run `fabric/04_extract_findings.ipynb`: AI functions read the inspection reports, the
+   result is scored against `eval/ground_truth_findings.csv` and written to the `finding` table. Optional for the
+   first build; without extraction, regenerate with `--include-findings-table`.
+5. **Semantic model.** Run `fabric/03_build_semantic_model.ipynb`: tables, key columns, relationships, measures,
+   roles and test users, refresh, and a check against evaluation questions Q03 and Q04.
+6. **Ontology.** On the semantic model, select **Generate ontology** and name it `GamesOperationsOntology`. In the
+   ontology, open the **Ontology agent**, attach `ontology/ontology-spec.json` and run the two prompts in
+   `ontology/ontology-agent-prompts.md` (Plan mode, review the preview, then Act mode). Refresh the ontology.
+   When the `finding` table was added after the ontology, run the semantic model notebook again and send prompt 3.
+7. **Check.** Run the last section of `fabric/03_build_semantic_model.ipynb`: it reads the ontology definition and
+   lists any entity type, relationship type, time series binding or rule that is missing or named differently.
+8. **Test.** Ask the questions in `eval/questions.csv` in the ontology agent, then publish the ontology and connect
+   the agents.
+9. **Source control.** Export the definition with the Fabric REST API `getDefinition` (TMDL format) and commit it,
+   so the ontology can be recreated with `updateDefinition` or a deployment pipeline.
 """
 
 VERIFY = """## 11. Design decisions and items to verify
 
 **Decisions**
-- One static source type (lakehouse) for all entity types and relationships; the semantic model provides
-  metrics and row-level security; the eventhouse provides time series. Rejected: binding competition entities to
-  the semantic model, because it mixes source types inside relationships during a preview.
+- Generate the ontology from the Direct Lake semantic model, so bindings point at the lakehouse tables and
+  measures become metrics; add time series and rules afterwards. Rejected: building every entity type by hand,
+  which is slower and loses the metrics.
+- Link tables (`entry`, `session_event`) become entity types, because an ontology relationship links two entity
+  types through matching properties; `session_ticketing` is folded into Session as a secondary binding.
 - Keys are business codes stored as strings (`noc_code`, `session_id`, ...), readable in agent answers.
 - Results carry `noc_code` directly, so team results (no athlete) still roll up to a national committee.
 - Thresholds live in data (`venue.wind_limit_ms`, `venue.crowd_density_limit`) and in the current manuals,
   never only in prompts.
 
 **To verify during the build** (not confirmed in public documentation at the time of writing)
-- Whether an entity type bound to a semantic model table can also take an eventhouse time series binding
-  (only relevant if the optional accelerator in step 6 is kept).
+- Generation and the ontology agent are preview features; review the agent's preview before applying, and use the
+  check in the build notebook rather than assuming every item was created.
 - Whether row-level security defined in the semantic model applies to answers that come through the ontology
   path; the permission demo (Q14) is designed for the semantic model path. For the ontology path, check
   OneLake security on the lakehouse tables.
-- Exact TMDL syntax for relationships, metrics and rules: export with `getDefinition` after the portal build
-  rather than writing TMDL by hand.
+- There is no public API to generate an ontology from a semantic model; generation is a portal action. The
+  TMDL definition can be exported with `getDefinition` and redeployed with `updateDefinition`.
 - Ontology refresh is manual for new upstream rows; confirm how time series bindings behave for live
   eventhouse data during the demo.
 - Service principals can't call the ontology MCP endpoint yet (known issue); plan for signed-in user access.
@@ -270,6 +295,89 @@ VERIFY = """## 11. Design decisions and items to verify
 """
 
 
+def render_agent_prompts() -> str:
+    sm = o.SEMANTIC_MODEL
+    names = {e["table"]: e["name"] for e in o.ENTITY_TYPES}
+    rename = "\n".join(f"   - `{t}` → **{n}**" for t, n in names.items())
+    keys = "\n".join(f"   - {e['name']}: `{e['key']}`" for e in o.ENTITY_TYPES)
+    rels = "\n".join(f"   - {s} **{n}** {t}, bound to lakehouse table `{tb}`: {match_text(n, s, t, tb, sk, tk)} ({c})"
+                      for n, s, t, tb, sk, tk, c in o.RELATIONSHIP_TYPES)
+    ts = "\n".join(f"   - **{e['name']}** ← KQL table `{t['table']}`: key `{t['key_column']}`, timestamp "
+                    f"`{t['timestamp_column']}`, properties " + ", ".join(f"`{p['column']}`" for p in t["properties"])
+                    for e in o.ENTITY_TYPES for t in e.get("time_series", []))
+    def rule_line(r):
+        return f"   - **{r['name']}**: {r['statement']} Linked concepts: {', '.join(r['references'])}."
+    needs_finding = [r for r in o.RULES if any(x.startswith("Finding") for x in r["references"])]
+    rules = "\n".join(rule_line(r) for r in o.RULES if r not in needs_finding)
+    finding_rules = "\n".join(rule_line(r) for r in needs_finding)
+    fe = next(e for e in o.ENTITY_TYPES if e["name"] == "Finding")
+    f_props = ", ".join(f"`{p['column']}`" for p in fe["properties"])
+    f_rels = "\n".join(f"   - {s} **{n}** {t}, bound to lakehouse table `{tb}`: {match_text(n, s, t, tb, sk, tk)} ({c})"
+                        for n, s, t, tb, sk, tk, c in o.RELATIONSHIP_TYPES if "Finding" in (s, t))
+    fold = o.GENERATION_CLEANUP["fold"][0]
+    return f"""# Ontology agent prompts
+
+Use prompts 1 and 2 after **Generate ontology** on `{sm['name']}` has created `{o.ITEMS['ontology']}`. Open the ontology,
+select **Ontology agent**, attach `ontology-spec.json` from this folder, and send each prompt in **Plan** mode.
+Open the preview the agent posts, check it, then switch to **Act** mode and send *Apply the plan*.
+Run the check in `fabric/03_build_semantic_model.ipynb` afterwards.
+
+This file is generated from `generator/ontology_spec.py` by `generator/render_design.py`.
+
+## Prompt 1: structure
+
+```text
+The attached ontology-spec.json is the target design for this ontology, which was generated from the semantic
+model "{sm['name']}". Change the ontology to match it. Keep property names as generated (source column names)
+and keep all metrics.
+
+1. Rename the entity types:
+{rename}
+2. Delete the entity type `{o.GENERATION_CLEANUP['delete'][0]}`.
+3. Delete the entity type `{fold['table']}` and instead add its columns as properties of {fold['into']}, bound to the
+   lakehouse table `{fold['table']}` as a secondary binding joined on `{fold['join_column']}`.
+4. Make sure each entity type uses this key:
+{keys}
+5. Make sure exactly these relationship types exist, with these names and bindings; rename generated ones to
+   match and remove any that are not listed. Skip the Finding items if Finding doesn't exist yet:
+{rels}
+6. Add each entity type description from the spec as entity type metadata.
+```
+
+## Prompt 2: real-time data and rules
+
+```text
+Use the eventhouse KQL database in this workspace (GamesEventhouse) and the attached ontology-spec.json.
+
+1. Add time series bindings (timestamp column `Timestamp`, matched to the entity type key):
+{ts}
+2. Add these business rules and link them to the concepts named. Property names in the rules are the business
+   aliases from the spec; link them to the matching generated properties (for example WindLimitMs is
+   wind_limit_ms):
+{rules}
+```
+
+## Prompt 3: findings (after `fabric/04_extract_findings.ipynb`)
+
+Run this once the `finding` table exists and `fabric/03_build_semantic_model.ipynb` has run again.
+
+```text
+The lakehouse {o.ITEMS['lakehouse']} now has the table `finding`, extracted from the inspection reports with AI
+functions. Use the attached ontology-spec.json.
+
+1. Add the entity type **Finding** with the description from the spec, bound to the lakehouse table `finding`,
+   key `finding_id`, display name `finding_id`, with these properties: {f_props}.
+2. Add these relationship types:
+{f_rels}
+3. Add this business rule and link it to the concepts named:
+{finding_rules}
+```
+
+If the agent can't add rules, add them in **Overview** → **Rules** → **Create rule** with the same names and
+definitions.
+"""
+
+
 def render(n_docs: int = 51) -> str:
     sources = SOURCES.format(lakehouse=o.ITEMS["lakehouse"], eventhouse=o.ITEMS["eventhouse"],
                              kql=o.ITEMS["kql_database"], sm=o.ITEMS["semantic_model"],
@@ -284,4 +392,7 @@ if __name__ == "__main__":
     a = ap.parse_args()
     with open(a.out, "w", encoding="utf-8") as f:
         f.write(render())
-    print(f"Wrote {os.path.abspath(a.out)}")
+    prompts = os.path.join(os.path.dirname(os.path.abspath(a.out)), "ontology-agent-prompts.md")
+    with open(prompts, "w", encoding="utf-8") as f:
+        f.write(render_agent_prompts())
+    print(f"Wrote {os.path.abspath(a.out)} and {prompts}")

@@ -34,15 +34,15 @@ The ontology must answer questions such as:
 |---|---|---|---|
 | Lakehouse | `GamesLakehouse` | 16 Delta tables: master data, schedule, results, assets, document register, extracted findings, row-level security mapping | Static entity and relationship bindings |
 | Eventhouse | `GamesEventhouse` / `GamesKQL` | 4 tables: venue conditions, gate flow, asset telemetry, live timing | Time series bindings on Venue, Gate, Asset and Athlete |
-| Semantic model | `Games Operations Model` (Direct Lake) | Medal, ticketing and attendance measures; row-level security by NOC | Metrics (DAX measures referenced by the ontology) |
+| Semantic model | `Games Operations Model` (Direct Lake) | All lakehouse tables with keys and relationships; medal, ticketing and attendance measures; row-level security by NOC | Source for **Generate ontology**: entity types, bindings, relationship types and metrics |
 | Documents | Lakehouse **Files** | 51 PDF manuals, inspection reports, transport plans and policies | Path A: AI functions extract findings into the `finding` table. Path B: full text indexed for Foundry IQ |
 
 **Why this split.** As per official documentation, ontology binding reads data that is already in Fabric
-(eventhouse, KQL database, lakehouse, mirrored database, semantic model, SQL database, warehouse). Static
-bindings use the lakehouse so every entity type and relationship comes from one source type, which keeps the
-pilot simple. The eventhouse adds live state as time series. The semantic model stays the owner of the
-business calculations and the row-level security, and the ontology reuses its measures as metrics instead of
-redefining them.
+(eventhouse, KQL database, lakehouse, mirrored database, semantic model, SQL database, warehouse). The ontology is
+generated from a Direct Lake semantic model over the lakehouse: generation creates the entity types with data
+bindings to the backing lakehouse tables, relationship types (bound when the key of the "one" side is marked), and
+metrics from the DAX measures. The semantic model stays the owner of the business calculations and the row-level
+security. The eventhouse adds live state as time series bindings, added after generation.
 
 ```mermaid
 flowchart LR
@@ -57,9 +57,9 @@ flowchart LR
   PDF --> FILES[Lakehouse Files]
   FILES -- AI functions --> LH
   LH --> SM[Games Operations Model]
-  LH --> ONT{GamesOperationsOntology}
-  EH --> ONT
-  SM -- metrics --> ONT
+  SM -- generate: entity types, bindings, metrics --> ONT{GamesOperationsOntology}
+  LH -. bound tables .-> ONT
+  EH -- time series --> ONT
   FILES -- indexed OneLake knowledge source --> KB[Foundry IQ knowledge base]
   ONT -- Fabric Ontology knowledge source --> KB
 ```
@@ -74,6 +74,8 @@ flowchart LR
 | **Event** | `event_id` (string) | `event` | - | A medal event, for example Women's 10 km Pursuit. |
 | **Session** | `session_id` (string) | `session` + `session_ticketing` (secondary) | - | A ticketed competition session at a venue. |
 | **Result** | `result_id` (string) | `result` | - | A ranked result recorded in a session; team results have no athlete. |
+| **Entry** | `entry_id` (string) | `entry` | - | An athlete's entry in one event, with the bib number. |
+| **SessionEvent** | `session_event_id` (string) | `session_event` | - | One event contested in one session, with the phase (for example Final). |
 | **Venue** | `venue_id` (string) | `venue` | `VenueConditions` on `VenueId` | A competition venue with its operating limits. |
 | **Gate** | `gate_id` (string) | `gate` | `GateFlow` on `GateId` | A spectator gate and its queueing plaza. |
 | **Asset** | `asset_id` (string) | `asset` | `AssetTelemetry` on `AssetId` | Venue equipment, with criticality and service history. |
@@ -81,7 +83,7 @@ flowchart LR
 | **Finding** | `finding_id` (string) | `finding` | - | An inspection finding extracted from an inspection report (AI functions). |
 | **Document** | `document_id` (string) | `document_register` | - | A controlled document: manual, inspection report, plan or policy. |
 
-Entity keys are strings, which the ontology supports as key types (string or integer). Property names are business names; the column each one binds to is shown below.
+Entity keys are strings, which the ontology supports as key types (string or integer). Generation names properties after the source columns; the business names below are aliases used in this document and in agent instructions. Entry and SessionEvent are their own entity types because an ontology relationship links two entity types through matching properties.
 
 ### NOC
 
@@ -163,6 +165,24 @@ Entity keys are strings, which the ontology supports as key types (string or int
 | Mark | double | `result.mark` | Time in seconds, points, or score |
 | MarkUnit | string | `result.mark_unit` | seconds, points or score |
 | Medal | string | `result.medal` | Gold, Silver, Bronze or empty |
+
+### Entry
+
+| Property | Type | Bound column | Description |
+|---|---|---|---|
+| EntryId | string | `entry.entry_id` | Entry code |
+| AthleteId | string | `entry.athlete_id` | Athlete |
+| EventId | string | `entry.event_id` | Event entered |
+| Bib | integer | `entry.bib` | Bib number |
+
+### SessionEvent
+
+| Property | Type | Bound column | Description |
+|---|---|---|---|
+| SessionEventId | string | `session_event.session_event_id` | Session and event pair, session_id|event_id (entity key) |
+| SessionId | string | `session_event.session_id` | Session |
+| EventId | string | `session_event.event_id` | Event contested in the session |
+| Phase | string | `session_event.phase` | Phase of the event in the session |
 
 ### Venue
 
@@ -258,34 +278,38 @@ Entity keys are strings, which the ontology supports as key types (string or int
 
 Each relationship is bound to the lakehouse table that holds both keys.
 
-| Relationship | Source → target | Binding table | Source key → target key | Cardinality |
+| Relationship | Source → target | Binding table | Matching properties | Cardinality |
 |---|---|---|---|---|
-| Athlete **represents** NOC | Athlete → NOC | `athlete` | `athlete_id` → `noc_code` | many-to-one |
-| Athlete **practises** Discipline | Athlete → Discipline | `athlete` | `athlete_id` → `discipline_code` | many-to-one |
-| Athlete **isEnteredIn** Event | Athlete → Event | `entry` | `athlete_id` → `event_id` | many-to-many |
-| Event **belongsTo** Discipline | Event → Discipline | `event` | `event_id` → `discipline_code` | many-to-one |
-| Event **isContestedIn** Session | Event → Session | `session_event` | `event_id` → `session_id` | many-to-many |
-| Session **isHeldAt** Venue | Session → Venue | `session` | `session_id` → `venue_id` | many-to-one |
-| Venue **isHomeVenueOf** Discipline | Venue → Discipline | `discipline` | `venue_id` → `discipline_code` | one-to-many |
-| Result **isResultOf** Event | Result → Event | `result` | `result_id` → `event_id` | many-to-one |
-| Result **isRecordedIn** Session | Result → Session | `result` | `result_id` → `session_id` | many-to-one |
-| Result **isCreditedTo** NOC | Result → NOC | `result` | `result_id` → `noc_code` | many-to-one |
-| Result **isAchievedBy** Athlete | Result → Athlete | `result` | `result_id` → `athlete_id` | many-to-one |
-| Gate **servesVenue** Venue | Gate → Venue | `gate` | `gate_id` → `venue_id` | many-to-one |
-| Asset **isInstalledAt** Venue | Asset → Venue | `asset` | `asset_id` → `venue_id` | many-to-one |
-| Asset **isMaintainedBy** Supplier | Asset → Supplier | `asset` | `asset_id` → `supplier_id` | many-to-one |
-| Finding **concernsVenue** Venue | Finding → Venue | `finding` | `finding_id` → `venue_id` | many-to-one |
-| Finding **concernsAsset** Asset | Finding → Asset | `finding` | `finding_id` → `asset_id` | many-to-one |
-| Finding **isRecordedInDocument** Document | Finding → Document | `finding` | `finding_id` → `document_id` | many-to-one |
-| Document **covers** Venue | Document → Venue | `document_register` | `document_id` → `venue_id` | many-to-one |
+| Athlete **represents** NOC | Athlete → NOC | `athlete` | Athlete.`noc_code` = NOC.`noc_code` | many-to-one |
+| Athlete **practises** Discipline | Athlete → Discipline | `athlete` | Athlete.`discipline_code` = Discipline.`discipline_code` | many-to-one |
+| Athlete **hasEntry** Entry | Athlete → Entry | `entry` | Athlete.`athlete_id` = Entry.`athlete_id` | one-to-many |
+| Entry **entersEvent** Event | Entry → Event | `entry` | Entry.`event_id` = Event.`event_id` | many-to-one |
+| Event **belongsTo** Discipline | Event → Discipline | `event` | Event.`discipline_code` = Discipline.`discipline_code` | many-to-one |
+| Session **schedules** SessionEvent | Session → SessionEvent | `session_event` | Session.`session_id` = SessionEvent.`session_id` | one-to-many |
+| SessionEvent **concernsEvent** Event | SessionEvent → Event | `session_event` | SessionEvent.`event_id` = Event.`event_id` | many-to-one |
+| Session **isHeldAt** Venue | Session → Venue | `session` | Session.`venue_id` = Venue.`venue_id` | many-to-one |
+| Venue **isHomeVenueOf** Discipline | Venue → Discipline | `discipline` | Venue.`venue_id` = Discipline.`venue_id` | one-to-many |
+| Result **isResultOf** Event | Result → Event | `result` | Result.`event_id` = Event.`event_id` | many-to-one |
+| Result **isRecordedIn** Session | Result → Session | `result` | Result.`session_id` = Session.`session_id` | many-to-one |
+| Result **isCreditedTo** NOC | Result → NOC | `result` | Result.`noc_code` = NOC.`noc_code` | many-to-one |
+| Result **isAchievedBy** Athlete | Result → Athlete | `result` | Result.`athlete_id` = Athlete.`athlete_id` | many-to-one |
+| Gate **servesVenue** Venue | Gate → Venue | `gate` | Gate.`venue_id` = Venue.`venue_id` | many-to-one |
+| Asset **isInstalledAt** Venue | Asset → Venue | `asset` | Asset.`venue_id` = Venue.`venue_id` | many-to-one |
+| Asset **isMaintainedBy** Supplier | Asset → Supplier | `asset` | Asset.`supplier_id` = Supplier.`supplier_id` | many-to-one |
+| Finding **concernsVenue** Venue | Finding → Venue | `finding` | Finding.`venue_id` = Venue.`venue_id` | many-to-one |
+| Finding **concernsAsset** Asset | Finding → Asset | `finding` | Finding.`asset_id` = Asset.`asset_id` | many-to-one |
+| Finding **isRecordedInDocument** Document | Finding → Document | `finding` | Finding.`document_id` = Document.`document_id` | many-to-one |
+| Document **covers** Venue | Document → Venue | `document_register` | Document.`venue_id` = Venue.`venue_id` | many-to-one |
 
 ```mermaid
 erDiagram
   Athlete }o--|| NOC : represents
   Athlete }o--|| Discipline : practises
-  Athlete }o--o{ Event : isEnteredIn
+  Athlete ||--o{ Entry : hasEntry
+  Entry }o--|| Event : entersEvent
   Event }o--|| Discipline : belongsTo
-  Event }o--o{ Session : isContestedIn
+  Session ||--o{ SessionEvent : schedules
+  SessionEvent }o--|| Event : concernsEvent
   Session }o--|| Venue : isHeldAt
   Venue ||--o{ Discipline : isHomeVenueOf
   Result }o--|| Event : isResultOf
@@ -305,17 +329,19 @@ erDiagram
 
 Defined once in **Games Operations Model** and referenced by the ontology as metrics; the semantic model keeps ownership of the DAX expression.
 
-| Metric | Home table | DAX | Used with |
+A measure appears as a metric on the entity type of the table it lives on, so medal measures live on `noc`, ticketing measures on `session` and session counts on `venue`.
+
+| Metric | Home table (entity type) | DAX | Format |
 |---|---|---|---|
-| Gold Medals | `result` | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Gold" )` | NOC |
-| Silver Medals | `result` | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Silver" )` | NOC |
-| Bronze Medals | `result` | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Bronze" )` | NOC |
-| Total Medals | `result` | `[Gold Medals] + [Silver Medals] + [Bronze Medals]` | NOC |
-| Tickets Sold | `session_ticketing` | `SUM ( 'session_ticketing'[tickets_sold] )` | Session, Venue |
-| Seats Available | `session_ticketing` | `SUM ( 'session_ticketing'[seats_available] )` | Session, Venue |
-| Sell-Through Rate | `session_ticketing` | `DIVIDE ( [Tickets Sold], [Seats Available] )` | Session, Venue |
-| Attendance Rate | `session_ticketing` | `DIVIDE ( SUM ( 'session_ticketing'[scanned_entries] ), CALCULATE ( [Tickets Sold], NOT ISBLANK ( 'session_ticketing'[scanned_entries] ) ) )` | Session, Venue |
-| Completed Sessions | `session` | `CALCULATE ( COUNTROWS ( 'session' ), 'session'[session_status] = "Completed" )` | Venue |
+| Gold Medals | `noc` (NOC) | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Gold" )` | `0` |
+| Silver Medals | `noc` (NOC) | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Silver" )` | `0` |
+| Bronze Medals | `noc` (NOC) | `CALCULATE ( COUNTROWS ( 'result' ), 'result'[medal] = "Bronze" )` | `0` |
+| Total Medals | `noc` (NOC) | `[Gold Medals] + [Silver Medals] + [Bronze Medals]` | `0` |
+| Tickets Sold | `session` (Session) | `SUM ( 'session_ticketing'[tickets_sold] )` | `#,0` |
+| Seats Available | `session` (Session) | `SUM ( 'session_ticketing'[seats_available] )` | `#,0` |
+| Sell-Through Rate | `session` (Session) | `DIVIDE ( [Tickets Sold], [Seats Available] )` | `0.0%` |
+| Attendance Rate | `session` (Session) | `DIVIDE ( SUM ( 'session_ticketing'[scanned_entries] ), CALCULATE ( [Tickets Sold], NOT ISBLANK ( 'session_ticketing'[scanned_entries] ) ) )` | `0.0%` |
+| Completed Sessions | `venue` (Venue) | `CALCULATE ( COUNTROWS ( 'session' ), 'session'[session_status] = "Completed" )` | `0` |
 
 ## 6. Rules
 
@@ -331,20 +357,35 @@ Plain-language business rules linked to ontology concepts. The thresholds come f
 
 ## 7. Semantic model
 
-**Games Operations Model**, Direct Lake over `GamesLakehouse`. Tables: `noc`, `athlete`, `discipline`, `event`, `venue`, `session`, `session_event`, `session_ticketing`, `result`, `security_noc_user`. Hide `security_noc_user` from report view.
+**Games Operations Model**, Direct Lake on OneLake over `GamesLakehouse`, built by `fabric/03_build_semantic_model.ipynb`. Tables: `noc`, `athlete`, `discipline`, `event`, `venue`, `gate`, `session`, `session_event`, `session_ticketing`, `entry`, `result`, `asset`, `supplier`, `document_register`, `finding`, `security_noc_user` (`finding` only when it exists). Hidden: `security_noc_user`.
+
+**Key columns** (marked so generation binds relationship types and sets entity type keys): `noc[noc_code]`, `athlete[athlete_id]`, `discipline[discipline_code]`, `event[event_id]`, `venue[venue_id]`, `gate[gate_id]`, `session[session_id]`, `session_event[session_event_id]`, `session_ticketing[session_id]`, `entry[entry_id]`, `result[result_id]`, `asset[asset_id]`, `supplier[supplier_id]`, `document_register[document_id]`, `finding[finding_id]`.
 
 | From | To | State |
 |---|---|---|
 | `athlete[noc_code]` | `noc[noc_code]` | active |
 | `result[noc_code]` | `noc[noc_code]` | active |
-| `result[athlete_id]` | `athlete[athlete_id]` | inactive (avoids an ambiguous path NOC→Result) |
 | `result[event_id]` | `event[event_id]` | active |
 | `result[session_id]` | `session[session_id]` | active |
+| `result[athlete_id]` | `athlete[athlete_id]` | inactive |
 | `event[discipline_code]` | `discipline[discipline_code]` | active |
+| `athlete[discipline_code]` | `discipline[discipline_code]` | inactive |
+| `discipline[venue_id]` | `venue[venue_id]` | inactive |
 | `session[venue_id]` | `venue[venue_id]` | active |
 | `session_ticketing[session_id]` | `session[session_id]` | active (one-to-one) |
 | `session_event[session_id]` | `session[session_id]` | active |
-| `session_event[event_id]` | `event[event_id]` | inactive (bridge; use in DAX when needed) |
+| `session_event[event_id]` | `event[event_id]` | inactive |
+| `entry[athlete_id]` | `athlete[athlete_id]` | active |
+| `entry[event_id]` | `event[event_id]` | active |
+| `gate[venue_id]` | `venue[venue_id]` | active |
+| `asset[venue_id]` | `venue[venue_id]` | active |
+| `asset[supplier_id]` | `supplier[supplier_id]` | active |
+| `document_register[venue_id]` | `venue[venue_id]` | active |
+| `finding[venue_id]` | `venue[venue_id]` | active |
+| `finding[asset_id]` | `asset[asset_id]` | inactive |
+| `finding[document_id]` | `document_register[document_id]` | inactive |
+
+Relationships are many-to-one and single direction unless noted. Inactive relationships avoid two filter paths between the same tables.
 
 **Roles (row-level security)**
 
@@ -353,7 +394,7 @@ Plain-language business rules linked to ontology concepts. The thresholds come f
 | NOC delegation viewer | `noc` | `'noc'[noc_code] IN CALCULATETABLE ( VALUES ( 'security_noc_user'[noc_code] ), 'security_noc_user'[user_principal_name] = USERPRINCIPALNAME () )` | Filters NOC, and through relationships athletes and results, to the user's delegation. |
 | Games-wide viewer | - | - | No filter. |
 
-Replace the three placeholder sign-in names in `security_noc_user` with real test accounts before the permission test (evaluation question Q14).
+Set the test users in the `TEST_USERS` parameter of the build notebook before the permission test (evaluation question Q14). Row-level security applies only to users with Viewer-level access.
 
 ## 8. Documents and enrichment
 
@@ -394,48 +435,53 @@ for the default seed and dates; `manifest.json` records them for every run.
 
 ## 10. Build steps
 
-1. **Generate** the data locally (`python generator/generate.py --out output --theme ioc`) or in Fabric with
+1. **Generate** the data locally (`python generator/generate.py --out output`) or in Fabric with
    `fabric/01_load_lakehouse.ipynb` (option B).
 2. **Lakehouse.** Create `GamesLakehouse`, upload the sample to `Files/games_ops/`, run
    `fabric/01_load_lakehouse.ipynb`.
-3. **Eventhouse.** Create `GamesEventhouse` with the KQL database `GamesKQL`, run
-   `fabric/02_eventhouse_setup.kql`, ingest the CSV files from `output/eventhouse/` with the `<Table>_csv`
-   mappings. For live data, create an Eventstream with a custom endpoint, route by `EventType` to the four
-   tables (JSON mappings `<Table>_json`), and run `generator/stream_simulator.py`.
-4. **Findings (path A).** Run the AI functions extraction notebook (next deliverable) to write the `finding`
-   table, or regenerate with `--include-findings-table`.
-5. **Semantic model.** Create `Games Operations Model` (Direct Lake) over the lakehouse tables in section 7,
-   add the relationships, measures and roles.
-6. **Ontology.** Create `GamesOperationsOntology`. Add the entity types in section 3 and bind each to its
-   lakehouse table; add the time series bindings from `GamesKQL`; add the relationship types in section 4;
-   add the metrics from the semantic model; add the rules in section 6; refresh the ontology.
-   Optional accelerator: generate the competition entity types from the semantic model, then rebind them to
-   the lakehouse tables as in section 3.
-7. **Publish and test.** Publish the ontology, try the questions in `eval/questions.csv` in the ontology agent,
-   then connect the agents.
-8. **Source control.** Export the finished definition with the Fabric REST API `getDefinition` (TMDL format) and
-   commit it, so the ontology can be recreated with `updateDefinition` or a deployment pipeline in another
-   workspace or tenant.
+3. **Eventhouse.** Create `GamesEventhouse`, run `fabric/02_eventhouse_setup.kql` in its KQL database, ingest the
+   CSV files from `output/eventhouse/`. For optional live ingestion, follow the
+   [Eventstream-to-Eventhouse walkthrough](../README.md#optional-persist-live-events-in-eventhouse-tables):
+   load the simulator connection from the root `.env`, route by `EventType` to `TimingEvents`,
+   `VenueConditions` and `GateFlow`, and configure an Eventhouse destination for each route.
+   `AssetTelemetry` is historical only; no Eventhouse destination is needed for Eventstream preview.
+4. **Findings (path A).** Run `fabric/04_extract_findings.ipynb`: AI functions read the inspection reports, the
+   result is scored against `eval/ground_truth_findings.csv` and written to the `finding` table. Optional for the
+   first build; without extraction, regenerate with `--include-findings-table`.
+5. **Semantic model.** Run `fabric/03_build_semantic_model.ipynb`: tables, key columns, relationships, measures,
+   roles and test users, refresh, and a check against evaluation questions Q03 and Q04.
+6. **Ontology.** On the semantic model, select **Generate ontology** and name it `GamesOperationsOntology`. In the
+   ontology, open the **Ontology agent**, attach `ontology/ontology-spec.json` and run the two prompts in
+   `ontology/ontology-agent-prompts.md` (Plan mode, review the preview, then Act mode). Refresh the ontology.
+   When the `finding` table was added after the ontology, run the semantic model notebook again and send prompt 3.
+7. **Check.** Run the last section of `fabric/03_build_semantic_model.ipynb`: it reads the ontology definition and
+   lists any entity type, relationship type, time series binding or rule that is missing or named differently.
+8. **Test.** Ask the questions in `eval/questions.csv` in the ontology agent, then publish the ontology and connect
+   the agents.
+9. **Source control.** Export the definition with the Fabric REST API `getDefinition` (TMDL format) and commit it,
+   so the ontology can be recreated with `updateDefinition` or a deployment pipeline.
 
 ## 11. Design decisions and items to verify
 
 **Decisions**
-- One static source type (lakehouse) for all entity types and relationships; the semantic model provides
-  metrics and row-level security; the eventhouse provides time series. Rejected: binding competition entities to
-  the semantic model, because it mixes source types inside relationships during a preview.
+- Generate the ontology from the Direct Lake semantic model, so bindings point at the lakehouse tables and
+  measures become metrics; add time series and rules afterwards. Rejected: building every entity type by hand,
+  which is slower and loses the metrics.
+- Link tables (`entry`, `session_event`) become entity types, because an ontology relationship links two entity
+  types through matching properties; `session_ticketing` is folded into Session as a secondary binding.
 - Keys are business codes stored as strings (`noc_code`, `session_id`, ...), readable in agent answers.
 - Results carry `noc_code` directly, so team results (no athlete) still roll up to a national committee.
 - Thresholds live in data (`venue.wind_limit_ms`, `venue.crowd_density_limit`) and in the current manuals,
   never only in prompts.
 
 **To verify during the build** (not confirmed in public documentation at the time of writing)
-- Whether an entity type bound to a semantic model table can also take an eventhouse time series binding
-  (only relevant if the optional accelerator in step 6 is kept).
+- Generation and the ontology agent are preview features; review the agent's preview before applying, and use the
+  check in the build notebook rather than assuming every item was created.
 - Whether row-level security defined in the semantic model applies to answers that come through the ontology
   path; the permission demo (Q14) is designed for the semantic model path. For the ontology path, check
   OneLake security on the lakehouse tables.
-- Exact TMDL syntax for relationships, metrics and rules: export with `getDefinition` after the portal build
-  rather than writing TMDL by hand.
+- There is no public API to generate an ontology from a semantic model; generation is a portal action. The
+  TMDL definition can be exported with `getDefinition` and redeployed with `updateDefinition`.
 - Ontology refresh is manual for new upstream rows; confirm how time series bindings behave for live
   eventhouse data during the demo.
 - Service principals can't call the ontology MCP endpoint yet (known issue); plan for signed-in user access.
