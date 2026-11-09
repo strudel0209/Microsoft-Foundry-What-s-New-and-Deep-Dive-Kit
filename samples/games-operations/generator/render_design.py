@@ -302,8 +302,9 @@ def render_agent_prompts() -> str:
     keys = "\n".join(f"   - {e['name']}: `{e['key']}`" for e in o.ENTITY_TYPES)
     rels = "\n".join(f"   - {s} **{n}** {t}, bound to lakehouse table `{tb}`: {match_text(n, s, t, tb, sk, tk)} ({c})"
                       for n, s, t, tb, sk, tk, c in o.RELATIONSHIP_TYPES)
-    ts = "\n".join(f"   - **{e['name']}** ← KQL table `{t['table']}`: key `{t['key_column']}`, timestamp "
-                    f"`{t['timestamp_column']}`, properties " + ", ".join(f"`{p['column']}`" for p in t["properties"])
+    ts = "\n".join(f"   - **{e['name']}** ← KQL table `{t['table']}`: match column `{t['key_column']}` to the existing "
+                    f"key property `{e['key']}`, timestamp `{t['timestamp_column']}`, properties "
+                    + ", ".join(f"`{p['column']}`" for p in t["properties"])
                     for e in o.ENTITY_TYPES for t in e.get("time_series", []))
     def rule_line(r):
         return f"   - **{r['name']}**: {r['statement']} Linked concepts: {', '.join(r['references'])}."
@@ -349,7 +350,9 @@ and keep all metrics.
 ```text
 Use the eventhouse KQL database in this workspace (GamesEventhouse) and the attached ontology-spec.json.
 
-1. Add time series bindings (timestamp column `Timestamp`, matched to the entity type key):
+1. Add time series bindings (timestamp column `Timestamp`). Match each table's ID column to the entity type's
+   existing key property. Don't add the ID column as a new property: a second property for the same ID (for
+   example VenueId next to venue_id) blocks validation of later changes.
 {ts}
 2. Add these business rules and link them to the concepts named. Property names in the rules are the business
    aliases from the spec; link them to the matching generated properties (for example WindLimitMs is
@@ -369,7 +372,8 @@ functions. Use the attached ontology-spec.json.
    key `finding_id`, display name `finding_id`, with these properties: {f_props}.
 2. Add these relationship types:
 {f_rels}
-3. Add this business rule and link it to the concepts named:
+3. Add this business rule and link it to the concepts named. Keep the existing rules unchanged; ServiceOverdue
+   also uses Asset criticality, and both rules are needed:
 {finding_rules}
 ```
 

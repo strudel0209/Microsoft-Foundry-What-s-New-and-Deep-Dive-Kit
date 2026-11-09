@@ -290,6 +290,44 @@ answer is recomputed from the data.
 Prerequisites: paid Fabric capacity F2 or higher in a region that supports the full Fabric stack, and the tenant
 settings that allow ontology and Fabric item creation.
 
+### Findings notebook: required files and import troubleshooting
+
+Importing [04_extract_findings.ipynb](fabric/04_extract_findings.ipynb) into Fabric does not upload its supporting
+Python modules or generated documents. Attach **GamesLakehouse as this notebook's default lakehouse**, then
+ensure its **Files** area contains:
+
+```text
+Files/
+  games_ops/
+    generator/
+      schema.py
+      ontology_spec.py
+      ... (the rest of the sample's generator folder)
+    output/
+      documents/
+        inspections/
+          ... (generated inspection PDFs)
+      eval/
+        ground_truth_findings.csv
+```
+
+Upload the contents into this layout, not an extra nested `games-operations/` folder beneath `games_ops/`.
+If you use a different layout, update `GEN_DIR`, `DOC_DIR` and `GROUND_TRUTH` in the notebook's parameters.
+
+`ModuleNotFoundError: No module named 'schema'` means Python cannot locate the sample's
+[`generator/schema.py`](generator/schema.py). With the default parameters, it must be accessible at
+`/lakehouse/default/Files/games_ops/generator/schema.py`. Upload that file/folder or correct `GEN_DIR`, then
+rerun the parameters and import cells. **Do not run `pip install schema`**: that is an unrelated package.
+The notebook checks this prerequisite before importing the AI functions library.
+
+For **Fabric Runtime 2.0**, uncomment `%pip install -q nest_asyncio` in the first code cell and the three
+temporary `aifunc.default_conf` settings at the end of the imports cell, as required by the
+[pandas AI functions setup](https://learn.microsoft.com/fabric/data-science/ai-functions/runtime-2-0-workarounds#configure-pandas-ai-functions).
+Run the install cell separately, before the parameters: `%pip` restarts Python.
+A pip upgrade notice and the `google.protobuf.service` deprecation warning are not the cause of the missing
+sample module. Uploading the module does not require a kernel restart; if you restart after a package
+installation, rerun the parameter cell before the imports.
+
 ## Fit with the kit
 
 Proposed location in the Microsoft Foundry What's New and Deep-Dive Kit: `samples/games-operations/`, used by

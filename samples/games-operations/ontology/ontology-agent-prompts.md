@@ -77,11 +77,13 @@ and keep all metrics.
 ```text
 Use the eventhouse KQL database in this workspace (GamesEventhouse) and the attached ontology-spec.json.
 
-1. Add time series bindings (timestamp column `Timestamp`, matched to the entity type key):
-   - **Athlete** ← KQL table `TimingEvents`: key `AthleteId`, timestamp `Timestamp`, properties `SessionId`, `EventId`, `Checkpoint`, `LapNumber`, `SplitTimeS`, `ShootingMisses`, `RankAtCheckpoint`
-   - **Venue** ← KQL table `VenueConditions`: key `VenueId`, timestamp `Timestamp`, properties `WindSpeedMs`, `WindGustMs`, `AirTempC`, `SnowTempC`, `HumidityPct`, `VisibilityM`
-   - **Gate** ← KQL table `GateFlow`: key `GateId`, timestamp `Timestamp`, properties `EntriesPerMin`, `QueueingPersons`, `DensityPersonsPerM2`
-   - **Asset** ← KQL table `AssetTelemetry`: key `AssetId`, timestamp `Timestamp`, properties `TemperatureC`, `PowerKw`, `StatusCode`
+1. Add time series bindings (timestamp column `Timestamp`). Match each table's ID column to the entity type's
+   existing key property. Don't add the ID column as a new property: a second property for the same ID (for
+   example VenueId next to venue_id) blocks validation of later changes.
+   - **Athlete** ← KQL table `TimingEvents`: match column `AthleteId` to the existing key property `athlete_id`, timestamp `Timestamp`, properties `SessionId`, `EventId`, `Checkpoint`, `LapNumber`, `SplitTimeS`, `ShootingMisses`, `RankAtCheckpoint`
+   - **Venue** ← KQL table `VenueConditions`: match column `VenueId` to the existing key property `venue_id`, timestamp `Timestamp`, properties `WindSpeedMs`, `WindGustMs`, `AirTempC`, `SnowTempC`, `HumidityPct`, `VisibilityM`
+   - **Gate** ← KQL table `GateFlow`: match column `GateId` to the existing key property `gate_id`, timestamp `Timestamp`, properties `EntriesPerMin`, `QueueingPersons`, `DensityPersonsPerM2`
+   - **Asset** ← KQL table `AssetTelemetry`: match column `AssetId` to the existing key property `asset_id`, timestamp `Timestamp`, properties `TemperatureC`, `PowerKw`, `StatusCode`
 2. Add these business rules and link them to the concepts named. Property names in the rules are the business
    aliases from the spec; link them to the matching generated properties (for example WindLimitMs is
    wind_limit_ms):
@@ -105,7 +107,8 @@ functions. Use the attached ontology-spec.json.
    - Finding **concernsVenue** Venue, bound to lakehouse table `finding`: Finding.`venue_id` = Venue.`venue_id` (many-to-one)
    - Finding **concernsAsset** Asset, bound to lakehouse table `finding`: Finding.`asset_id` = Asset.`asset_id` (many-to-one)
    - Finding **isRecordedInDocument** Document, bound to lakehouse table `finding`: Finding.`document_id` = Document.`document_id` (many-to-one)
-3. Add this business rule and link it to the concepts named:
+3. Add this business rule and link it to the concepts named. Keep the existing rules unchanged; ServiceOverdue
+   also uses Asset criticality, and both rules are needed:
    - **SessionAtRisk**: A Scheduled Session is at operational risk when its Venue has an Open Finding of High severity that concerns an Asset with Criticality Critical. Linked concepts: Session, Finding.Severity, Finding.Status, Asset.Criticality, Finding concernsAsset Asset, Session isHeldAt Venue.
 ```
 
