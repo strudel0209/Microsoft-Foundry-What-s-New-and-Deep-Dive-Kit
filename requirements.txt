@@ -1,4 +1,4 @@
-# Microsoft Foundry demo — notebooks 1–8 — Python 3.12 recommended
+# Microsoft Foundry demo — notebooks 1–9 — Python 3.12 recommended
 # Pinned to the minimum versions referenced in the Foundry documentation (September 2026).
 
 # --- Core: project client, OpenAI-compatible surface, identity (NB1 cells 0–4, NB2 all) ---
@@ -18,7 +18,7 @@ azure-mgmt-apimanagement>=5.0.0,<6     # AI gateway notebook: products, subscrip
 azure-mgmt-monitor>=6.0.2,<7          # AI gateway notebook: instance diagnostic settings
 
 # --- Toolbox verification over MCP (NB1 cell 3) ---
-mcp>=1.10.0
+mcp>=1.10.0,<2                   # NB1, NB8, NB9: streamablehttp_client; mcp 2.0 removed it (renamed streamable_http_client)
 
 # --- Optional model providers (NB1 cell 1, if you show Claude) ---
 anthropic>=0.40.0                # Claude via the /anthropic Messages surface
@@ -31,8 +31,8 @@ opentelemetry-exporter-otlp>=1.27.0   # only if you export to Aspire Dashboard /
 azure-monitor-query>=2.0.0            # KQL against Application Insights / Log Analytics; 2.0 keeps LogsQueryClient
 opentelemetry-instrumentation-openai-v2>=2.1b0   # AI gateway notebook: client-side spans for OpenAI calls
 
-# --- Knowledge base setup on Azure AI Search (NB1 cell 3, optional) ---
-azure-search-documents>=11.6.0
+# --- Knowledge base setup on Azure AI Search (NB1 cell 3, optional; NB9 steps 3–4) ---
+azure-search-documents>=12.1.0b2,<12.2   # pre-release: NB9 uses REST API 2026-08-01-preview (Fabric ontology knowledge source, answer synthesis, reasoning effort); untested — written against 12.1.0b2
 
 # --- Offline prompt-prefix token counting (NB4) ---
 tiktoken>=0.8.0
@@ -51,7 +51,10 @@ azure-ai-voicelive[aiohttp]>=1.3.0
 jupyter>=1.1.0
 ipykernel>=6.29.0
 python-dotenv>=1.0.0
-pandas>=2.2                      # AI gateway notebook: result tables
+pandas>=2.2                      # AI gateway notebook and NB9: result tables
+
+# --- Shared sample data (NB9 regenerates the games-operations register and questions when missing) ---
+-r samples/games-operations/requirements.txt
 
 # A2A demo notebook — Part 1 (the protocol, runs offline)
 a2a-sdk[http-server]>=1.1.4      # implements A2A protocol 1.0; <1.1.5 caps protobuf<7 (fine with protobuf 6.x)

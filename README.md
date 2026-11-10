@@ -1,6 +1,6 @@
 # Microsoft Foundry What's New and Deep-Dive Kit
 
-Eight notebooks explore Microsoft Foundry: model calls and managed prompt agents, custom hosted agents with long-running workflows and observability, publishing a hosted agent from a **private-network** Foundry project to Microsoft Teams without APIM, prompt caching, the Agent2Agent (A2A) protocol, Azure Content Understanding, Voice Live with voice agents, and governing models, tools and agents with an AI gateway.
+Nine notebooks explore Microsoft Foundry: model calls and managed prompt agents, custom hosted agents with long-running workflows and observability, publishing a hosted agent from a **private-network** Foundry project to Microsoft Teams without APIM, prompt caching, the Agent2Agent (A2A) protocol, Azure Content Understanding, Voice Live with voice agents, governing models, tools and agents with an AI gateway, and Fabric IQ ontologies with Foundry IQ knowledge bases for agents.
 
 These are hands-on presentation demos, not production application templates. Notebook headings reference slides in the accompanying presentations in [decks/](decks/); the notebooks can also be explored independently. Every deck and notebook is produced with the Cowork skills in [skills/](skills/) — see [Generate Decks and Notebooks with Cowork](#generate-decks-and-notebooks-with-cowork). Preview features and cells marked `# verify` should be checked against the linked documentation and your deployed SDK versions before presenting.
 
@@ -16,6 +16,7 @@ These are hands-on presentation demos, not production application templates. Not
 | [Notebook 6: Content Understanding](foundry-demo-6-content-understanding.ipynb) | Build an accounts-payable document pipeline one capability at a time | Markdown extraction, prebuilt invoice fields, a custom analyzer, confidence-based straight-through processing, classification and segmentation, and the preview agentic workflow and inline analysis |
 | [Notebook 7: Voice Live and voice agents](foundry-demo-7-voice-live.ipynb) | Build an IT service-desk voice assistant step by step | Voice Live sessions, voices, turn detection, model choice, function tools, voice in front of a Foundry agent, and preview Foundry voice agents with stored conversations |
 | [Notebook 8: AI gateway governance](foundry-demo-8-ai-gateway-governance.ipynb) | Govern an existing API Management instance in front of Foundry | Per-team token limits and quotas, usage attribution, content safety, semantic caching, backend pools, MCP and A2A governance, AI Gateway in Foundry, and end-to-end tracing |
+| [Notebook 9: Fabric IQ and Foundry IQ agents](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb) | Connect a Fabric IQ ontology and indexed documents to Foundry IQ for agents | Ontology MCP and Fabric IQ MCP tools, OneLake indexing with Content Understanding, search index, indexed OneLake and Fabric ontology knowledge sources, reasoning effort and citations |
 
 ## Slide Decks
 
@@ -38,7 +39,7 @@ The [samples/](samples/) folder holds synthetic datasets shared by notebooks and
 
 | Sample | What it provides | Used by |
 | --- | --- | --- |
-| [games-operations](samples/games-operations/) | Games-time operations data for a Fabric IQ ontology: lakehouse tables, eventhouse telemetry, semantic model design, PDF documents, a live stream simulator and an evaluation set with computed answers | Notebook 9 and the end-to-end deck (planned) |
+| [games-operations](samples/games-operations/) | Games-time operations data for a Fabric IQ ontology: lakehouse tables, eventhouse telemetry, semantic model design, PDF documents, a live stream simulator and an evaluation set with computed answers | [Notebook 9](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb) and the end-to-end deck (planned) |
 
 ## Generate Decks and Notebooks with Cowork
 
@@ -560,6 +561,42 @@ To demonstrate **concierge agent -> gateway -> target agent**, also repoint the 
 
 Offline regression tests execute the actual section 8a cells with mocked HTTP and management clients: `python -m unittest discover -s tests -p 'test_a2a_gateway.py' -v`. They check wire formats, policy preservation, discovery routing, response validation and governance-test outcomes without changing Azure resources.
 
+## Notebook 9: Fabric IQ and Foundry IQ Agents
+
+[foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb) builds the knowledge layer of an operations agent for the fictional Valmont Winter Games, using the [games-operations](samples/games-operations/) sample: a Fabric IQ ontology over a lakehouse, an eventhouse and a semantic model, plus 51 PDF documents in the lakehouse **Files** area. It pairs with the end-to-end deck *Microsoft Foundry Fabric IQ and Foundry IQ Agents* (in preparation); step headings name the deck section until the slide numbers exist.
+
+The Fabric side is built first with the sample's Fabric notebooks and ontology agent prompts (see the [sample README](samples/games-operations/README.md)). This first part covers steps 0–4; agents, evaluations, permissions, Work IQ, publishing, Copilot Studio and API Management follow as steps 5–11.
+
+Run notebook 9 from the repository root. Its first code cell only loads the root `.env`, prints the file path,
+and lists missing settings; Azure client initialization and model lookups are in the next code cell.
+Set `FABRIC_WORKSPACE_ID` explicitly alongside the lakehouse and ontology IDs. Save `.env` and rerun the settings
+cell after edits; a kernel restart is not needed, and file values override existing environment variables.
+Use bare GUIDs for Fabric IDs: for `FABRIC_ONTOLOGY_ID`, omit any `/entity/<id>` suffix or query parameters
+from the browser URL. Step 0 validates the ID format, and step 1 checks that the item exists and is an ontology
+before connecting, so an incorrect ID is not hidden behind the MCP client's `Session terminated` message.
+Steps 1 and 2 use the official Python MCP SDK directly (`ClientSession.list_tools()` / `call_tool()`), without
+custom wrappers or tool registrations. Step 1 calls the server's existing `ask_ontology` tool with a `request`
+string; step 2 calls `DiscoverArtifacts` with `searchQuery` and can run independently after step 0.
+Both use the existing shared `mcp>=1.10.0,<2` dependency, also used by notebooks 1 and 8; no dependency changes
+or additional packages are needed.
+
+| Step | What it shows | Status |
+| --- | --- | --- |
+| 0 | Settings, clients, the sample's document register and evaluation questions | — |
+| 1 | The ontology as an MCP server: tool list and one question | Preview |
+| 2 | Fabric IQ MCP over the semantic model: tool list and one discovery call | GA |
+| 3 | Document indexing pipeline from OneLake: data source, Content Understanding skill, embeddings, index projections, index, indexer; register fields merged into every chunk | GA |
+| 4 | Knowledge sources side by side (custom index, indexed OneLake, Fabric ontology) in one knowledge base; citations, tokens and time per source and per reasoning effort | Preview |
+| — | Cleanup of the search objects (off by default) | — |
+
+Steps 1, 2 and 4 use your own sign-in: as per official documentation, service principals can't call the ontology MCP endpoint or Fabric IQ MCP, and the Fabric ontology knowledge source acts on behalf of the signed-in user.
+
+Step 3 uses SDK models and direct client calls in separate configuration, run, status and inspection cells.
+Content Understanding remains the default; `CHUNKER = "builtIn"` selects PDF text extraction plus Text Split
+without page citations. When switching chunkers, set `RESET_INDEXER = True` and rerun configuration, run, status
+and register enrichment to reprocess all PDFs (billable). There is no automatic fallback or second indexing run.
+The status cell only polls and reports errors; rerunning it does not start indexing.
+
 ## Prerequisites
 
 - One Azure subscription for all kit resources and an existing Foundry project with appropriate feature and regional availability. Foundry and API Management may use different resource groups.
@@ -569,6 +606,7 @@ Offline regression tests execute the actual section 8a cells with mocked HTTP an
 - Permissions to invoke models and manage the demo resources. The role-assignment cell additionally requires permission to assign roles, and querying telemetry requires log-read access.
 - Application Insights connected to the project for tracing, and configured knowledge connections for the notebook 1 toolbox examples.
 - An existing API Management gateway only if you run notebook 8.
+- For notebook 9: the [games-operations](samples/games-operations/) Fabric items (lakehouse with the PDFs, eventhouse, semantic model, ontology) on an F2 or higher capacity, and an Azure AI Search service, Basic tier or higher, whose managed identity has Contributor on the Fabric workspace and Cognitive Services User and Cognitive Services OpenAI User on the Foundry resource.
 
 ## Local Setup
 
@@ -619,6 +657,9 @@ Use [.env.example](.env.example) as the starting point for a root-level `.env`. 
 | `APPINSIGHTS_*` / `APPLICATIONINSIGHTS_CONNECTION_STRING` / `LOG_ANALYTICS_*` / `LOG_LLM_MESSAGES` | Notebook 8, steps 3 and 10: telemetry destinations and whether prompts and completions are logged |
 | `SECONDARY_FOUNDRY_ENDPOINT` / `MCP_*` / `A2A_*` / `APIM_CONNECTION_NAME` / `FOUNDRY_GATEWAY_*` | Notebook 8, optional steps 6–9 |
 | `PRIVATE_DEMO_*` | Notebook 3 only: private resource group, region, account/project/VNet base names, address ranges, model, azd environment, deployment name, and optional user object ID. Set `PRIVATE_DEMO_SUBSCRIPTION_ID` to the same subscription as `AZURE_SUBSCRIPTION_ID`; the private deployment keeps its own settings. |
+| `AZURE_SEARCH_ENDPOINT` | Notebook 9: Azure AI Search service endpoint, `https://<service>.search.windows.net` (Basic tier or higher) |
+| `FABRIC_WORKSPACE_ID` / `FABRIC_LAKEHOUSE_ID` / `FABRIC_ONTOLOGY_ID` | Notebook 9: IDs of the Fabric workspace, the sample lakehouse and the ontology item, from their URLs in the Fabric portal |
+| `FABRIC_DOCS_FOLDER` | Notebook 9, optional: folder of the PDFs under the lakehouse **Files** area; defaults to `games_ops/output/documents` |
 
 Notebook 8's gateway settings are included in [.env.example](.env.example). It combines the APIM base URL with `INFERENCE_API_PATH`, then selects the URL shape with `INFERENCE_API_STYLE`: `v1` uses `/openai/v1/chat/completions`; `azure` uses `/openai/deployments/{deployment}/chat/completions` and `INFERENCE_API_VERSION`. Match these settings and `SUBSCRIPTION_KEY_HEADER` to the imported API.
 
@@ -646,6 +687,7 @@ The hosted services use a separate deployment setting, `AZURE_AI_MODEL_DEPLOYMEN
 8. For notebook 6, check the resource defaults in step 0 first, then run steps 1–6 on the GA API; present steps 7–8 as preview.
 9. For notebook 7, run parts A and B live, then present part C as preview.
 10. For notebook 8, run steps 0–5 and 10 live against a non-production gateway, present step 9 as preview, and finish with step 11.
+11. For notebook 9, build the sample's Fabric items the day before, run steps 1–3 ahead of the session (indexing takes several minutes), and run step 4 live; keep the cleanup cell off until the end of the demo.
 
 Avoid blindly using **Run All**: steering is timing-sensitive, some cells modify Azure resources, and notebook 1 ends with a destructive cleanup cell. Repeated setup can also change which agent version subsequent name-only references select.
 
@@ -673,6 +715,8 @@ Notebook 8's step 11 restores the original API policies and removes the products
 
 Notebook 3's private environment (VNet, private endpoint, model, hosted compute, Bot Service, telemetry, the devbox VM, and Bastion) is billable while it exists. Its last cell deletes the whole dedicated resource group, including the devbox and Bastion. If a capability host blocks subnet reuse, follow the pinned sample's cleanup guidance.
 
+Notebook 9's step 3 bills content extraction and embeddings to the Foundry resource for each indexer run over the 51 PDFs, the indexed OneLake knowledge source in step 4 runs a second extraction and embedding pass, and every knowledge base request uses the chat model. Its cleanup cell (off by default) deletes the knowledge base, the knowledge sources, the generated objects and the step 3 pipeline; it does **not** delete the Azure AI Search service, which bills per hour on Basic and higher tiers, nor the Fabric items or capacity.
+
 ## Repository Guide
 
 - [foundry-demo-1-what-is-new.ipynb](foundry-demo-1-what-is-new.ipynb): platform features and managed prompt-agent lifecycle.
@@ -684,6 +728,7 @@ Notebook 3's private environment (VNet, private endpoint, model, hosted compute,
 - [foundry-demo-6-content-understanding.ipynb](foundry-demo-6-content-understanding.ipynb): Content Understanding from Markdown extraction to custom analyzers, classification, and preview agentic and inline analysis.
 - [foundry-demo-7-voice-live.ipynb](foundry-demo-7-voice-live.ipynb): Voice Live sessions and tools, voice for a Foundry agent, and preview Foundry voice agents.
 - [foundry-demo-8-ai-gateway-governance.ipynb](foundry-demo-8-ai-gateway-governance.ipynb): governing models, MCP tools and agents with API Management as the AI gateway.
+- [foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb): Fabric IQ ontology and Fabric IQ MCP endpoints, a OneLake document indexing pipeline, and Foundry IQ knowledge sources compared in one knowledge base.
 - [decks/](decks/): PowerPoint decks that accompany the notebooks (see [Slide Decks](#slide-decks)).
 - [decks/CHANGELOG.md](decks/CHANGELOG.md): dated editions of the what's-new deck (owned by `foundry-whats-new-deck`).
 - [decks/DEEP-DIVE-DECKS.md](decks/DEEP-DIVE-DECKS.md): register of deep-dive decks (owned by `azure-ai-deep-dive-deck`).
