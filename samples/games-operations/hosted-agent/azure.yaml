@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+# Games operations hosted agent (notebook 9 step 5c), as a separate azd project so agent/azure.yaml stays unchanged.
+# Shape follows agent/azure.yaml. Read README.md before deploying: the deployed agent runs as its own identity.
+requiredVersions:
+  azd: '>=1.27.1'
+  extensions:
+    azure.ai.agents: '>=1.0.0-beta.9'
+
+name: games-operations-hosted-agent
+
+services:
+  ai-project:
+    host: azure.ai.project
+    endpoint: ${FOUNDRY_PROJECT_ENDPOINT}     # azd env set FOUNDRY_PROJECT_ENDPOINT https://<account>.services.ai.azure.com/api/projects/<project>
+
+  games-ops-hosted:
+    host: azure.ai.agent
+    project: .
+    language: python
+    codeConfiguration:
+      runtime: python_3_13
+      entryPoint: main.py
+    uses:
+      - ai-project
+    kind: hosted
+    name: games-ops-hosted
+    description: Games operations assistant over the Fabric ontology and the Current operating documents.
+    protocols:
+      - protocol: responses
+        version: 2.0.0
+    env:
+      AZURE_AI_MODEL_DEPLOYMENT_NAME: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}   # chat model deployment
+      AZURE_SEARCH_ENDPOINT: ${AZURE_SEARCH_ENDPOINT}
+      FABRIC_WORKSPACE_ID: ${FABRIC_WORKSPACE_ID}
+      FABRIC_ONTOLOGY_ID: ${FABRIC_ONTOLOGY_ID}
+      GAMES_AGENT_KB: games-agent-kb
+      GAMES_DOCS_KS: games-docs-ks
+    container:
+      resources:
+        cpu: '0.5'
+        memory: 1Gi

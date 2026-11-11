@@ -2,7 +2,7 @@
 # Pinned to the minimum versions referenced in the Foundry documentation (September 2026).
 
 # --- Core: project client, OpenAI-compatible surface, identity (NB1 cells 0–4, NB2 all) ---
-azure-ai-projects[voice]>=2.7.0,<3  # [voice] adds the realtime transport for NB7 voice agents
+azure-ai-projects[voice]>=2.9.0,<2.11  # [voice] adds the realtime transport for NB7 voice agents; >=2.9.0 for the Copilot harness (NB9 step 5b); minor cap: preview surfaces used in NB1, NB3, NB7, NB9; untested — written against 2.10.0
 openai>=3.26.0,<4                # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway; NB1 step 2b Decisions API needs >=3.26.0
 azure-identity>=1.25.3           # Includes subscription-scoped AzureCliCredential for NB3
 requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints
@@ -11,7 +11,7 @@ requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses e
 azure-mgmt-resource>=26.0.0,<27
 azure-mgmt-resource-subscriptions>=1.0.0,<2
 azure-mgmt-resource-deployments>=2.0.0,<3
-azure-mgmt-authorization>=4.0.0,<5
+azure-mgmt-authorization>=4.0.0,<5     # NB3; NB9 step 5: Foundry User role for the agent identities
 azure-mgmt-cognitiveservices>=14.1.0,<15
 azure-mgmt-botservice>=2.0.0,<3
 azure-mgmt-apimanagement>=5.0.0,<6     # AI gateway notebook: products, subscriptions, policies, backends
@@ -26,9 +26,9 @@ anthropic>=0.40.0                # Claude via the /anthropic Messages surface
 # --- Tracing and querying telemetry (NB1 cell 6, NB2 steps 3–4) ---
 opentelemetry-sdk>=1.27.0
 azure-core-tracing-opentelemetry>=1.0.0b11
-azure-monitor-opentelemetry>=1.6.0
+azure-monitor-opentelemetry>=1.6.0    # NB1 cell 21, NB9 step 5: configure_azure_monitor for client-side tracing
 opentelemetry-exporter-otlp>=1.27.0   # only if you export to Aspire Dashboard / another OTLP backend
-azure-monitor-query>=2.0.0            # KQL against Application Insights / Log Analytics; 2.0 keeps LogsQueryClient
+azure-monitor-query>=2.0.0            # KQL against Application Insights / Log Analytics (NB2 step 3, NB9 step 6); 2.0 keeps LogsQueryClient
 opentelemetry-instrumentation-openai-v2>=2.1b0   # AI gateway notebook: client-side spans for OpenAI calls
 
 # --- Knowledge base setup on Azure AI Search (NB1 cell 3, optional; NB9 steps 3–4) ---
@@ -43,7 +43,8 @@ azure-ai-contentunderstanding>=1.2.0b3   # pre-release pin: 1.1.0 lacks ContentA
 # --- Voice Live (NB7; GA client defaulting to API 2026-07-15) ---
 azure-ai-voicelive[aiohttp]>=1.3.0
 
-# --- Agent Framework and agent-server libraries (local runs of the NB2 agents; mention-only in NB1) ---
+# --- Agent Framework and agent-server libraries (local runs of the NB2 agents; mention-only in NB1;
+#     NB9 step 5c runs samples/games-operations/hosted-agent/main.py in process with these packages) ---
 -r agent/src/demo-hosted-agent/requirements.txt
 -r agent/src/demo-long-running-agent/requirements.txt
 
@@ -59,4 +60,4 @@ pandas>=2.2                      # AI gateway notebook and NB9: result tables
 # A2A demo notebook — Part 1 (the protocol, runs offline)
 a2a-sdk[http-server]>=1.1.4      # implements A2A protocol 1.0; <1.1.5 caps protobuf<7 (fine with protobuf 6.x)
 uvicorn>=0.30                    # not a dependency of a2a-sdk — install explicitly
-httpx>=0.28.1
+httpx>=0.28.1                    # NB5 A2A client; NB9 Fabric item check and ARM project connections
