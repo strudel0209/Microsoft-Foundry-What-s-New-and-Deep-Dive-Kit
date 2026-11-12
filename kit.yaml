@@ -129,9 +129,9 @@ notebooks:
     file: foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb
     deck: "Microsoft Foundry Fabric IQ and Foundry IQ Agents.pptx"   # in preparation; step headings name deck sections until slide numbers exist
     sample: games-operations
-    env_block: core + FOUNDRY_EMBEDDING_NAME + AZURE_SEARCH_ENDPOINT, FABRIC_WORKSPACE_ID, FABRIC_LAKEHOUSE_ID, FABRIC_ONTOLOGY_ID, FABRIC_DOCS_FOLDER (optional); steps 5-6 add AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP, FOUNDRY_PROJECT_NAME (optional), APP_INSIGHTS_RESOURCE_ID (optional), FOUNDRY_CONNECTIONS_API_VERSION (optional)
+    env_block: core + FOUNDRY_EMBEDDING_NAME + AZURE_SEARCH_ENDPOINT, FABRIC_WORKSPACE_ID, FABRIC_LAKEHOUSE_ID, FABRIC_ONTOLOGY_ID, FABRIC_DOCS_FOLDER (optional); steps 5-6 add AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP, FOUNDRY_PROJECT_NAME (optional), APP_INSIGHTS_RESOURCE_ID (optional), FOUNDRY_CONNECTIONS_API_VERSION (optional); step 7 adds FABRIC_RLS_TEST_USER
     hosted_agent: samples/games-operations/hosted-agent   # separate azd project; agent/azure.yaml unchanged
-    status: steps 0-4 (knowledge layer, run by the owner 2026-11-10); steps 5-6 (agents, evaluations, tracing) added 2026-11-10, not yet run; steps 7-11 to follow
+    status: steps 0-4 (knowledge layer, run by the owner 2026-11-10); steps 5-6 (agents, evaluations, tracing) run by the owner 2026-11-11; step 7 (permission test) added 2026-11-11, not yet run; steps 8-11 to follow
 
 samples:
   - name: games-operations
@@ -179,6 +179,7 @@ env:
   FABRIC_DOCS_FOLDER:       {meaning: "optional PDF folder under the lakehouse Files area; blank uses games_ops/output/documents", notebooks: [9]}
   APP_INSIGHTS_RESOURCE_ID: {meaning: "resource ID of the Application Insights component connected to the Foundry project", notebooks: [2, 9]}
   FOUNDRY_CONNECTIONS_API_VERSION: {meaning: "optional ARM API version for Foundry project connections created over REST; blank uses 2025-10-01-preview", notebooks: [9]}
+  FABRIC_RLS_TEST_USER:     {meaning: "sign-in name of the Norway-only test user for the permission test (workspace Viewer, member of the semantic model role)", notebooks: [9]}
 
 known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted for the owner's changes of 2026-10-11 (notebook 2 gateway removed, outputs cleared); re-run after every pull
   - "NB5 installs packages with %pip in two cells (azure-ai-projects>=2.5.0 vs root >=2.7.0,<3) — move to requirements.txt"
@@ -193,4 +194,5 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "samples/games-operations: evaluation questions say 'NOC' in both themes; the neutral theme labels the entity 'National Committee'"
   - "NB9 (2026-11-09): written against azure-search-documents 12.1.0b2 and REST API 2026-08-01-preview, not yet executed against Azure; Fabric MCP token scopes and Content Understanding with the OneLake indexer are open verify items"
   - "NB9 steps 5-6 (2026-11-10): not yet executed against Azure; azure-ai-projects raised to >=2.9.0,<2.11 for the Copilot harness (preview cap closes the azure-ai-projects known issue above); the hosted agent runs in process as the user and needs an OAuth toolbox connection or another production option before deployment (samples/games-operations/hosted-agent/README.md)"
+  - "NB9 step 7 (2026-11-11): not yet executed against Azure; needs a real test user (workspace Viewer, mapped in fabric/03 TEST_USERS) and an interactive browser sign-in; whether ontology queries enforce OneLake security row rules is an open verify item"
   - "mcp capped below 2 on 2026-11-09: mcp 2.0 removed streamablehttp_client used by NB1, NB8 and NB9; environments that already installed mcp 2.x need 'pip install -r requirements.txt' again"

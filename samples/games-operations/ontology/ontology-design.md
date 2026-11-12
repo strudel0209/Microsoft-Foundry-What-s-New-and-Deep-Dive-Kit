@@ -396,6 +396,23 @@ Relationships are many-to-one and single direction unless noted. Inactive relati
 
 Set the test users in the `TEST_USERS` parameter of the build notebook before the permission test (evaluation question Q14). Row-level security applies only to users with Viewer-level access.
 
+**Permissions and changes after generation**
+
+- **Permissions are checked at query time.** Generation creates entity types, properties, bindings, relationships
+  and metrics; it doesn't copy roles or role members into the ontology. As per official documentation, querying
+  the semantic models through the ontology needs Read and Build on them, so each query runs as the person asking.
+  A change to role membership, Read or Build on the semantic model applies to the next query, with no
+  regeneration (inferred from the documented permission model; the permission test, Q14, confirms it). The
+  workspace Viewer role doesn't include Build, so grant Build on the semantic model to test users.
+- **Measures need a refresh.** Metrics link to the semantic model's measures instead of copying them, and they don't
+  update automatically: after a measure's DAX expression or description changes, refresh the ontology to see it.
+  The documentation doesn't describe where the refresh action is; check it during the build. Edits made in the
+  ontology, such as a metric description, stay in the ontology and never change the semantic model.
+- **Lakehouse bindings bypass semantic model RLS.** Generating from the Direct Lake model binds entity types to the
+  lakehouse tables (see section 11). An answer read from a lakehouse binding doesn't pass through the semantic
+  model, so the *NOC delegation viewer* role doesn't filter it. Only OneLake security on the tables can restrict
+  that path (to verify; see section 11).
+
 ## 8. Documents and enrichment
 
 | Document type | Count | Ontology use (path A) | Retrieval use (path B) |
@@ -490,6 +507,8 @@ for the default seed and dates; `manifest.json` records them for every run.
 
 - Data binding in ontology (preview): https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-bind-data
 - What is ontology (preview)?: https://learn.microsoft.com/en-us/fabric/iq/ontology/overview
+- Generate an ontology (preview) from semantic models: https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-generate-from-semantic-models
+- Define business metrics in ontology (preview): https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-use-metrics
 - Consume ontology as an MCP server: https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-use-ontology-mcp-server
 - Ontology item definition (TMDL): https://learn.microsoft.com/en-us/rest/api/fabric/articles/item-management/definitions/ontology-definition
 - Create Ontology REST API: https://learn.microsoft.com/en-us/rest/api/fabric/ontology/items/create-ontology

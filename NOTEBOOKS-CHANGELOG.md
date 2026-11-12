@@ -8,6 +8,19 @@ appended, never rewritten. Deck editions are logged in `decks/CHANGELOG.md`, not
 
 ---
 
+## 2026-11-11 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — step 7 Build permission
+
+**Change:** step 7 prerequisites add **Build** on the semantic model *Games Operations Model* for the test user (the workspace Viewer role doesn't include it; querying the semantic models through the ontology needs Read and Build; RLS still applies with Build). "What to look for" adds the access-error symptom when Build is missing. README step 7 paragraph and `FABRIC_RLS_TEST_USER` row updated. The sample's `ontology/ontology-design.md` gains a note on permissions after generation: checked at query time (inferred, confirmed by Q14), metrics need an ontology refresh after measure changes, lakehouse bindings aren't filtered by semantic model RLS.
+**Dependency changes:** none.
+**Regression:** kit_check over all notebooks; no code cells changed. Not executed against Azure.
+
+## 2026-11-11 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — updated (step 7)
+
+**Change:** new step 7, permission test with a NOC-restricted user. One question (medal counts for every NOC, evaluation question Q14) asked as you and as a Norway-only test user through three routes: Fabric IQ MCP `ExecuteQuery` with a DAX query on the semantic model (row-level security role *NOC delegation viewer*), the ontology MCP `ask_ontology` tool, and the step 5 prompt agent called with each person's token. A final table counts the NOCs each person received per route. The test user signs in once through `InteractiveBrowserCredential` (tenant taken from your token; the cell stops if another account signs in), and Foundry User on the project is assigned to the test user for the agent run. Notes explain how to close the gap on the lakehouse route with OneLake security, flagged as a verify item. Confidential documents (Azure AI Search document-level permissions) are out of scope. Title table, cleanup notes and closing cell updated.
+**New settings:** `FABRIC_RLS_TEST_USER` (`.env.example`, `kit.yaml`, README).
+**Dependency changes:** none.
+**Regression:** kit_check over all notebooks; new cells compile; comparison logic tested offline. Not executed against Azure.
+
 ## 2026-11-11 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — bounded agent comparison
 
 **Change:** the three-agent comparison uses asynchronous calls with a 180-second client deadline per run, disables automatic SDK request retries, prints each start/result immediately and journals partial results under the ignored sample output folder. Timeouts, service failures and tool errors are distinct from answers; interrupted runs retain earlier results. Prompt response/conversation IDs are included for successful responses. The hosted tools use async SDKs for cancellable I/O and a 90-second MCP request deadline; minimal Search retrieval now sends semantic intents instead of the messages payload rejected in the observed traces. Its Current-only filter is unchanged, and mixed questions explicitly separate ontology facts from document recommendations. Hosted evaluation stops on tool errors rather than scoring them as answers.
