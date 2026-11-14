@@ -131,7 +131,7 @@ notebooks:
     sample: games-operations
     env_block: core + FOUNDRY_EMBEDDING_NAME + AZURE_SEARCH_ENDPOINT, FABRIC_WORKSPACE_ID, FABRIC_LAKEHOUSE_ID, FABRIC_ONTOLOGY_ID, FABRIC_DOCS_FOLDER (optional); steps 5-6 add AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP, FOUNDRY_PROJECT_NAME (optional), APP_INSIGHTS_RESOURCE_ID (optional), FOUNDRY_CONNECTIONS_API_VERSION (optional); step 7 adds FABRIC_RLS_TEST_USER
     hosted_agent: samples/games-operations/hosted-agent   # separate azd project; agent/azure.yaml unchanged
-    status: steps 0-4 (knowledge layer, run by the owner 2026-11-10); steps 5-6 (agents, evaluations, tracing) run by the owner 2026-11-11; step 7 (permission test) added 2026-11-11, not yet run; steps 8-11 to follow
+    status: steps 0-4 (knowledge layer, run by the owner 2026-11-10); steps 5-6 (agents, evaluations, tracing) run by the owner 2026-11-11; step 7 (permission test) run by the owner 2026-11-12; step 9 (publishing to Microsoft 365 Copilot and Teams, web app call, A2A) added 2026-11-12, not yet run; steps 8, 10 and 11 to follow
 
 samples:
   - name: games-operations
@@ -195,4 +195,5 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "NB9 (2026-11-09): written against azure-search-documents 12.1.0b2 and REST API 2026-08-01-preview, not yet executed against Azure; Fabric MCP token scopes and Content Understanding with the OneLake indexer are open verify items"
   - "NB9 steps 5-6 (2026-11-10): not yet executed against Azure; azure-ai-projects raised to >=2.9.0,<2.11 for the Copilot harness (preview cap closes the azure-ai-projects known issue above); the hosted agent runs in process as the user and needs an OAuth toolbox connection or another production option before deployment (samples/games-operations/hosted-agent/README.md)"
   - "NB9 step 7 (2026-11-11): not yet executed against Azure; needs a real test user (workspace Viewer, mapped in fabric/03 TEST_USERS) and an interactive browser sign-in; whether ontology queries enforce OneLake security row rules is an open verify item"
+  - "NB9 step 9 (2026-11-12): not yet executed against Azure; publishing uses the Microsoft 365 publish REST call (api-version v1); whether a Teams user's identity reaches the ontology through the toolbox connection is an open verify item"
   - "mcp capped below 2 on 2026-11-09: mcp 2.0 removed streamablehttp_client used by NB1, NB8 and NB9; environments that already installed mcp 2.x need 'pip install -r requirements.txt' again"

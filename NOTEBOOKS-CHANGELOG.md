@@ -8,6 +8,21 @@ appended, never rewritten. Deck editions are logged in `decks/CHANGELOG.md`, not
 
 ---
 
+## 2026-11-12 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — updated (step 9)
+
+**Paired deck:** Microsoft Foundry Fabric IQ and Foundry IQ Agents.pptx (in preparation) · step 9 → deck section 7
+**Change:** new step 9, publishing and channels for `games-ops-prompt`. 9a reads the agent endpoint (protocols, authorization schemes, version routing) and pins the current version (`update_details` with `FixedRatioVersionSelectionRule`). 9b publishes to Microsoft 365 Copilot and Teams with scope `Shared` (only you, BotServiceRbac, no admin approval) through the Microsoft 365 publish REST call, then a manual Teams test as you and as the step 7 Norway test user. 9c is one web app call: the `openai` client against the agent's OpenAI-compatible endpoint with each person's token. 9d turns on incoming A2A with an agent card, keeping the protocols already on the endpoint, and calls the agent with `a2a-sdk` as each person. A table compares the NOCs per route and person with step 7. Title cell, cleanup notes (published app not deleted) and closing cell updated. Organization-wide publishing, Agent 365 and a sample web app are out of scope.
+**Dependency changes:** none; `a2a-sdk` comment tags NB9.
+**Env changes:** none.
+**Regression:** kit_check over all notebooks; new cells compile; endpoint summary logic tested offline. Not executed against Azure.
+**Open verify items:** whether the Teams user's identity reaches the ontology through the toolbox connection; `performBotRegistration`; the agent's OpenAI-compatible base URL; `ProtocolConfiguration` built from the current settings.
+
+## 2026-11-12 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — step 7 lakehouse access
+
+**Change:** corrected the step 7 prerequisites: the workspace Viewer role gives no read permission on lakehouse data in OneLake, and the Direct Lake semantic model reads the lakehouse as the person asking (single sign-on), so the test user also needs `GamesLakehouse` shared with **Read all data using Apache Spark**. Without it, the 7a DAX query failed for the test user with "Cannot find table 'noc'". Build on the semantic model is restated in the prerequisites. "What to look for" adds both symptoms and a production alternative (fixed-identity cloud connection with single sign-on off, no lakehouse access for users). Title-cell prerequisite, README step 7 paragraph and `FABRIC_RLS_TEST_USER` row updated. Owner's rewrite of the step 7 introduction kept.
+**Dependency changes:** none.
+**Regression:** step 7 run by the owner on 2026-11-12 with the lakehouse share: 7a, 7b and 7c returned Norway-only results for the test user. No code cells changed.
+
 ## 2026-11-11 · foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb — step 7 Build permission
 
 **Change:** step 7 prerequisites add **Build** on the semantic model *Games Operations Model* for the test user (the workspace Viewer role doesn't include it; querying the semantic models through the ontology needs Read and Build; RLS still applies with Build). "What to look for" adds the access-error symptom when Build is missing. README step 7 paragraph and `FABRIC_RLS_TEST_USER` row updated. The sample's `ontology/ontology-design.md` gains a note on permissions after generation: checked at query time (inferred, confirmed by Q14), metrics need an ontology refresh after measure changes, lakehouse bindings aren't filtered by semantic model RLS.

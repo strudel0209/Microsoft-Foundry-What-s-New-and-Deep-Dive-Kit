@@ -58,6 +58,6 @@ pandas>=2.2                      # AI gateway notebook and NB9: result tables
 -r samples/games-operations/requirements.txt
 
 # A2A demo notebook — Part 1 (the protocol, runs offline)
-a2a-sdk[http-server]>=1.1.4      # implements A2A protocol 1.0; <1.1.5 caps protobuf<7 (fine with protobuf 6.x)
+a2a-sdk[http-server]>=1.1.4      # implements A2A protocol 1.0 (NB5; NB9 step 9 client); <1.1.5 caps protobuf<7 (fine with protobuf 6.x)
 uvicorn>=0.30                    # not a dependency of a2a-sdk — install explicitly
 httpx>=0.28.1                    # NB5 A2A client; NB9 Fabric item check and ARM project connections
