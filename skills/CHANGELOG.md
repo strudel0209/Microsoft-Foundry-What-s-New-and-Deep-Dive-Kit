@@ -1,10 +1,36 @@
 # Kit skills · changelog
 
-Versions of the three Cowork skills shipped in `skills/`. The version line at the top of each
+Versions of the four Cowork skills shipped in `skills/`. The version line at the top of each
 `SKILL.md` must match the newest entry here. Semantic versioning: MAJOR = a change that breaks
 existing decks, notebooks or `kit.yaml`; MINOR = new rule, mode or script; PATCH = wording fixes.
 A change to the shared visual system or to the Slide wording rules updates **both** deck skills
 (and `scripts/deck_lib.py`) in the same release.
+
+## 1.3.0 · 2026-11-15 — interactive-deck-story added
+
+**interactive-deck-story** (new: `SKILL.md`, `assets/engine.css`, `assets/engine.js`,
+`assets/shell.html`, `scripts/extract_deck.py`, `scripts/build_story.py`, `scripts/story_check.py`,
+`scripts/render_check.js`, `references/story-format.md`, `examples/`)
+- Turns a deck with decision content into one offline interactive HTML story: a main decision
+  tree that unfolds into the deck's own decision trees and diagrams, with sources, presenter
+  notes, a walk-the-tree mode and deep links. Modes BUILD, REFRESH and KIT.
+- Fixed engine (engine 1.0.1) plus one `story.json` per deck; topic-specific diagrams only
+  through `--extra-js` renderers. `story_check.py` applies the slide wording rules (no
+  "you/your", no "Learn says", no "agent team", no presenter-verify text) and the preview
+  asterisk rule; `render_check.js` renders and screenshots every scene in headless Chromium.
+- Full screen (F) uses the standard API with the webkit-prefixed fallback. Where the browser or a
+  hosting page blocks it (a preview pane, a sandboxed frame, a browser policy), the page hides its
+  toolbars instead and shows a notice pointing to F11 (engine 1.0.1, 2026-11-16, after full screen
+  did nothing in Edge with engine 1.0.0).
+- KIT mode writes only `interactive-stories/` (the page and its `src/<topic>/` sources), the new
+  `interactive_stories:` list and `paths.interactive_stories` entry in `kit.yaml`, and the README
+  *Interactive Stories* subsection; never a `decks[]` entry or another skill's changelog.
+- Worked example: `examples/latency-optimization/` (18 scenes, from the latency deck,
+  edition 2026-11); the kit copy to refresh is
+  `interactive-stories/src/latency-optimization-for-models-and-agents/`.
+
+**azure-ai-deep-dive-deck, deck-companion-notebook, foundry-whats-new-deck**
+- Version line only (shared kit version); no content change.
 
 ## 1.2.0 · 2026-10-30 — deck file names, presenter line and sensitivity labels
 
@@ -104,6 +130,8 @@ A change to the shared visual system or to the Slide wording rules updates **bot
   next notebook number) on every BUILD; pull-request flow with `kit-gate.md`.
 
 ## Pre-release history (single user, not shipped)
+- 2026-11-15 · `interactive-deck-story` created from the approved latency story prototype
+  (version 1.0.0, personal only).
 - 2026-10-10 · `deck-companion-notebook` created; kit_check.py false positives fixed; "No tested
   version yet" pin rule.
 - early October 2026 · slide-wording rules 1–3 added to both deck skills.

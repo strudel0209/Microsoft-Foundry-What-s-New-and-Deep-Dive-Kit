@@ -1,8 +1,8 @@
 # Microsoft Foundry What's New and Deep-Dive Kit
 
-Nine notebooks explore Microsoft Foundry: model calls and managed prompt agents, custom hosted agents with long-running workflows and observability, publishing a hosted agent from a **private-network** Foundry project to Microsoft Teams without APIM, prompt caching, the Agent2Agent (A2A) protocol, Azure Content Understanding, Voice Live with voice agents, governing models, tools and agents with an AI gateway, and Fabric IQ ontologies with Foundry IQ knowledge bases for agents.
+Ten notebooks explore Microsoft Foundry: model calls and managed prompt agents, custom hosted agents with long-running workflows and observability, publishing a hosted agent from a **private-network** Foundry project to Microsoft Teams without APIM, prompt caching, the Agent2Agent (A2A) protocol, Azure Content Understanding, Voice Live with voice agents, governing models, tools and agents with an AI gateway, Fabric IQ ontologies with Foundry IQ knowledge bases for agents, and the latency of model calls and agent patterns.
 
-These are hands-on presentation demos, not production application templates. Notebook headings reference slides in the accompanying presentations in [decks/](decks/); the notebooks can also be explored independently. Every deck and notebook is produced with the Cowork skills in [skills/](skills/) — see [Generate Decks and Notebooks with Cowork](#generate-decks-and-notebooks-with-cowork). Preview features and cells marked `# verify` should be checked against the linked documentation and your deployed SDK versions before presenting.
+These are hands-on presentation demos, not production application templates. Notebook headings reference slides in the accompanying presentations in [decks/](decks/); the notebooks can also be explored independently. Every deck, notebook and interactive story is produced with the Cowork skills in [skills/](skills/) — see [Generate Decks and Notebooks with Cowork](#generate-decks-and-notebooks-with-cowork). Preview features and cells marked `# verify` should be checked against the linked documentation and your deployed SDK versions before presenting.
 
 ## Choose a Notebook
 
@@ -17,14 +17,15 @@ These are hands-on presentation demos, not production application templates. Not
 | [Notebook 7: Voice Live and voice agents](foundry-demo-7-voice-live.ipynb) | Build an IT service-desk voice assistant step by step | Voice Live sessions, voices, turn detection, model choice, function tools, voice in front of a Foundry agent, and preview Foundry voice agents with stored conversations |
 | [Notebook 8: AI gateway governance](foundry-demo-8-ai-gateway-governance.ipynb) | Govern an existing API Management instance in front of Foundry | Per-team token limits and quotas, usage attribution, content safety, semantic caching, backend pools, MCP and A2A governance, AI Gateway in Foundry, and end-to-end tracing |
 | [Notebook 9: Fabric IQ and Foundry IQ agents](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb) | Connect a Fabric IQ ontology and indexed documents to Foundry IQ for agents | Ontology MCP and Fabric IQ MCP tools, OneLake indexing with Content Understanding, search index, indexed OneLake and Fabric ontology knowledge sources, reasoning effort and citations; one toolbox, three agent patterns (prompt, Copilot harness, hosted) with evaluations and traces; a permission test with a NOC-restricted user; publishing to Microsoft 365 Copilot and Teams, a web app call and an A2A call |
+| [Notebook 10: Latency optimization for models and agents](foundry-demo-10-latency-optimization-for-models-and-agents.ipynb) | Measure where the time goes in model calls and agent patterns | Time to first token and generation time, reasoning effort, classification by a small model and the Decisions API, Model Router, standard, priority and flex processing, five orchestration patterns on one travel-desk question (direct call, single agent, sequential, concurrent, hand-off), hosted-agent cold and warm starts, Foundry IQ retrieval effort, and a latency budget check |
 
 ## Slide Decks
 
-The [decks/](decks/) folder holds the PowerPoint presentations that accompany the notebooks. Slide references in notebook headings (for example, "slides 11, 14" in notebook 1) point to these decks.
+The [decks/](decks/) folder holds the PowerPoint presentations that accompany the notebooks, plus deep-dive decks that have no companion notebook yet. Slide references in notebook headings (for example, "slides 11, 14" in notebook 1) point to these decks.
 
 | Deck | Pairs with |
 | --- | --- |
-| [Microsoft-Foundry-Whats-New-2026-10.pptx](<decks/Microsoft-Foundry-Whats-New-2026-10.pptx>) | Notebook 1: platform features |
+| [Microsoft-Foundry-Whats-New-2026-10-26.pptx](<decks/Microsoft-Foundry-Whats-New-2026-10-26.pptx>) | Notebook 1: platform features (slide references still follow edition 2026-10; see `kit.yaml` → `known_issues`) |
 | [Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx](<decks/Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx>) | Notebook 1: guardrails section |
 | [Microsoft Foundry Hosted Agents.pptx](<decks/Microsoft Foundry Hosted Agents.pptx>) | Notebooks 2 and 3: hosted agents |
 | [Microsoft Foundry Prompt Caching.pptx](<decks/Microsoft Foundry Prompt Caching.pptx>) | Notebook 4: prompt caching |
@@ -33,6 +34,16 @@ The [decks/](decks/) folder holds the PowerPoint presentations that accompany th
 | [Microsoft Foundry Voice Live-Voice Agents.pptx](<decks/Microsoft Foundry Voice Live-Voice Agents.pptx>) | Notebook 7: Voice Live and voice agents |
 | [Microsoft Foundry AI Gateway.pptx](<decks/Microsoft Foundry AI Gateway.pptx>) | Notebook 8: AI gateway governance |
 | [Microsoft Foundry Copilot Harness Prompt Agents.pptx](<decks/Microsoft Foundry Copilot Harness Prompt Agents.pptx>) | Notebook 9, step 5: prompt, harness and hosted agents compared (no slide references) |
+| [Microsoft Foundry Fabric IQ Ontologies for Agents.pptx](<decks/Microsoft Foundry Fabric IQ Ontologies for Agents.pptx>) | No companion notebook yet; related: notebook 9 (Fabric IQ and Foundry IQ agents) |
+| [Microsoft Foundry Latency Optimization for Models and Agents.pptx](<decks/Microsoft Foundry Latency Optimization for Models and Agents.pptx>) | Notebook 10; related: notebook 1 (priority processing), notebook 4 (prompt caching), notebook 8 (semantic caching) |
+
+### Interactive Stories
+
+The [interactive-stories/](interactive-stories/) folder holds offline interactive versions of the decks. Each story opens on the deck's main decision tree and unfolds, scene by scene, into its detailed decision trees and diagrams, with sources, presenter notes and a link to every scene. A story is one self-contained HTML file: download it, or open it from a synced clone, in Edge or Chrome. It needs no hosting or network connection (OneDrive offers it as a download and GitHub shows its source code, not the page). Keys: → and ← step through a scene, M returns to the main tree, C lists the chapters, N shows the presenter notes, W walks a decision tree, P plays the story, F switches to full screen. The story sources (`story.json`) are in [interactive-stories/src/](interactive-stories/src/).
+
+| Story | Built from deck | Scenes |
+| --- | --- | --- |
+| [Microsoft Foundry Latency Optimization for Models and Agents - Interactive.html](<interactive-stories/Microsoft Foundry Latency Optimization for Models and Agents - Interactive.html>) | [Microsoft Foundry Latency Optimization for Models and Agents.pptx](<decks/Microsoft Foundry Latency Optimization for Models and Agents.pptx>), edition 2026-11 | 18 |
 
 ## Samples
 
@@ -44,13 +55,14 @@ The [samples/](samples/) folder holds synthetic datasets shared by notebooks and
 
 ## Generate Decks and Notebooks with Cowork
 
-The [skills/](skills/) folder holds three Microsoft 365 Copilot Cowork skills that produce every deck and notebook in this repository the same way. Anyone with Cowork enabled and a clone of this repository can build a new deck, refresh the what's-new deck, or add a companion notebook that matches the existing ones.
+The [skills/](skills/) folder holds four Microsoft 365 Copilot Cowork skills that produce every deck, notebook and interactive story in this repository the same way. Anyone with Cowork enabled and a clone of this repository can build a new deck, refresh the what's-new deck, add a companion notebook, or turn a deck into an interactive story that matches the existing ones.
 
 | Skill | Produces | Writes to |
 | --- | --- | --- |
-| [azure-ai-deep-dive-deck](skills/azure-ai-deep-dive-deck/SKILL.md) | A new technical deck on one Azure AI topic: verified facts, shape-built diagrams, speaker notes on every slide | `decks/<topic>-deep-dive-<yyyy>-<mm>.pptx`, [decks/DEEP-DIVE-DECKS.md](decks/DEEP-DIVE-DECKS.md) |
-| [foundry-whats-new-deck](skills/foundry-whats-new-deck/SKILL.md) | The next dated edition of the Microsoft Foundry what's-new deck: detect changes, propose patches, apply the approved ones | `decks/Microsoft-Foundry-Whats-New-<yyyy>-<mm>.pptx`, [decks/CHANGELOG.md](decks/CHANGELOG.md) |
+| [azure-ai-deep-dive-deck](skills/azure-ai-deep-dive-deck/SKILL.md) | A new technical deck on one Azure AI topic: verified facts, shape-built diagrams, speaker notes on every slide | `decks/Microsoft Foundry <Subject>.pptx`, [decks/DEEP-DIVE-DECKS.md](decks/DEEP-DIVE-DECKS.md) |
+| [foundry-whats-new-deck](skills/foundry-whats-new-deck/SKILL.md) | The next dated edition of the Microsoft Foundry what's-new deck: detect changes, propose patches, apply the approved ones | `decks/Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx`, [decks/CHANGELOG.md](decks/CHANGELOG.md) |
 | [deck-companion-notebook](skills/deck-companion-notebook/SKILL.md) | A companion notebook for a deck, one step per slide concept, with dependency and breaking-change checks across all notebooks | `foundry-demo-<n>-<topic>.ipynb`, `requirements.txt`, `.env.example`, this README, [NOTEBOOKS-CHANGELOG.md](NOTEBOOKS-CHANGELOG.md) |
+| [interactive-deck-story](skills/interactive-deck-story/SKILL.md) | An offline interactive HTML story from a deck: the main decision tree unfolding into the deck's detailed decision trees and diagrams, with sources and presenter notes | `interactive-stories/<deck base name> - Interactive.html`, `interactive-stories/src/<topic>/`, `kit.yaml` → `interactive_stories` |
 
 [kit.yaml](kit.yaml) is the manifest the skills read on every run: folder paths, naming patterns, deck and notebook pairs, shared environment variables and their meaning, the next free notebook number, and known issues.
 
@@ -64,7 +76,7 @@ The [skills/](skills/) folder holds three Microsoft 365 Copilot Cowork skills th
 ### 1. Install the skills (once, and after each skills release)
 
 1. Clone the repository into a folder that OneDrive syncs, for example `OneDrive/Documents/Microsoft-Foundry-What-s-New-and-Deep-Dive-Kit`.
-2. In Cowork, attach the folder `skills/azure-ai-deep-dive-deck` and ask: *"Install this skill from the attached folder."* Repeat for `skills/foundry-whats-new-deck` and `skills/deck-companion-notebook`. Install all three: they hand over to each other.
+2. In Cowork, attach the folder `skills/azure-ai-deep-dive-deck` and ask: *"Install this skill from the attached folder."* Repeat for `skills/foundry-whats-new-deck`, `skills/deck-companion-notebook` and `skills/interactive-deck-story`. Install all four: the deck and notebook skills hand over to each other, and the story skill reads their decks.
 3. Ask Cowork *"show my skills"* and check that each one reports the version listed in [skills/CHANGELOG.md](skills/CHANGELOG.md).
 
 Installed skills live in your own OneDrive (`Documents/Cowork`). To update them, pull the repository, attach the skill folder again and ask Cowork to *"update this skill from the attached folder"*; then check the version line.
@@ -91,27 +103,39 @@ The skill reads the newest edition named in [decks/CHANGELOG.md](decks/CHANGELOG
 
 ### 5. Add or refresh a companion notebook
 
-> Build the companion notebook for decks/foundry-iq-deep-dive-2026-11.pptx.
+> Build the companion notebook for decks/Microsoft Foundry Latency Optimization for Models and Agents.pptx.
 
 The skill reads `kit.yaml`, maps slides to steps, sources code from Microsoft Learn and Microsoft GitHub samples, checks every dependency change against all existing notebooks, patches (never rewrites) `requirements.txt`, `.env.example` and this README, runs `skills/deck-companion-notebook/scripts/kit_check.py`, and logs the change in `NOTEBOOKS-CHANGELOG.md`. Other modes:
 
 - *"Update the notebook for the new deck edition"* — slide references and new steps, as a reviewable proposal.
 - *"Check the kit's dependencies"* — audit and proposed safe version bumps, no new notebook. Run it monthly and before each customer session.
 
-### 6. Before presenting
+### 6. Build or refresh an interactive story
+
+> Build the interactive story for decks/Microsoft Foundry Latency Optimization for Models and Agents.pptx.
+
+The skill extracts the deck, plans the story (the main decision tree first, then one scene per decision tree or diagram, in deck order), writes a `story.json` for the shared engine, builds one self-contained HTML file and checks it with `skills/interactive-deck-story/scripts/story_check.py`, an HTML validator and `render_check.js`, which renders every scene in headless Chromium. Ask it to *"add the interactive story to the kit"* to place the page and its sources in `interactive-stories/` and add an `interactive_stories:` entry to `kit.yaml`. After a new deck edition, ask *"refresh the interactive story for the new deck edition"*. To rebuild a page by hand:
+
+```bash
+python skills/interactive-deck-story/scripts/build_story.py interactive-stories/src/<topic>/story.json "interactive-stories/<deck base name> - Interactive.html" --extra-js interactive-stories/src/<topic>/renderers.js
+```
+
+### 7. Before presenting
 
 - Clear every item that starts with `Presenter note: verify` in the speaker notes, against the linked page on the day.
 - Check the asterisk-marked features (`*` = preview, no service level agreement) against the documentation.
 - Run each notebook once in VS Code against a **non-production** project; the skills check notebooks statically and never call Azure.
+- Open an interactive story once in the browser and on the screen you present with; the skill checks it in headless Chromium only.
 
-### 7. Contribute back
+### 8. Contribute back
 
-1. Create a branch: `git checkout -b deck/<topic>-<yyyy>-<mm>` or `notebook/<n>-<topic>`.
+1. Create a branch: `git checkout -b deck/<topic>-<yyyy>-<mm>`, `notebook/<n>-<topic>` or `story/<topic>`.
 2. Copy the files Cowork delivered into the repository (or let Cowork upload them into the attached folder), and apply the `kit.yaml` diff it proposed.
 3. Clear notebook outputs (`jupyter nbconvert --clear-output --inplace <notebook>`), then run:
    ```bash
    python skills/deck-companion-notebook/scripts/kit_check.py . --md-output kit-gate.md
    python skills/azure-ai-deep-dive-deck/scripts/deck_qa.py decks/<deck>.pptx
+   python skills/interactive-deck-story/scripts/story_check.py interactive-stories/src/<topic>/story.json --extra-js interactive-stories/src/<topic>/renderers.js
    ```
 4. Open a pull request with `kit-gate.md` in the description. Pre-existing findings stay listed in `kit.yaml` → `known_issues`; new findings block the merge.
 
@@ -121,7 +145,7 @@ The skill reads `kit.yaml`, maps slides to steps, sources code from Microsoft Le
 - Decks: slide titles are short noun phrases; subtitles are one plain line; no "you/your" on slides; no "Learn says" — "as per official documentation" or no attribution; named actors ("development team"), never "agent team"; every row of a slide table answers that table's question.
 - Never commit `.env`, keys, tenant or subscription IDs, real resource names, personal paths, a private package index, or a sensitivity-labelled deck.
 - Never rename or renumber another contributor's notebook or deck; never overwrite a dated edition.
-- `decks/CHANGELOG.md` belongs to `foundry-whats-new-deck`, `decks/DEEP-DIVE-DECKS.md` to `azure-ai-deep-dive-deck`, `NOTEBOOKS-CHANGELOG.md` to `deck-companion-notebook`.
+- `decks/CHANGELOG.md` belongs to `foundry-whats-new-deck`, `decks/DEEP-DIVE-DECKS.md` to `azure-ai-deep-dive-deck`, `NOTEBOOKS-CHANGELOG.md` to `deck-companion-notebook`, `interactive-stories/` and `kit.yaml` → `interactive_stories` to `interactive-deck-story`.
 
 ## Notebook 1: Platform Features
 
@@ -615,6 +639,33 @@ Step 7 needs a test user in the Fabric tenant with the workspace **Viewer** role
 
 Step 9 publishes `games-ops-prompt` with the scope *Only you* through the Microsoft 365 publish API, so no admin approval is needed; publishing to the whole organization needs approval in the Microsoft 365 admin center and isn't part of the notebook. The Teams test is manual: ask the step 7 question in Teams or Microsoft 365 Copilot as yourself and as the Norway test user (its **Foundry User** role from step 7 covers the BotServiceRbac scheme). The web app cell calls the agent's OpenAI-compatible endpoint with the `openai` client and a user token, without the Foundry SDK; the A2A cell keeps the Activity Protocol on the endpoint while adding A2A and an agent card, and calls the agent with `a2a-sdk` as in notebook 5. As per official documentation, published agents don't return streaming responses or citations. No new packages or settings are needed.
 
+## Notebook 10: Latency Optimization for Models and Agents
+
+[foundry-demo-10-latency-optimization-for-models-and-agents.ipynb](foundry-demo-10-latency-optimization-for-models-and-agents.ipynb) is the companion to the deep-dive deck *Microsoft Foundry Latency Optimization for Models and Agents* (edition 2026-11); step headings carry its slide numbers. Steps 1–5 look at one model call, steps 6–10 run one question through five agent patterns, and steps 11–13 cover the agent runtime, retrieval and a latency budget. Every number it prints is a demonstration, not a controlled benchmark: a few runs per variant from one client.
+
+The agent steps use one scenario: an employee travel desk with three specialists (travel policy, budget and itinerary) answering *is this trip within policy and budget, and which flights should I book?* The three tools are local functions returning fixed, made-up data at once, so the differences come from model calls and orchestration. Every pattern uses the same deployment, reasoning effort and output cap. Model calls per turn are counted from Microsoft Agent Framework's OpenTelemetry `chat` spans, collected in memory; an answer check looks for the flight numbers and the remaining budget, which only the tools know.
+
+| Step | What it shows | Status |
+| --- | --- | --- |
+| 0 | Settings, clients and the `LIVE` flag | — |
+| 1 | Time to first token, generation time and output tokens for a short and a long answer | GA |
+| 2 | One question at reasoning effort none, low and medium, with an output cap and low verbosity | GA |
+| 3 | One classification three ways: small model, Decisions API, full model (optional rows) | GA |
+| 4 | Model Router: which model answered, and how fast (optional) | GA |
+| 5 | Standard, priority and flex processing per request, with the tier the service reports | GA; flex preview |
+| 6 | Travel desk tools, in-memory spans and the measurement harness | GA |
+| 7 | Direct model call and single agent with three tools | GA |
+| 8 | Sequential and concurrent orchestration | GA |
+| 9 | Hand-off orchestration with a fixed hand-off chain | GA |
+| 10 | Five patterns compared: first text, total time, model calls, tool calls, tokens, answer check | GA |
+| 11 | Hosted agent cold and warm start with the `x-ms-debug-latency-*` headers (optional, notebook 2's agent) | GA |
+| 12 | Foundry IQ retrieval effort minimal and low on notebook 9's knowledge base (optional) | GA; low preview |
+| 13 | Latency budget check: 95th percentile per pattern against illustrative targets | — |
+| 14 | Group chat, Magentic and the deterministic router explained; where the other latency features are shown | — |
+| 15 | Cleanup (closes clients; deletes nothing in Azure) | — |
+
+Steps 6–10 import Agent Framework from the packages that the root `requirements.txt` pulls in through the agent requirements, as notebook 9 does; no new packages are needed apart from listing `opentelemetry-api`, which arrives with `opentelemetry-sdk`. The notebook was written against `agent-framework` 1.25.0 and `agent-framework-foundry` 1.16.2 and has not been run against Azure yet; lines marked `# verify` name the page to check.
+
 ## Prerequisites
 
 - One Azure subscription for all kit resources and an existing Foundry project with appropriate feature and regional availability. Foundry and API Management may use different resource groups.
@@ -680,6 +731,9 @@ Use [.env.example](.env.example) as the starting point for a root-level `.env`. 
 | `FABRIC_DOCS_FOLDER` | Notebook 9, optional: folder of the PDFs under the lakehouse **Files** area; defaults to `games_ops/output/documents` |
 | `FOUNDRY_CONNECTIONS_API_VERSION` | Notebook 9, optional: Azure Resource Manager API version for the project connections of step 5; defaults to `2025-10-01-preview` |
 | `FABRIC_RLS_TEST_USER` | Notebook 9, step 7: sign-in name of the Norway-only test user (workspace Viewer with Build on the semantic model and Read all data on the lakehouse, mapped in the sample's semantic model build notebook) |
+| `NB10_SMALL_MODEL_NAME` | Notebook 10, optional, step 3: small model deployment for the classification comparison, for example `gpt-5.4-mini`; blank skips that row |
+| `NB10_KNOWLEDGE_BASE` | Notebook 10, optional, step 12: knowledge base on `AZURE_SEARCH_ENDPOINT` with a model configuration; blank uses notebook 9's `games-kb` |
+| `FOUNDRY_DECISIONS_NAME` / `FOUNDRY_ROUTER_NAME` / `HOSTED_AGENT_NAME` / `AZURE_SEARCH_ENDPOINT` | Notebook 10, optional steps 3, 4, 11 and 12: same meaning as in notebooks 1, 2 and 9; blank skips the step or row (notebook 10 also uses `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL_NAME`) |
 
 Notebook 8's gateway settings are included in [.env.example](.env.example). It combines the APIM base URL with `INFERENCE_API_PATH`, then selects the URL shape with `INFERENCE_API_STYLE`: `v1` uses `/openai/v1/chat/completions`; `azure` uses `/openai/deployments/{deployment}/chat/completions` and `INFERENCE_API_VERSION`. Match these settings and `SUBSCRIPTION_KEY_HEADER` to the imported API.
 
@@ -708,6 +762,7 @@ The hosted services use a separate deployment setting, `AZURE_AI_MODEL_DEPLOYMEN
 9. For notebook 7, run parts A and B live, then present part C as preview.
 10. For notebook 8, run steps 0–5 and 10 live against a non-production gateway, present step 9 as preview, and finish with step 11.
 11. For notebook 9, build the sample's Fabric items the day before, run steps 1–3 ahead of the session (indexing takes several minutes), and run step 4 live. Create the step 5 agents at least five minutes before the session (role assignments take time to apply), ask the three questions live, and start the step 6 runs early so the results are ready to show. For step 7, sign in the test user once before the session (the token stays cached for the kernel's lifetime) and run 7a live: it needs no language model and answers in seconds. Publish in step 9 the day before and open the agent once in Teams as each person to complete the sign-in; then ask the step 7 question live in Teams. Keep the cleanup cells off until the end of the demo.
+12. For notebook 10, run steps 1–5 live in any order, then step 6 and the pattern steps 7–9 ahead of the talk if time is short (each pattern runs a warm-up plus three measured runs) and show the step 10 table live; finish with the step 13 budget check. Steps 11 and 12 need notebook 2's hosted agent and notebook 9's knowledge base.
 
 Avoid blindly using **Run All**: steering is timing-sensitive, some cells modify Azure resources, and notebook 1 ends with a destructive cleanup cell. Repeated setup can also change which agent version subsequent name-only references select.
 
@@ -737,6 +792,8 @@ Notebook 3's private environment (VNet, private endpoint, model, hosted compute,
 
 Notebook 9's step 3 bills content extraction and embeddings to the Foundry resource for each indexer run over the 51 PDFs, the indexed OneLake knowledge source in step 4 runs a second extraction and embedding pass, and every knowledge base request uses the chat model. Its cleanup cell (off by default) deletes the knowledge base, the knowledge sources, the generated objects and the step 3 pipeline; it does **not** delete the Azure AI Search service, which bills per hour on Basic and higher tiers, nor the Fabric items or capacity. Steps 5 and 6 use the chat model for every agent run and judge call (about 36 agent runs with `EVAL_ALL = True`); the first cleanup cell deletes the agents, toolbox, connections and agent knowledge base, and keeps the evaluations, datasets and role assignments.
 
+Notebook 10 makes only model and service calls: up to 45 short model calls in steps 1–5, and in steps 7–9 four runs per pattern (one warm-up and three measured) of 1 to about 8 model calls each — roughly 100 calls with the defaults. Priority requests in step 5 bill at the priority rate. Step 11 starts hosted-agent sessions whose compute is released after the idle timeout (15 minutes by default) and stores two conversations; step 12 sends six retrieve requests, three of them with query planning on the knowledge base's model. Its cleanup cell closes the clients and deletes nothing in Azure; the model deployments, notebook 2's hosted agent and notebook 9's search service keep billing as before.
+
 ## Repository Guide
 
 - [foundry-demo-1-what-is-new.ipynb](foundry-demo-1-what-is-new.ipynb): platform features and managed prompt-agent lifecycle.
@@ -749,12 +806,14 @@ Notebook 9's step 3 bills content extraction and embeddings to the Foundry resou
 - [foundry-demo-7-voice-live.ipynb](foundry-demo-7-voice-live.ipynb): Voice Live sessions and tools, voice for a Foundry agent, and preview Foundry voice agents.
 - [foundry-demo-8-ai-gateway-governance.ipynb](foundry-demo-8-ai-gateway-governance.ipynb): governing models, MCP tools and agents with API Management as the AI gateway.
 - [foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb): Fabric IQ ontology and Fabric IQ MCP endpoints, a OneLake document indexing pipeline, Foundry IQ knowledge sources compared in one knowledge base, and three agent patterns with evaluations and traces, a permission test with a NOC-restricted user, and publishing to Microsoft 365 Copilot, Teams, a web app and A2A.
+- [foundry-demo-10-latency-optimization-for-models-and-agents.ipynb](foundry-demo-10-latency-optimization-for-models-and-agents.ipynb): latency of model calls and agent patterns — first-token and generation time, reasoning effort, model choice, service tiers, five orchestration patterns on one question, hosted-agent start types, retrieval effort and a latency budget.
 - [decks/](decks/): PowerPoint decks that accompany the notebooks (see [Slide Decks](#slide-decks)).
+- [interactive-stories/](interactive-stories/): offline interactive HTML stories built from the decks, with their sources in `src/` (see [Interactive Stories](#interactive-stories)).
 - [decks/CHANGELOG.md](decks/CHANGELOG.md): dated editions of the what's-new deck (owned by `foundry-whats-new-deck`).
 - [decks/DEEP-DIVE-DECKS.md](decks/DEEP-DIVE-DECKS.md): register of deep-dive decks (owned by `azure-ai-deep-dive-deck`).
 - [NOTEBOOKS-CHANGELOG.md](NOTEBOOKS-CHANGELOG.md): notebook additions, updates and dependency audits (owned by `deck-companion-notebook`).
 - [kit.yaml](kit.yaml): kit manifest read by the skills; [kit.local.yaml.example](kit.local.yaml.example): template for personal, git-ignored settings.
-- [skills/](skills/): the three Cowork skills, their scripts, and [skills/CHANGELOG.md](skills/CHANGELOG.md).
+- [skills/](skills/): the four Cowork skills, their scripts, and [skills/CHANGELOG.md](skills/CHANGELOG.md).
 - [samples/games-operations/](samples/games-operations/): synthetic Games operations data generator, Fabric setup notebook and KQL script, and the ontology design (see its README).
 - [samples/games-operations/hosted-agent/](samples/games-operations/hosted-agent/): notebook 9's hosted Agent Framework agent, its azd manifest and production identity options.
 - [private-agent/azure.yaml](private-agent/azure.yaml): isolated azd manifest deploying `demo-hosted-agent` to the private project.

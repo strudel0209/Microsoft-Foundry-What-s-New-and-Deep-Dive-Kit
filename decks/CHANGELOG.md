@@ -6,6 +6,19 @@ Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pa
 
 ---
 
+## Kit note 2026-11-14 · deep-dive deck added (not a what's-new edition)
+
+**File:** `Microsoft Foundry Latency Optimization for Models and Agents.pptx` (18 slides) · **Register entry:** `DEEP-DIVE-DECKS.md` → edition 2026-11
+**Effect on the what's-new deck:** none — no slide, slide number or source of edition 2026-10-26 changes. Priority and flex processing, prompt caching, Model Router, the Decisions API, hosted-agent latency, toolboxes and tool search now have a deep-dive deck focused on response time that the next what's-new edition can point to.
+**Facts the next DETECT run should pick up (verified on Learn and the Foundry blog 2026-11-14):**
+- Flex processing (preview): `service_tier` "flex" on Global Standard for selected GPT-5.6 and GPT-6 models; 50% below Standard, no latency target and no automatic fallback.
+- Long-running resilience for hosted agents generally available on 28 October 2026.
+- Workflows in the Foundry portal (preview) retire on 1 December 2026; new workflows use Microsoft Agent Framework.
+- Foundry IQ retrieval effort: minimal generally available; low, medium and answer synthesis in preview.
+- Microsoft Agent Framework python-1.26.0 and dotnet-1.28.0 (November 2026).
+
+---
+
 ## Kit note 2026-11-05 · deep-dive deck added (not a what's-new edition)
 
 **File:** `Microsoft Foundry Fabric IQ Ontologies for Agents.pptx` (17 slides) · **Register entry:** `DEEP-DIVE-DECKS.md` → edition 2026-11

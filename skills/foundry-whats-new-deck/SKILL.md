@@ -18,7 +18,7 @@ metadata:
 
 # Foundry "What's New" Deck — maintain and refresh
 
-> Version 1.2.0 · 2026-10-30 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.3.0 · 2026-11-15 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview

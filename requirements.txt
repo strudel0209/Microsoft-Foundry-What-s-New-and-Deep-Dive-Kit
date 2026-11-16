@@ -1,11 +1,11 @@
-# Microsoft Foundry demo — notebooks 1–9 — Python 3.12 recommended
+# Microsoft Foundry demo — notebooks 1–10 — Python 3.12 recommended
 # Pinned to the minimum versions referenced in the Foundry documentation (September 2026).
 
 # --- Core: project client, OpenAI-compatible surface, identity (NB1 cells 0–4, NB2 all) ---
-azure-ai-projects[voice]>=2.9.0,<2.11  # [voice] adds the realtime transport for NB7 voice agents; >=2.9.0 for the Copilot harness (NB9 step 5b); minor cap: preview surfaces used in NB1, NB3, NB7, NB9; untested — written against 2.10.0
-openai>=3.26.0,<4                # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway; NB1 step 2b Decisions API needs >=3.26.0
+azure-ai-projects[voice]>=2.9.0,<2.11  # [voice] adds the realtime transport for NB7 voice agents; >=2.9.0 for the Copilot harness (NB9 step 5b); NB10 step 0 project client; minor cap: preview surfaces used in NB1, NB3, NB7, NB9; untested — written against 2.10.0
+openai>=3.26.0,<4                # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway; NB1 step 2b Decisions API needs >=3.26.0; NB10 steps 1–5 and 7 (streaming timings, reasoning effort, service_tier incl. flex, Decisions API)
 azure-identity>=1.25.3           # Includes subscription-scoped AzureCliCredential for NB3
-requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints
+requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints; NB10 step 11: latency debug headers
 
 # --- Private infrastructure and Teams channel (NB3; resource SDK split packages) ---
 azure-mgmt-resource>=26.0.0,<27
@@ -24,7 +24,8 @@ mcp>=1.10.0,<2                   # NB1, NB8, NB9: streamablehttp_client; mcp 2.0
 anthropic>=0.40.0                # Claude via the /anthropic Messages surface
 
 # --- Tracing and querying telemetry (NB1 cell 6, NB2 steps 3–4) ---
-opentelemetry-sdk>=1.27.0
+opentelemetry-sdk>=1.27.0        # NB10 step 6: in-memory span exporter counts model and tool calls per turn
+opentelemetry-api>=1.27.0,<2     # import name opentelemetry (NB8, NB10); installed with opentelemetry-sdk, listed so the import maps to a requirement; untested — written against 1.27.0
 azure-core-tracing-opentelemetry>=1.0.0b11
 azure-monitor-opentelemetry>=1.6.0    # NB1 cell 21, NB9 step 5: configure_azure_monitor for client-side tracing
 opentelemetry-exporter-otlp>=1.27.0   # only if you export to Aspire Dashboard / another OTLP backend
@@ -32,7 +33,7 @@ azure-monitor-query>=2.0.0            # KQL against Application Insights / Log A
 opentelemetry-instrumentation-openai-v2>=2.1b0   # AI gateway notebook: client-side spans for OpenAI calls
 
 # --- Knowledge base setup on Azure AI Search (NB1 cell 3, optional; NB9 steps 3–4) ---
-azure-search-documents>=12.1.0b2,<12.2   # pre-release: NB9 uses REST API 2026-08-01-preview (Fabric ontology knowledge source, answer synthesis, reasoning effort); untested — written against 12.1.0b2
+azure-search-documents>=12.1.0b2,<12.2   # pre-release: NB9 uses REST API 2026-08-01-preview (Fabric ontology knowledge source, answer synthesis, reasoning effort); untested — written against 12.1.0b2; NB10 step 12 reuses NB9's knowledge base (minimal vs low effort)
 
 # --- Offline prompt-prefix token counting (NB4) ---
 tiktoken>=0.8.0
@@ -44,7 +45,9 @@ azure-ai-contentunderstanding>=1.2.0b3   # pre-release pin: 1.1.0 lacks ContentA
 azure-ai-voicelive[aiohttp]>=1.3.0
 
 # --- Agent Framework and agent-server libraries (local runs of the NB2 agents; mention-only in NB1;
-#     NB9 step 5c runs samples/games-operations/hosted-agent/main.py in process with these packages) ---
+#     NB9 step 5c runs samples/games-operations/hosted-agent/main.py in process with these packages;
+#     NB10 steps 6–10 run Agent Framework orchestrations in process: FoundryChatClient, SequentialBuilder,
+#     ConcurrentBuilder, HandoffBuilder — written against agent-framework 1.25.0 / agent-framework-foundry 1.16.2) ---
 -r agent/src/demo-hosted-agent/requirements.txt
 -r agent/src/demo-long-running-agent/requirements.txt
 
@@ -52,7 +55,7 @@ azure-ai-voicelive[aiohttp]>=1.3.0
 jupyter>=1.1.0
 ipykernel>=6.29.0
 python-dotenv>=1.0.0
-pandas>=2.2                      # AI gateway notebook and NB9: result tables
+pandas>=2.2                      # AI gateway notebook, NB9 and NB10: result tables
 
 # --- Shared sample data (NB9 regenerates the games-operations register and questions when missing) ---
 -r samples/games-operations/requirements.txt

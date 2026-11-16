@@ -1,0 +1,605 @@
+{
+ "$schema_note": "interactive-deck-story content, format 1.0 — skeleton: replace every [bracketed] text with deck content; see references/story-format.md",
+ "meta": {
+  "lang": "en",
+  "brand": "[Short topic] · Microsoft Foundry",
+  "title": "[Deck title as a noun phrase]",
+  "kicker": "MICROSOFT FOUNDRY  ·  INTERACTIVE DEEP DIVE",
+  "subtitle": "[One-sentence subtitle taken from the deck title slide]",
+  "footer": "[Short topic] · [Month yyyy]",
+  "edition": "[Month yyyy]",
+  "checked": "[d Month yyyy]",
+  "deck": "Microsoft Foundry [Subject].pptx",
+  "previewNote": "* preview — no service level agreement.",
+  "editorial": "Grouping into [lens A], [lens B] and [lens C] is an editorial aid of this page; every option comes from the paired deck and its sources.",
+  "labels": {
+   "hub": "Main decision tree",
+   "hubShort": "Main tree",
+   "jumpHub": "Jump to the main decision tree"
+  }
+ },
+ "strategies": {
+  "a": {
+   "label": "[Lens A]",
+   "line": "[What lens A means]",
+   "color": "#34D399"
+  },
+  "b": {
+   "label": "[Lens B]",
+   "line": "[What lens B means]",
+   "color": "#38BDF8"
+  },
+  "c": {
+   "label": "[Lens C]",
+   "line": "[What lens C means]",
+   "color": "#A78BFA"
+  }
+ },
+ "sections": [
+  {
+   "id": "start",
+   "num": "00",
+   "name": "The story"
+  },
+  {
+   "id": "s1",
+   "num": "01",
+   "name": "[Section 1]"
+  },
+  {
+   "id": "s2",
+   "num": "02",
+   "name": "[Section 2]"
+  },
+  {
+   "id": "s3",
+   "num": "03",
+   "name": "[Section 3]"
+  }
+ ],
+ "sources": {
+  "overview": {
+   "label": "[Learn page title]",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/"
+  },
+  "howto": {
+   "label": "[Learn how-to title]",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/"
+  },
+  "whatsnew": {
+   "label": "What's new in Microsoft Foundry",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/whats-new-foundry"
+  }
+ },
+ "scenes": [
+  {
+   "id": "intro",
+   "type": "title",
+   "section": "start",
+   "short": "Title",
+   "slide": [
+    1,
+    2
+   ],
+   "chapters": [
+    [
+     "01",
+     "[Chapter: the problem]",
+     "turn"
+    ],
+    [
+     "02",
+     "[Chapter: main decision tree]",
+     "map"
+    ],
+    [
+     "03",
+     "[Chapter: request path]",
+     "path"
+    ],
+    [
+     "04",
+     "[Chapter: decision tree]",
+     "tree-1"
+    ],
+    [
+     "05",
+     "[Chapter: comparison and path]",
+     "compare"
+    ]
+   ],
+   "notes": "[Speaker notes of slide 1]"
+  },
+  {
+   "id": "turn",
+   "type": "turn",
+   "section": "start",
+   "slide": 3,
+   "short": "[Problem]",
+   "kicker": "THE PROBLEM",
+   "title": "[Problem slide title]",
+   "subtitle": "[Problem slide subtitle]",
+   "tags": [
+    "a",
+    "b",
+    "c"
+   ],
+   "sources": [
+    "overview"
+   ],
+   "barLabel": "[WHAT THE BAR SHOWS] — ILLUSTRATIVE PROPORTIONS",
+   "bar": [
+    [
+     "[Part 1]",
+     0.3,
+     "hop"
+    ],
+    [
+     "[Part 2]",
+     0.3,
+     "model"
+    ],
+    [
+     "[Part 3]",
+     0.4,
+     "gen"
+    ]
+   ],
+   "cardKicker": "[Cause]",
+   "leverLabel": "MAIN LEVER",
+   "principleLabel": "DESIGN PRINCIPLE",
+   "principle": "[Design principle from the slide]",
+   "cards": [
+    {
+     "t": "[Cause 1]",
+     "d": "[One-line description of cause 1]",
+     "lever": "[Main lever]",
+     "tag": "b",
+     "go": "tree-1",
+     "detail": "[Two or three sentences from the slide and its notes]",
+     "src": [
+      "overview"
+     ]
+    },
+    {
+     "t": "[Cause 2]",
+     "d": "[One-line description of cause 2]",
+     "lever": "[Main lever]",
+     "tag": "c",
+     "go": "tree-1",
+     "detail": "[Two or three sentences from the slide and its notes]",
+     "src": [
+      "overview"
+     ]
+    },
+    {
+     "t": "[Cause 3]",
+     "d": "[One-line description of cause 3]",
+     "lever": "[Main lever]",
+     "tag": "a",
+     "go": "tree-1",
+     "detail": "[Two or three sentences from the slide and its notes]",
+     "src": [
+      "overview"
+     ]
+    }
+   ],
+   "notes": "[Speaker notes of slide 3]"
+  },
+  {
+   "id": "map",
+   "type": "map",
+   "section": "start",
+   "short": "Main decision tree",
+   "kicker": "THE MAIN DECISION TREE",
+   "title": "[Three questions for ...]",
+   "subtitle": "[Asked in order; each answer opens a deeper decision tree.]",
+   "tags": [
+    "a",
+    "b",
+    "c"
+   ],
+   "sources": [
+    "overview"
+   ],
+   "root": {
+    "t": "[Starting point]",
+    "d": "[what the user faces]"
+   },
+   "measure": {
+    "t": "Measure first",
+    "d": "[what to measure before changing anything]",
+    "go": "path"
+   },
+   "govern": {
+    "t": "Then govern",
+    "d": "[how to keep the gains]",
+    "go": "compare"
+   },
+   "order": "[Why the questions come in this order]",
+   "questions": [
+    {
+     "k": "a",
+     "q": "[Question for lens A?]",
+     "d": "[Short hint]",
+     "leaves": [
+      {
+       "t": "[Option 1]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 2]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 3]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      }
+     ]
+    },
+    {
+     "k": "b",
+     "q": "[Question for lens B?]",
+     "d": "[Short hint]",
+     "leaves": [
+      {
+       "t": "[Option 1]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 2]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 3]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      }
+     ]
+    },
+    {
+     "k": "c",
+     "q": "[Question for lens C?]",
+     "d": "[Short hint]",
+     "leaves": [
+      {
+       "t": "[Option 1]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 2]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      },
+      {
+       "t": "[Option 3]",
+       "go": "tree-1",
+       "focus": 0,
+       "detail": "[What this option does, from the deck]",
+       "src": [
+        "howto"
+       ]
+      }
+     ]
+    }
+   ],
+   "notes": "[Notes for the main tree — say that the grouping is editorial]"
+  },
+  {
+   "id": "path",
+   "type": "path",
+   "section": "s1",
+   "slide": 4,
+   "short": "[Request path]",
+   "kicker": "01 · [SECTION 1]",
+   "title": "[Request path slide title]",
+   "subtitle": "[Subtitle]",
+   "tags": [
+    "b"
+   ],
+   "sources": [
+    "overview"
+   ],
+   "obs": "[What is observed at every hop]",
+   "hops": [
+    {
+     "t": "[Hop 1]",
+     "d": "[Short role]",
+     "kind": "client",
+     "lev": [
+      "[Lever]"
+     ],
+     "detail": "[Detail]"
+    },
+    {
+     "t": "[Hop 2]",
+     "d": "[Short role]",
+     "kind": "azure",
+     "lev": [
+      "[Lever]"
+     ],
+     "detail": "[Detail]"
+    },
+    {
+     "t": "[Hop 3]",
+     "d": "[Short role]",
+     "kind": "foundry",
+     "lev": [
+      "[Lever]"
+     ],
+     "detail": "[Detail]"
+    },
+    {
+     "t": "[Hop 4]",
+     "d": "[Short role]",
+     "kind": "foundry",
+     "lev": [
+      "[Lever]"
+     ],
+     "detail": "[Detail]"
+    }
+   ],
+   "notes": "[Speaker notes of slide 4]"
+  },
+  {
+   "id": "tree-1",
+   "type": "tree",
+   "section": "s2",
+   "slide": 5,
+   "short": "[Decision tree]",
+   "kicker": "02 · [SECTION 2]",
+   "title": "[Decision tree slide title]",
+   "subtitle": "[Subtitle]",
+   "tags": [
+    "a",
+    "c"
+   ],
+   "sources": [
+    "howto"
+   ],
+   "preview": true,
+   "qs": [
+    {
+     "q": "[Question 1?]",
+     "t": "[Recommended option 1]",
+     "s": "[Why]",
+     "detail": "[Detail]",
+     "src": [
+      "howto"
+     ]
+    },
+    {
+     "q": "[Question 2?]",
+     "t": "[Recommended option 2]",
+     "s": "[Why]",
+     "detail": "[Detail]",
+     "src": [
+      "howto"
+     ]
+    },
+    {
+     "q": "[Question 3?]",
+     "t": "[Recommended option 3]*",
+     "s": "[Why]",
+     "detail": "[Detail]",
+     "src": [
+      "howto"
+     ]
+    }
+   ],
+   "other": {
+    "t": "[Fallback option]",
+    "s": "[Why]",
+    "detail": "[Detail]",
+    "src": [
+     "howto"
+    ]
+   },
+   "aside": {
+    "h": "[Side note heading]",
+    "items": [
+     [
+      "[Term]",
+      "[Short explanation]"
+     ],
+     [
+      "[Term]",
+      "[Short explanation]"
+     ]
+    ]
+   },
+   "next": {
+    "t": "[Next: comparison]",
+    "go": "compare"
+   },
+   "notes": "[Speaker notes of slide 5]"
+  },
+  {
+   "id": "compare",
+   "type": "compare",
+   "section": "s3",
+   "slide": 6,
+   "short": "[Comparison]",
+   "kicker": "03 · [SECTION 3]",
+   "title": "[Comparison slide title]",
+   "subtitle": "[Subtitle]",
+   "tags": [
+    "a",
+    "b",
+    "c"
+   ],
+   "sources": [
+    "howto"
+   ],
+   "band": [
+    "[TAKEAWAY]",
+    "[One-line takeaway]"
+   ],
+   "feats": [
+    [
+     "[Feature 1]",
+     "a"
+    ],
+    [
+     "[Feature 2]",
+     "b"
+    ],
+    [
+     "[Feature 3]",
+     "c"
+    ]
+   ],
+   "rows": [
+    [
+     "[Question 1]",
+     "[Answer]",
+     "[Answer]",
+     "[Answer]"
+    ],
+    [
+     "[Question 2]",
+     "[Answer]",
+     "[Answer]",
+     "[Answer]"
+    ],
+    [
+     "[Question 3]",
+     "[Answer]",
+     "[Answer]",
+     "[Answer]"
+    ],
+    [
+     "[Question 4]",
+     "[Answer]",
+     "[Answer]",
+     "[Answer]"
+    ]
+   ],
+   "notes": "[Speaker notes of slide 6]"
+  },
+  {
+   "id": "phases",
+   "type": "phases",
+   "section": "s3",
+   "slide": 7,
+   "short": "[Path]",
+   "kicker": "03 · [SECTION 3]",
+   "title": "[Path slide title]",
+   "subtitle": "[Subtitle]",
+   "tags": [],
+   "sources": [
+    "overview"
+   ],
+   "phases": [
+    [
+     "[Phase 1]",
+     "a",
+     [
+      "[Step]",
+      "[Step]"
+     ]
+    ],
+    [
+     "[Phase 2]",
+     "b",
+     [
+      "[Step]",
+      "[Step]"
+     ]
+    ],
+    [
+     "[Phase 3]",
+     "c",
+     [
+      "[Step]",
+      "[Step]"
+     ]
+    ],
+    [
+     "[Phase 4]",
+     "a",
+     [
+      "[Step]",
+      "[Step]"
+     ]
+    ]
+   ],
+   "prove": [
+    "[Check before go-live]",
+    "[Check before go-live]"
+   ],
+   "notes": "[Speaker notes of slide 7]"
+  },
+  {
+   "id": "refs",
+   "type": "refs",
+   "section": "s3",
+   "slide": 8,
+   "short": "References",
+   "kicker": "03 · [SECTION 3]",
+   "title": "References",
+   "subtitle": "[Pages behind this story, all checked on d Month yyyy.]",
+   "tags": [],
+   "sources": [
+    "overview"
+   ],
+   "groups": [
+    [
+     "[Group 1]",
+     [
+      "overview",
+      "howto"
+     ]
+    ],
+    [
+     "[Group 2]",
+     [
+      "whatsnew"
+     ]
+    ]
+   ],
+   "current": [
+    "whatsnew"
+   ],
+   "notes": "[Speaker notes of slide 8]"
+  }
+ ]
+}

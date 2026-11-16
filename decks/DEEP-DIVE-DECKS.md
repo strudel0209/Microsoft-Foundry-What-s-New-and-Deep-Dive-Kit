@@ -8,6 +8,20 @@ rollback. `Conformance` states whether the deck meets the skill version named.
 
 ---
 
+## Microsoft Foundry Latency Optimization for Models and Agents · edition 2026-11
+
+**Kit file:** `Microsoft Foundry Latency Optimization for Models and Agents.pptx` · **Sources verified:** 2026-11-14 · **Slides:** 18
+**Pairs with:** none yet (related: notebook 1 priority processing, notebook 4 prompt caching, notebook 8 semantic caching)
+**Sources:** learn.microsoft.com/azure/foundry/openai/how-to/latency · concepts/priority-processing · how-to/flex-processing · concepts/provisioned-throughput · how-to/spillover-traffic-management · how-to/prompt-caching · how-to/predicted-outputs · how-to/reasoning · concepts/model-router · how-to/responses · how-to/realtime-audio-webrtc · how-to/decisions · concepts/content-streaming · monitor-openai-reference · foundry-models/concepts/deployment-types · azure/foundry/agents/overview · agents/concepts/hosted-agents · agents/how-to/optimize-hosted-agent-latency · agents/how-to/debug-hosted-agent · agents/concepts/toolbox-overview · agents/how-to/tools/model-context-protocol · agents/how-to/tools/agent-to-agent · agents/concepts/tool-best-practice · observability/concepts/trace-agent-concept · observability/how-to/how-to-monitor-agents-dashboard · agent-framework/workflows/orchestrations · agent-framework/concepts/harness · agent-framework/agents/observability · azure/search/agentic-retrieval-overview · search/agentic-retrieval-how-to-set-retrieval-reasoning-effort · azure/api-management/genai-gateway-capabilities · api-management/llm-semantic-cache-lookup-policy · azure/architecture/ai-ml/guide/ai-agent-design-patterns · ai-ml/guide/generative-ai-gateway · ai-ml/architecture/baseline-microsoft-foundry-chat · azure/well-architected/ai/application-design · devblogs.microsoft.com/foundry · github.com/microsoft/agent-framework/releases
+**Conformance:** skill 1.2.0 — `deck_qa.py` 0 FAIL, 0 WARN after two QA passes; every slide inspected as a rendered image. Generic deck built after a customer latency review; no customer name, data or measured results on slides or in speaker notes. Covers sources of latency, the request path of the baseline Microsoft Foundry chat architecture (Azure Architecture Center), model-call features, capacity options, five decision trees (model, capacity, orchestration pattern, agent runtime and framework, tools and protocols), observability and latency budgets, and an optimization path. Presenter line removed from the kit copy on 2026-11-14. The kit copy carries a Microsoft sensitivity label with encryption applied in OneDrive (see `kit.yaml` → `known_issues`)
+**Open verify items:**
+- Which deployment types show the Time to Response and time-between-tokens metrics in Azure Monitor (slide 5).
+- Which small models accept reasoning effort "none" (slide 8).
+- Priority processing model-version prerequisite against the gpt-4.1 rows of its latency-target table (slides 7, 17).
+- Status of invocations over WebSocket for hosted agents and of the AI gateway in Foundry (slides 12, 17).
+- Features with no explicit generally-available wording on Learn are shown without an asterisk; recheck before presenting.
+- Workflows in the Foundry portal retire on 1 December 2026: remove that row (slides 12, 17) after that date.
+
 ## Microsoft Foundry Fabric IQ Ontologies for Agents · edition 2026-11
 
 **Kit file:** `Microsoft Foundry Fabric IQ Ontologies for Agents.pptx` · **Sources verified:** 2026-11-04 · **Slides:** 17

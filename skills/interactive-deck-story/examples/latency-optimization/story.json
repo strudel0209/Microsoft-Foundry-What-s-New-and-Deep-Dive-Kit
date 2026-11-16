@@ -1,0 +1,1977 @@
+{
+ "$schema_note": "interactive-deck-story content, format 1.0 — see references/story-format.md",
+ "meta": {
+  "lang": "en",
+  "brand": "Latency optimization · Microsoft Foundry",
+  "title": "Latency optimization for models and agents",
+  "kicker": "MICROSOFT FOUNDRY  ·  INTERACTIVE DEEP DIVE",
+  "subtitle": "Best practices, decision trees and the Microsoft Foundry features that shorten response time in generative AI applications and agents.",
+  "footer": "Latency optimization · November 2026",
+  "edition": "November 2026",
+  "checked": "14 November 2026",
+  "deck": "Microsoft Foundry Latency Optimization for Models and Agents.pptx",
+  "previewNote": "* preview — no service level agreement.",
+  "editorial": "Grouping into avoid, hide, reduce and steady is an editorial aid of this page; every lever comes from the paired deck and its sources.",
+  "labels": {
+   "hub": "Main decision tree",
+   "hubShort": "Main tree",
+   "jumpHub": "Jump to the main decision tree"
+  }
+ },
+ "strategies": {
+  "avoid": {
+   "label": "Avoid",
+   "line": "Skip a model call, a tool call or a hop entirely",
+   "color": "#34D399"
+  },
+  "hide": {
+   "label": "Hide",
+   "line": "Show the first words sooner while work continues",
+   "color": "#38BDF8"
+  },
+  "reduce": {
+   "label": "Reduce",
+   "line": "Make each remaining call and wait shorter",
+   "color": "#A78BFA"
+  },
+  "steady": {
+   "label": "Steady",
+   "line": "Keep percentiles consistent under load",
+   "color": "#FBBF24"
+  },
+  "measure": {
+   "label": "Measure",
+   "line": "See where the time goes, then govern it",
+   "color": "#C7D2EC"
+  }
+ },
+ "sections": [
+  {
+   "id": "start",
+   "num": "00",
+   "name": "The story"
+  },
+  {
+   "id": "s1",
+   "num": "01",
+   "name": "Latency fundamentals"
+  },
+  {
+   "id": "s2",
+   "num": "02",
+   "name": "Model calls"
+  },
+  {
+   "id": "s3",
+   "num": "03",
+   "name": "Agents, tools and protocols"
+  },
+  {
+   "id": "s4",
+   "num": "04",
+   "name": "Operations"
+  },
+  {
+   "id": "s5",
+   "num": "05",
+   "name": "Optimization path"
+  },
+  {
+   "id": "s6",
+   "num": "06",
+   "name": "Status and references"
+  }
+ ],
+ "sources": {
+  "latency": {
+   "label": "Performance and latency",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"
+  },
+  "patterns": {
+   "label": "AI agent orchestration patterns",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"
+  },
+  "baseline": {
+   "label": "Baseline Microsoft Foundry chat architecture",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"
+  },
+  "gateway": {
+   "label": "Generative AI gateway guide",
+   "url": "https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/generative-ai-gateway"
+  },
+  "monitor": {
+   "label": "Monitoring data reference",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/monitor-openai-reference"
+  },
+  "caching": {
+   "label": "Prompt caching",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"
+  },
+  "streaming": {
+   "label": "Content streaming",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"
+  },
+  "reasoning": {
+   "label": "Reasoning models",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"
+  },
+  "predicted": {
+   "label": "Predicted outputs",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/predicted-outputs"
+  },
+  "deploytypes": {
+   "label": "Deployment types",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"
+  },
+  "priority": {
+   "label": "Priority processing",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"
+  },
+  "flex": {
+   "label": "Flex processing",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/flex-processing"
+  },
+  "ptu": {
+   "label": "Provisioned throughput",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"
+  },
+  "spillover": {
+   "label": "Spillover traffic management",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"
+  },
+  "decisions": {
+   "label": "Decisions API",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"
+  },
+  "router": {
+   "label": "Model Router",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"
+  },
+  "realtime": {
+   "label": "Realtime API over WebRTC",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc"
+  },
+  "voicelive": {
+   "label": "Voice Live API",
+   "url": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/voice-live"
+  },
+  "responses": {
+   "label": "Responses API",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"
+  },
+  "agents": {
+   "label": "Foundry Agent Service overview",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview"
+  },
+  "hosted": {
+   "label": "Hosted agents",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"
+  },
+  "hostedlat": {
+   "label": "Optimize hosted agent latency",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/optimize-hosted-agent-latency"
+  },
+  "debughosted": {
+   "label": "Debug a hosted agent",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/debug-hosted-agent"
+  },
+  "harness": {
+   "label": "Agent harness",
+   "url": "https://learn.microsoft.com/en-us/agent-framework/concepts/harness"
+  },
+  "af": {
+   "label": "Microsoft Agent Framework overview",
+   "url": "https://learn.microsoft.com/en-us/agent-framework/overview/"
+  },
+  "aforch": {
+   "label": "Agent Framework orchestrations",
+   "url": "https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"
+  },
+  "afobs": {
+   "label": "Agent Framework observability",
+   "url": "https://learn.microsoft.com/en-us/agent-framework/agents/observability"
+  },
+  "toolbox": {
+   "label": "Toolboxes",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/toolbox-overview"
+  },
+  "mcp": {
+   "label": "Model Context Protocol tool",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol"
+  },
+  "a2a": {
+   "label": "Agent2Agent tool",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/agent-to-agent"
+  },
+  "toolbp": {
+   "label": "Tool best practices",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"
+  },
+  "agentic": {
+   "label": "Agentic retrieval overview",
+   "url": "https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview"
+  },
+  "effort": {
+   "label": "Retrieval reasoning effort",
+   "url": "https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort"
+  },
+  "genai": {
+   "label": "AI gateway capabilities in API Management",
+   "url": "https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities"
+  },
+  "semcache": {
+   "label": "Semantic cache lookup policy",
+   "url": "https://learn.microsoft.com/en-us/azure/api-management/llm-semantic-cache-lookup-policy"
+  },
+  "trace": {
+   "label": "Agent tracing in Foundry",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/observability/concepts/trace-agent-concept"
+  },
+  "dashboard": {
+   "label": "Agent monitoring dashboard",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/how-to-monitor-agents-dashboard"
+  },
+  "waf": {
+   "label": "Well-Architected: AI application design",
+   "url": "https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design"
+  },
+  "afrel": {
+   "label": "Agent Framework releases",
+   "url": "https://github.com/microsoft/agent-framework/releases"
+  },
+  "whatsnew": {
+   "label": "What's new in Microsoft Foundry",
+   "url": "https://learn.microsoft.com/en-us/azure/foundry/whats-new-foundry"
+  },
+  "devblog": {
+   "label": "Microsoft Foundry developer blog",
+   "url": "https://devblogs.microsoft.com/foundry/"
+  },
+  "learn-home": {
+   "label": "Microsoft Learn",
+   "url": "https://learn.microsoft.com/"
+  }
+ },
+ "scenes": [
+  {
+   "id": "intro",
+   "type": "title",
+   "section": "start",
+   "short": "Title",
+   "chapters": [
+    [
+     "01",
+     "Where the time goes",
+     "turn"
+    ],
+    [
+     "02",
+     "Main decision tree: avoid, hide, reduce, steady",
+     "map"
+    ],
+    [
+     "03",
+     "Fundamentals: request path and anatomy of a model call",
+     "path"
+    ],
+    [
+     "04",
+     "Model calls: features, capacity, model and capacity trees",
+     "features"
+    ],
+    [
+     "05",
+     "Agents: patterns, orchestration, runtime and tool trees",
+     "patterns"
+    ],
+    [
+     "06",
+     "Operations, optimization path, status and references",
+     "trace"
+    ]
+   ],
+   "notes": "This session is about response time in generative AI applications and agents built on Microsoft Foundry. The main takeaway is that latency is a property of the whole request path, not of one model. In most agentic applications the time goes to two places: the number of tokens the model generates, and the number of model calls that run one after another before the user sees an answer. The deck starts with the fundamentals, then covers the features that shorten a single model call, then the agent-level choices (orchestration pattern, runtime, tools and protocols) that decide how many calls happen, and finally how to measure and govern latency. Each decision tree is a starting point and must be checked against evaluation results for the actual workload. All facts were checked against official documentation on 14 November 2026; preview features carry an asterisk. Model names are examples current at that date and change quickly. A likely question: is this specific to one model family? No. The levers apply across models; only the model names and per-model targets change.",
+   "slide": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "turn",
+   "type": "turn",
+   "section": "start",
+   "slide": 3,
+   "short": "Where the time goes",
+   "kicker": "THE PROBLEM",
+   "title": "Sources of latency in agentic applications",
+   "subtitle": "One user turn adds up model calls, tool and retrieval waits, network hops and safety checks.",
+   "tags": [
+    "avoid",
+    "hide",
+    "reduce",
+    "steady"
+   ],
+   "sources": [
+    "latency",
+    "patterns"
+   ],
+   "beats": 2,
+   "bar": [
+    [
+     "Hops",
+     0.06,
+     "hop"
+    ],
+    [
+     "Model call: plan",
+     0.17,
+     "model"
+    ],
+    [
+     "Tool and retrieval calls",
+     0.21,
+     "tool"
+    ],
+    [
+     "First token",
+     0.1,
+     "ttft"
+    ],
+    [
+     "Answer generation: time between tokens × generated tokens",
+     0.46,
+     "gen"
+    ]
+   ],
+   "cards": [
+    {
+     "t": "Generated tokens",
+     "d": "Each output token adds time; output length usually dominates one model call.",
+     "lever": "Output caps, concise answers",
+     "tag": "reduce",
+     "go": "anatomy",
+     "detail": "As per official documentation, the time for one model call is the time to the first token plus the time between tokens multiplied by the number of generated tokens. Output length is usually the largest single factor; each prompt token adds far less time than each generated token.",
+     "src": [
+      "latency"
+     ]
+    },
+    {
+     "t": "Sequential model calls",
+     "d": "Every planning, routing or hand-off step is another full model call.",
+     "lever": "Simplest orchestration pattern",
+     "tag": "avoid",
+     "go": "tree-patterns",
+     "detail": "In an agent, every planning, routing or hand-off step is another full model call that runs before the user sees an answer. The orchestration guide recommends the lowest level of complexity that reliably meets the requirement.",
+     "src": [
+      "patterns"
+     ]
+    },
+    {
+     "t": "Tool and retrieval waits",
+     "d": "Each tool call adds a round trip; tool definitions add prompt tokens.",
+     "lever": "Fewer tools, parallel calls",
+     "tag": "reduce",
+     "go": "tree-tools",
+     "detail": "Each tool call adds a round trip, and tool definitions add input tokens to every prompt. A small tool set, tool search on demand and parallel independent calls keep this part short.",
+     "src": [
+      "toolbp",
+      "patterns"
+     ]
+    },
+    {
+     "t": "Network hops",
+     "d": "Gateways, middleware and cross-region calls add time to every request.",
+     "lever": "Co-located regions, unbuffered streams",
+     "tag": "reduce",
+     "go": "path",
+     "detail": "Every hop between client, web application, gateway, agent, model and tools adds time to every request. The baseline architecture recommends models in the same data region as the agents, and every hop must pass the stream through without buffering.",
+     "src": [
+      "baseline",
+      "gateway"
+     ]
+    },
+    {
+     "t": "Capacity and queueing",
+     "d": "Best-effort capacity varies more under high load; throttling adds retries.",
+     "lever": "Priority or provisioned capacity",
+     "tag": "steady",
+     "go": "tree-capacity",
+     "detail": "Standard deployments are best effort and vary more at high, steady volume; throttling adds retries. The deployment type and service tier decide how consistent latency stays under load.",
+     "src": [
+      "deploytypes",
+      "priority"
+     ]
+    },
+    {
+     "t": "Safety filtering",
+     "d": "Content filtering adds latency; the streaming mode decides when text is released.",
+     "lever": "Asynchronous filter where risk allows",
+     "tag": "hide",
+     "go": "features",
+     "detail": "Content filtering adds latency. With the asynchronous filter, tokens return at once while filters run in parallel; this suits lower-risk use cases where the client can remove text already shown.",
+     "src": [
+      "streaming",
+      "latency"
+     ]
+    }
+   ],
+   "principle": "Use the lowest level of complexity that reliably meets the requirement: a direct model call first, then a single agent with tools, and multi-agent orchestration only when needed.",
+   "notes": "The key point is that one user turn is a sum of parts, and most of them run in series. As per official documentation, the time for one model call is the time to the first token plus the time between tokens multiplied by the number of generated tokens, so output length is usually the largest single factor; each prompt token adds far less time than each generated token. In an agent, every planning, routing or hand-off step is another full model call, and each tool call adds a round trip; tool definitions also add input tokens to every prompt. Network hops add time to every request, best-effort capacity varies more under high load, and content filtering adds latency too. The bar at the top is illustrative only; real proportions depend on the workload and must be measured. The design principle comes from the Azure Architecture Center guide to AI agent orchestration patterns: use the lowest level of complexity that reliably meets the requirement. Sources: learn.microsoft.com/azure/foundry/openai/how-to/latency and the agent design patterns guide. A likely question: which part is usually biggest? In chat workloads, generated tokens multiplied by the number of sequential model calls; a trace per user turn confirms it.",
+   "cardKicker": "Source of latency",
+   "marker": {
+    "after": "ttft",
+    "text": "first token: the first words can appear here with streaming"
+   }
+  },
+  {
+   "id": "map",
+   "type": "map",
+   "section": "start",
+   "short": "Main decision tree",
+   "kicker": "THE MAIN DECISION TREE",
+   "title": "Four questions for a slow user turn",
+   "subtitle": "Asked in order, cheapest changes first; each answer opens a deeper decision tree.",
+   "tags": [
+    "avoid",
+    "hide",
+    "reduce",
+    "steady",
+    "measure"
+   ],
+   "sources": [
+    "latency",
+    "waf",
+    "patterns"
+   ],
+   "beats": 5,
+   "root": {
+    "t": "One slow user turn",
+    "d": "model calls, tool waits, hops and checks in series"
+   },
+   "measure": {
+    "t": "Measure first",
+    "d": "one trace per user turn  ·  p50, p95 and p99 with token counts  ·  timestamps at every hop",
+    "go": "trace"
+   },
+   "govern": {
+    "t": "Then govern",
+    "d": "latency budgets per user journey  ·  release gates that fail on regressions  ·  evaluations rerun on change",
+    "go": "phases"
+   },
+   "order": "Order matters: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove.",
+   "questions": [
+    {
+     "k": "avoid",
+     "q": "Can a model call, tool call or hop be skipped?",
+     "d": "Fewer steps in series",
+     "leaves": [
+      {
+       "t": "Direct model call when one call with the right context solves it",
+       "go": "tree-patterns",
+       "focus": 0,
+       "src": [
+        "patterns"
+       ],
+       "detail": "The orchestration guide says that if prompt engineering can solve the problem, an agent is not needed. A direct Responses API call with grounding in the prompt is the fastest option."
+      },
+      {
+       "t": "Deterministic router instead of a chain of hand-offs",
+       "go": "tree-patterns",
+       "focus": 2,
+       "src": [
+        "patterns"
+       ],
+       "detail": "When the specialist is known from the first message, route in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models."
+      },
+      {
+       "t": "Decisions API for classify, route or score steps",
+       "go": "tree-model",
+       "focus": 1,
+       "src": [
+        "decisions"
+       ],
+       "detail": "For fixed-choice steps, the Decisions API returns a probability, a choice or a score instead of generated text. It is generally available since 22 October 2026, with gpt-6-luna."
+      },
+      {
+       "t": "Semantic cache for repeated questions",
+       "go": "compare",
+       "focus": 1,
+       "src": [
+        "semcache",
+        "genai"
+       ],
+       "detail": "Semantic caching in Azure API Management returns a stored answer for a similar prompt, so a hit skips the model call entirely. A miss pays for the embedding and lookup, and a similarity match can return an answer written for a different question."
+      }
+     ]
+    },
+    {
+     "k": "hide",
+     "q": "Can the first words reach the user sooner?",
+     "d": "Earlier visible text, same total work",
+     "leaves": [
+      {
+       "t": "Streaming end to end, without buffering",
+       "go": "anatomy",
+       "src": [
+        "latency",
+        "baseline"
+       ],
+       "detail": "Streaming does not change the total time, but the user starts reading at the first token. Every hop, including the web application and the gateway, must pass the stream through without buffering."
+      },
+      {
+       "t": "Asynchronous filter where risk allows",
+       "go": "features",
+       "focus": 1,
+       "src": [
+        "streaming"
+       ],
+       "detail": "Tokens return at once while content filters run in parallel. The filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown."
+      },
+      {
+       "t": "Progress shown during tool calls",
+       "go": "path",
+       "src": [
+        "baseline"
+       ],
+       "detail": "The client renders tokens as they arrive and shows progress while the agent waits for tools, so the wait is visible rather than silent."
+      },
+      {
+       "t": "Short preamble before deeper reasoning",
+       "go": "features",
+       "focus": 3,
+       "src": [
+        "reasoning"
+       ],
+       "detail": "With reasoning models, a short preamble before deeper reasoning gives an earlier first visible text."
+      },
+      {
+       "t": "Background run for open-ended work",
+       "go": "tree-patterns",
+       "focus": 5,
+       "src": [
+        "patterns",
+        "responses"
+       ],
+       "detail": "Open-ended work with no fixed plan fits background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that."
+      }
+     ]
+    },
+    {
+     "k": "reduce",
+     "q": "Can each remaining call and wait be shorter?",
+     "d": "Fewer tokens, smaller models, leaner tools",
+     "leaves": [
+      {
+       "t": "Smallest model that passes evaluation",
+       "go": "tree-model",
+       "focus": 2,
+       "src": [
+        "latency",
+        "router"
+       ],
+       "detail": "For short answers without multi-step reasoning, a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts. Pick the smallest model that passes evaluation."
+      },
+      {
+       "t": "Lowest sufficient reasoning effort, capped output",
+       "go": "features",
+       "focus": 2,
+       "src": [
+        "reasoning",
+        "latency"
+       ],
+       "detail": "Output caps reserve less compute and stop generation earlier. For reasoning models the cap includes reasoning tokens; too low a cap can return no visible output. Reasoning effort none suits classification and voice."
+      },
+      {
+       "t": "Stable prompt prefix for prompt caching",
+       "go": "features",
+       "focus": 0,
+       "src": [
+        "caching"
+       ],
+       "detail": "Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. The work is ordering prompts so that stable content comes first."
+      },
+      {
+       "t": "Small tool set, parallel calls, minimal retrieval effort",
+       "go": "tree-tools",
+       "src": [
+        "toolbp",
+        "effort"
+       ],
+       "detail": "Tool definitions cost tokens, so keep the tool set small or use tool search on demand. Independent function calls can run in parallel, and minimal retrieval effort skips query planning by a language model."
+      },
+      {
+       "t": "Lean hosted-agent start-up",
+       "go": "tree-runtime",
+       "focus": 4,
+       "src": [
+        "hosted",
+        "hostedlat",
+        "debughosted"
+       ],
+       "detail": "Hosted agents scale per session with no warm pool to configure. Keep start-up and readiness checks lean and consider memory snapshots; the debug latency header reports cold, warm or resume starts."
+      }
+     ]
+    },
+    {
+     "k": "steady",
+     "q": "Does latency hold at p95 under load?",
+     "d": "Consistent percentiles, not only a fast average",
+     "leaves": [
+      {
+       "t": "Priority processing or provisioned throughput",
+       "go": "tree-capacity",
+       "focus": 2,
+       "src": [
+        "priority",
+        "ptu"
+       ],
+       "detail": "Priority processing publishes latency targets per model and suits variable volume; provisioned throughput with spillover gives the lowest variance for steady, predictable volume."
+      },
+      {
+       "t": "Separate deployments per workload",
+       "go": "tree-capacity",
+       "focus": 4,
+       "src": [
+        "latency"
+       ],
+       "detail": "Mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate."
+      },
+      {
+       "t": "Model in the same data region as the agent",
+       "go": "path",
+       "src": [
+        "baseline"
+       ],
+       "detail": "The baseline Microsoft Foundry chat architecture recommends deploying models in the same data region as the agents."
+      },
+      {
+       "t": "Throttling watched: 429 responses, spillover, service tier",
+       "go": "trace",
+       "src": [
+        "spillover",
+        "priority"
+       ],
+       "detail": "Watch 429 responses, spillover headers and the service tier returned in each response; priority requests can drop to standard on sudden ramps or peaks."
+      }
+     ]
+    }
+   ],
+   "notes": "This is the main decision tree of the story. Every slow user turn gets the same four questions, in order. First, avoid work: can a model call, a tool call or a hop be skipped altogether, for example with a direct model call, a deterministic router, the Decisions API or a semantic cache? Second, hide the wait: can the first words reach the user sooner through streaming end to end, the asynchronous filter, visible progress during tool calls or a short preamble? Third, reduce what remains: a smaller model, lower reasoning effort, capped output, a stable prompt prefix, a lean tool set and minimal retrieval effort. Fourth, keep it steady: priority processing or provisioned throughput, separate deployments and co-located regions. The order follows the optimization path: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove. Measurement frames the tree: a trace per user turn shows which question matters most, and latency budgets keep the gains. Each leaf opens a deeper decision tree from the deck."
+  },
+  {
+   "id": "path",
+   "type": "path",
+   "section": "s1",
+   "slide": 4,
+   "short": "Request path",
+   "kicker": "01 · LATENCY FUNDAMENTALS",
+   "title": "Latency levers along the request path",
+   "subtitle": "Request path of the baseline Microsoft Foundry chat architecture, with the main latency levers at each hop.",
+   "tags": [
+    "hide",
+    "reduce",
+    "steady"
+   ],
+   "sources": [
+    "baseline",
+    "gateway"
+   ],
+   "beats": 4,
+   "preview": true,
+   "hops": [
+    {
+     "t": "Client application",
+     "d": "web, mobile or Teams",
+     "kind": "client",
+     "lev": [
+      "Render tokens as they arrive",
+      "Show progress during tool calls"
+     ],
+     "detail": "The client sends the request to the web application. It renders tokens as they arrive and shows progress while the agent waits for tools."
+    },
+    {
+     "t": "Web application",
+     "d": "Azure App Service",
+     "kind": "azure",
+     "lev": [
+      "Pass the stream through without buffering",
+      "Same region as the agent"
+     ],
+     "detail": "The web application calls through the optional AI gateway. It passes the stream through without buffering and runs in the same region as the agent."
+    },
+    {
+     "t": "AI gateway",
+     "d": "API Management · optional",
+     "kind": "azure",
+     "optional": true,
+     "lev": [
+      "Semantic cache for repeated questions",
+      "Load balancing and circuit breaker",
+      "Keeps streaming connections open"
+     ],
+     "detail": "A gateway adds a hop to every call, so place it close to users and Foundry resources, and make sure it keeps streaming connections open. It can add a semantic cache, load balancing and a circuit breaker."
+    },
+    {
+     "t": "Agent",
+     "d": "Foundry Agent Service or Agent Framework",
+     "kind": "foundry",
+     "lev": [
+      "Fewest model calls in series",
+      "Compact context between steps",
+      "Iteration limits on tool loops"
+     ],
+     "detail": "The agent runs in Foundry Agent Service or in Microsoft Agent Framework code and calls its model deployment and tools. Fewer model calls in series, compact context and iteration limits keep it short."
+    },
+    {
+     "t": "Model deployment",
+     "d": "Foundry Models",
+     "kind": "foundry",
+     "lev": [
+      "Right-size the model",
+      "Cap generated tokens",
+      "Stable prompt prefix for caching",
+      "Priority or provisioned capacity"
+     ],
+     "detail": "The baseline recommends deploying models in the same data region as the agents. Model size, output length, prompt caching and the capacity option decide the time of each call."
+    },
+    {
+     "t": "Tools and knowledge",
+     "d": "Foundry IQ · AI Search · tool servers",
+     "kind": "azure",
+     "lev": [
+      "Small tool set, or tool search",
+      "Minimal retrieval effort",
+      "Model Context Protocol (MCP) approval only where needed"
+     ],
+     "detail": "The agent calls tools and knowledge sources such as Foundry IQ, Azure AI Search or MCP servers. The baseline recommends keeping the number of tools small and tracking agent and tool latency in Application Insights."
+    }
+   ],
+   "obs": "OpenTelemetry traces in Application Insights  ·  Azure Monitor model metrics  ·  Foundry agent monitoring dashboard*",
+   "notes": "This diagram follows the request path of the baseline Microsoft Foundry chat reference architecture in the Azure Architecture Center, simplified to the hops that matter for latency; security components are left out and the AI gateway comes from the generative AI gateway guide. Step 1: the client sends the request to the web application on App Service. Step 2: the web application calls through the optional AI gateway in Azure API Management. Step 3: the gateway forwards the call to the agent, which runs in Foundry Agent Service or in Microsoft Agent Framework code. Step 4: the agent calls its model deployment. Step 5: the agent calls tools and knowledge sources such as Foundry IQ, Azure AI Search or MCP servers. The baseline recommends deploying models in the same data region as the agents, keeping the number of tools small, and tracking agent and tool latency in Application Insights. A gateway adds a hop to every call, so place it close to users and Foundry resources, and make sure it keeps streaming connections open. A likely question: does a gateway slow responses down? It adds a hop, usually small compared with generation time, if nothing buffers the stream.",
+   "chain": 5,
+   "loop": [
+    3,
+    5
+   ]
+  },
+  {
+   "id": "anatomy",
+   "type": "anatomy",
+   "section": "s1",
+   "slide": 5,
+   "short": "Anatomy of a model call",
+   "kicker": "01 · LATENCY FUNDAMENTALS",
+   "title": "Latency anatomy and metrics",
+   "subtitle": "One model call split into first-token time and generation time, with the Azure Monitor metric for each part.",
+   "tags": [
+    "hide",
+    "measure"
+   ],
+   "sources": [
+    "latency",
+    "monitor"
+   ],
+   "beats": 3,
+   "formula": "TTLT = TTFT + (TBT × generated tokens)",
+   "formulaNote": "Each generated token adds far more time than each prompt token, so output length usually dominates.",
+   "metrics": [
+    [
+     "Time to Response",
+     "AzureOpenAITimeToResponse",
+     "Responsiveness of streamed answers"
+    ],
+    [
+     "Time Between Tokens",
+     "AzureOpenAINormalizedTBTInMS",
+     "Generation speed across models and capacity"
+    ],
+    [
+     "Time to Last Byte",
+     "AzureOpenAITTLTInMS",
+     "Duration of the whole model call"
+    ],
+    [
+     "Normalized Time to First Byte",
+     "AzureOpenAINormalizedTTFTInMS",
+     "Comparison across prompt sizes only"
+    ],
+    [
+     "Generated and processed tokens",
+     "GeneratedTokens · ProcessedPromptTokens",
+     "Context for every latency metric"
+    ]
+   ],
+   "reading": [
+    [
+     "Percentiles",
+     "p50, p95 and p99, not averages"
+    ],
+    [
+     "Token counts",
+     "paired with every latency metric"
+    ],
+    [
+     "Service-side view",
+     "client, network and application time come on top"
+    ]
+   ],
+   "notes": "This slide gives the vocabulary for the rest of the deck. Time to first token covers queueing and prompt processing; generation time is the time between tokens multiplied by the generated tokens; time to last token is the sum. Streaming does not change the total time, but it lets the user start reading at the first token, which is why first-token time is the right responsiveness metric for chat. Azure Monitor exposes these as Time to Response, Time Between Tokens, Time to Last Byte and Normalized Time to First Byte; the normalized metric is only for comparing across prompt sizes. Official documentation recommends always pairing a latency metric with a token-count metric, and percentiles describe user experience better than averages. These metrics are measured at the service, so client, network and application time come on top. Source: learn.microsoft.com/azure/foundry/openai/monitor-openai-reference. A likely question: why does a client test show more time than Azure Monitor? The gap is network, gateway and application time, which only a trace across every hop reveals."
+  },
+  {
+   "id": "features",
+   "type": "features",
+   "section": "s2",
+   "slide": 6,
+   "short": "Model-call features",
+   "kicker": "02 · MODEL CALLS",
+   "title": "Model-call optimization features",
+   "subtitle": "Four ways to shorten one model call: reuse the prompt prefix, release text earlier, generate less, reason less.",
+   "tags": [
+    "hide",
+    "reduce"
+   ],
+   "sources": [
+    "caching",
+    "streaming",
+    "reasoning"
+   ],
+   "beats": 3,
+   "preview": true,
+   "panels": [
+    {
+     "t": "Prompt caching",
+     "tag": "reduce",
+     "anim": "cache",
+     "src": [
+      "caching"
+     ],
+     "b": [
+      "On by default for GPT-4o and newer models",
+      "prompt_cache_key groups requests that share a prefix",
+      "Extended retention (24 hours) on supported models"
+     ],
+     "detail": "Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. Hits show as cached tokens in the usage data, and in-memory caches usually clear after five to ten minutes of inactivity."
+    },
+    {
+     "t": "Streaming and asynchronous filter",
+     "tag": "hide",
+     "anim": "stream",
+     "src": [
+      "streaming"
+     ],
+     "b": [
+      "Default: text in chunks, after filtering",
+      "Asynchronous: text at once; filter signal follows",
+      "Trade-off: earlier text versus real-time vetting; suited to lower-risk use cases"
+     ],
+     "detail": "Streaming with the asynchronous filter returns tokens at once while content filters run in parallel. The filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown."
+    },
+    {
+     "t": "Output length controls",
+     "tag": "reduce",
+     "anim": "caps",
+     "src": [
+      "latency",
+      "predicted"
+     ],
+     "b": [
+      "max_output_tokens · max_completion_tokens",
+      "Stop sequences",
+      "Verbosity: low",
+      "Predicted outputs* for edits to known text"
+     ],
+     "detail": "Output caps reserve less compute and stop generation earlier. Predicted outputs is in preview, for Chat Completions with GPT-4o and GPT-4.1 models."
+    },
+    {
+     "t": "Reasoning effort",
+     "tag": "reduce",
+     "anim": "effort",
+     "src": [
+      "reasoning"
+     ],
+     "b": [
+      "none: latency-critical work such as classification and voice",
+      "Output caps include reasoning tokens; too low a cap can return no visible text",
+      "A short preamble before deeper reasoning gives an earlier first visible text"
+     ],
+     "detail": "More reasoning effort means more reasoning tokens and longer calls; supported values vary by model. For reasoning models the cap is max_completion_tokens or max_output_tokens, and it includes reasoning tokens."
+    }
+   ],
+   "notes": "These four features shorten a single model call. Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. It is on by default for supported models, hits show as cached tokens in the usage data, and in-memory caches usually clear after five to ten minutes of inactivity. The prompt_cache_key parameter groups requests that share a prefix on GPT-5.6 and later, and extended 24-hour retention exists for several GPT-5 and GPT-4.1 models. Streaming with the asynchronous filter returns tokens at once while content filters run in parallel; the filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown. Output caps reserve less compute and stop generation earlier. For reasoning models the cap is max_completion_tokens or max_output_tokens, and it includes reasoning tokens; too low a cap can return no visible output. Reasoning effort none suits classification and voice. Predicted outputs is in preview, for Chat Completions with GPT-4o and GPT-4.1 models. A likely question: does prompt caching need code changes? No. The work is ordering prompts so that stable content comes first."
+  },
+  {
+   "id": "capacity",
+   "type": "table",
+   "section": "s2",
+   "slide": 7,
+   "short": "Capacity options",
+   "kicker": "02 · MODEL CALLS",
+   "title": "Deployment and capacity options",
+   "subtitle": "The deployment type and service tier decide how consistent latency stays under load.",
+   "tags": [
+    "steady"
+   ],
+   "sources": [
+    "deploytypes",
+    "priority"
+   ],
+   "beats": 2,
+   "preview": true,
+   "cols": [
+    "Option",
+    "Latency behaviour",
+    "Spread (illustrative)",
+    "Billing",
+    "Where data is processed",
+    "Best fit"
+   ],
+   "widths": [
+    250,
+    300,
+    190,
+    200,
+    250,
+    270
+   ],
+   "rows": [
+    [
+     "Standard — Global, Data Zone, Regional",
+     "Best effort; more variability at high, steady volume",
+     {
+      "jitter": 0.85
+     },
+     "Pay per token",
+     "Any region, a data zone, or one geography",
+     "Low-to-medium or bursty traffic"
+    ],
+    [
+     "Priority processing",
+     "Latency targets per model; can drop to standard on sudden ramps or peaks",
+     {
+      "jitter": 0.3,
+      "drop": true
+     },
+     "Pay per token at the priority rate",
+     "Global Standard or US Data Zone Standard only",
+     "Interactive traffic with variable volume"
+    ],
+    [
+     "Provisioned throughput with spillover",
+     "Dedicated capacity; lowest latency variance; overflow to standard",
+     {
+      "jitter": 0.1
+     },
+     "Per hour or by reservation",
+     "Global, Data Zone or Regional",
+     "Steady, predictable high volume"
+    ],
+    [
+     "Flex processing*",
+     "Variable; can be rejected when capacity is unavailable",
+     {
+      "jitter": 0.7,
+      "gaps": true
+     },
+     "Lower than standard",
+     "Global Standard",
+     "Work that tolerates delay"
+    ],
+    [
+     "Batch — Global, Data Zone",
+     "Asynchronous; 24-hour target",
+     {
+      "text": "asynchronous · 24-hour target"
+     },
+     "Lower than standard",
+     "Any region or a data zone",
+     "Offline jobs with no user waiting"
+    ]
+   ],
+   "band": [
+    "COMBINATIONS",
+    "Provisioned throughput for the steady base load  ·  spillover to a standard deployment for overflow  ·  priority processing alongside provisioned capacity"
+   ],
+   "notes": "The deployment type and service tier decide how consistent latency is under load, not the raw speed of the model. Standard deployments are best effort and vary more at high, steady volume. Priority processing uses the same quota as standard and publishes latency targets per model, for example 99 percent of five-minute windows above 100 tokens per second for gpt-5.4-mini. It is enabled per deployment or per request with the service_tier parameter. Requests can drop to standard after a ramp of more than 50 percent in tokens per minute within 15 minutes, at peak demand, or for long-context requests; the response shows which tier served it. Provisioned throughput gives dedicated capacity and the lowest variance; spillover sends overflow to a standard deployment in the same resource and is recommended for global and data zone provisioned deployments. Flex processing, in preview, costs 50 percent less than standard but has no latency target and no automatic fallback. Batch has a 24-hour target. A likely question: can priority processing run in the EU data zone? Not today. It supports Global Standard and US Data Zone Standard only, so EU data zone workloads use provisioned capacity with spillover."
+  },
+  {
+   "id": "tree-model",
+   "type": "tree",
+   "section": "s2",
+   "slide": 8,
+   "short": "Model selection tree",
+   "kicker": "02 · MODEL CALLS",
+   "title": "Model selection decision tree",
+   "subtitle": "Four questions lead from the workload to a model choice; the first Yes decides.",
+   "tags": [
+    "avoid",
+    "reduce"
+   ],
+   "sources": [
+    "decisions",
+    "router",
+    "realtime"
+   ],
+   "qs": [
+    {
+     "q": "Spoken, real-time conversation?",
+     "t": "Voice Live API or Realtime API",
+     "s": "speech in and out; WebRTC for client audio",
+     "src": [
+      "realtime",
+      "voicelive"
+     ],
+     "detail": "Real-time speech has its own stack: the Realtime API over WebRTC, which official documentation recommends over WebSockets for client audio, or the Voice Live API, a managed speech-to-speech service for voice agents."
+    },
+    {
+     "q": "Fixed-choice answer: classify, route or score?",
+     "t": "Decisions API",
+     "s": "a probability or a choice instead of generated text",
+     "src": [
+      "decisions"
+     ],
+     "detail": "For fixed-choice steps such as classification or routing, the Decisions API returns a probability, a choice or a score instead of generated text. It is generally available with gpt-6-luna. Microsoft-Decision-1, in preview, is a separate decision model designed for lower-latency, lower-cost workflows."
+    },
+    {
+     "q": "Short answer without multi-step reasoning?",
+     "t": "Small model, lowest reasoning effort",
+     "s": "for example gpt-5.4-mini; reasoning effort none",
+     "src": [
+      "reasoning",
+      "latency"
+     ],
+     "detail": "For short answers without multi-step reasoning, use a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts."
+    },
+    {
+     "q": "Prompt difficulty varies widely?",
+     "t": "Model Router",
+     "s": "Balanced or Cost routing mode over a model subset",
+     "src": [
+      "router",
+      "waf"
+     ],
+     "detail": "Model Router picks a model per prompt. The routing decision adds a negligible share of inference time, but the Well-Architected guidance notes that routers add variability, so evaluate against a baseline."
+    }
+   ],
+   "other": {
+    "t": "Reasoning model at the lowest sufficient effort",
+    "s": "cap output tokens; short preamble before reasoning",
+    "src": [
+     "reasoning"
+    ],
+    "detail": "Otherwise use a reasoning model at the lowest effort that passes evaluation, with capped output and a short preamble before deeper reasoning."
+   },
+   "aside": {
+    "h": "APPLIES TO EVERY CHOICE",
+    "items": [
+     [
+      "Evaluation against a baseline",
+      "same prompts, model versions and percentiles"
+     ],
+     [
+      "One model per agent role",
+      "small models for routing, extraction, formatting"
+     ],
+     [
+      "Fewer generated tokens",
+      "output caps, low verbosity, stop sequences"
+     ],
+     [
+      "Smaller fine-tuned model",
+      "trained on examples from a larger model"
+     ],
+     [
+      "Newer small models",
+      "per-model latency targets with priority processing"
+     ]
+    ]
+   },
+   "notes": "Read the tree from the top; the first Yes decides. Real-time speech has its own stack: the Realtime API over WebRTC, which official documentation recommends over WebSockets for client audio, or the Voice Live API, a managed speech-to-speech service for voice agents. For fixed-choice steps such as classification or routing, the Decisions API returns a probability, a choice or a score instead of generated text; it is generally available with gpt-6-luna. Microsoft-Decision-1, in preview, is a separate decision model designed for lower-latency, lower-cost workflows. For short answers without multi-step reasoning, use a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts. When prompt difficulty varies widely, Model Router picks a model per prompt; the routing decision adds a negligible share of inference time, but the Well-Architected guidance notes that routers add variability, so evaluate against a baseline. Otherwise use a reasoning model at the lowest effort that passes evaluation. Fine-tuning a smaller model on examples from a larger one is a documented way to cut cost and latency. A likely question: always pick the smallest model? Pick the smallest one that passes evaluation."
+  },
+  {
+   "id": "tree-capacity",
+   "type": "tree",
+   "section": "s2",
+   "slide": 9,
+   "short": "Capacity selection tree",
+   "kicker": "02 · MODEL CALLS",
+   "title": "Capacity selection decision tree",
+   "subtitle": "Four questions lead from traffic shape and data location to a deployment type and service tier.",
+   "tags": [
+    "steady"
+   ],
+   "sources": [
+    "ptu",
+    "spillover",
+    "priority"
+   ],
+   "preview": true,
+   "qs": [
+    {
+     "q": "No user waiting for the answer?",
+     "t": "Batch deployment or Flex processing*",
+     "s": "lower cost; no latency target",
+     "src": [
+      "deploytypes",
+      "flex"
+     ],
+     "detail": "If no user waits for the answer, use Batch or Flex processing: both cost less than standard and have no latency target. Flex processing is in preview and has no automatic fallback."
+    },
+    {
+     "q": "Data must stay in the EU data zone or one geography?",
+     "t": "Provisioned in that zone, with spillover",
+     "s": "priority processing is not offered on these types",
+     "src": [
+      "ptu",
+      "spillover",
+      "priority"
+     ],
+     "detail": "Priority processing supports Global Standard and US Data Zone Standard only, so the documented option for consistent latency in the EU data zone or one geography is Data Zone or Regional provisioned throughput with spillover."
+    },
+    {
+     "q": "Steady, predictable volume with a latency target?",
+     "t": "Provisioned throughput with spillover",
+     "s": "reserved capacity; overflow goes to standard",
+     "src": [
+      "ptu",
+      "spillover"
+     ],
+     "detail": "Provisioned throughput gives dedicated capacity and the lowest variance; spillover sends overflow to a standard deployment in the same resource. For models before GPT-6, cached input tokens do not consume provisioned capacity."
+    },
+    {
+     "q": "Variable volume with a latency target?",
+     "t": "Priority processing",
+     "s": "per deployment, or per request with service_tier",
+     "src": [
+      "priority"
+     ],
+     "detail": "Priority processing uses the same quota as standard and publishes latency targets per model. Requests can drop to standard after a sudden ramp, at peak demand or for long-context requests; the response shows which tier served it."
+    }
+   ],
+   "other": {
+    "t": "Global Standard",
+    "s": "separate deployments per workload",
+    "src": [
+     "latency",
+     "deploytypes"
+    ],
+    "detail": "Everything else starts on Global Standard with separate deployments per workload, because mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate."
+   },
+   "aside": {
+    "h": "APPLIES TO EVERY CHOICE",
+    "items": [
+     [
+      "Separate workloads",
+      "short calls never queue behind long ones"
+     ],
+     [
+      "Co-located regions",
+      "model in the same data region as the agent"
+     ],
+     [
+      "Throttling watched",
+      "429 responses, spillover and service tier"
+     ],
+     [
+      "Model support checked",
+      "tiers and targets differ per model"
+     ],
+     [
+      "Cached tokens",
+      "do not consume provisioned capacity before GPT-6"
+     ]
+    ]
+   },
+   "notes": "This tree turns traffic shape and data location into a deployment type and service tier. If no user waits for the answer, use Batch or Flex processing: both cost less than standard and have no latency target. If inference must stay in the EU data zone or in one geography, priority processing is not offered on those deployment types, so the documented option for consistent latency is Data Zone or Regional provisioned throughput with spillover. Steady, predictable volume with a latency target also points to provisioned throughput; for models before GPT-6, cached input tokens do not consume provisioned capacity. Variable volume with a latency target suits priority processing, enabled per deployment or per request. Everything else starts on Global Standard with separate deployments per workload, because mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate. Whatever the choice, keep the model in the same data region as the agent and watch 429 responses, spillover headers and the service tier returned in each response. A likely question: can priority and provisioned capacity be combined? Yes. Official documentation describes provisioned capacity for the steady base and priority processing alongside it."
+  },
+  {
+   "id": "patterns",
+   "type": "spectrum",
+   "section": "s3",
+   "slide": 10,
+   "short": "Orchestration patterns",
+   "kicker": "03 · AGENTS, TOOLS AND PROTOCOLS",
+   "title": "Orchestration patterns and sequential model calls",
+   "subtitle": "Each step along the complexity spectrum adds model calls in series and widens the latency spread.",
+   "tags": [
+    "avoid"
+   ],
+   "sources": [
+    "patterns",
+    "aforch"
+   ],
+   "beats": 6,
+   "cols": [
+    {
+     "t": "Direct model call",
+     "calls": "one",
+     "cap": "Fastest: ground the prompt directly",
+     "dg": "direct",
+     "detail": "If one model call with the right context solves the task, a direct Responses API call is the fastest option; no agent is needed."
+    },
+    {
+     "t": "Single agent with tools",
+     "calls": "one per tool round",
+     "cap": "Often the right default; cap iterations",
+     "dg": "single",
+     "detail": "A single agent with tools is often the right default for enterprise use cases; set iteration limits to avoid tool-call loops."
+    },
+    {
+     "t": "Sequential",
+     "calls": "one or more per stage, in order",
+     "cap": "No parallelism; avoid for independent stages",
+     "dg": "seq",
+     "detail": "Sequential orchestration has no parallelism, so avoid it when stages are independent."
+    },
+    {
+     "t": "Concurrent",
+     "calls": "in parallel; slowest agent sets the time",
+     "cap": "Limited by model quota",
+     "dg": "conc",
+     "detail": "Concurrent orchestration reduces overall run time, but the slowest agent sets the pace and model quota can make parallel work inefficient."
+    },
+    {
+     "t": "Hand-off",
+     "calls": "one more per hand-off",
+     "cap": "Avoid when the route is clear from the input",
+     "dg": "hand",
+     "detail": "Hand-off adds a model call for every transfer; when the right agent is clear from the first input, a deterministic router or a simple dispatcher is better."
+    },
+    {
+     "t": "Group chat and magentic",
+     "calls": "planning, rounds and progress checks",
+     "cap": "Slow to converge; avoid for time-sensitive work",
+     "dg": "group",
+     "detail": "Group chat should stay at three or fewer agents and does not fit real-time requirements. Magentic orchestration focuses on building and debating plans, not on speed, and is slow to converge."
+    }
+   ],
+   "arrow": "MORE COORDINATION  ·  MORE MODEL CALLS IN SERIES  ·  LONGER AND MORE VARIABLE LATENCY",
+   "band": [
+    "FOR EVERY MULTI-AGENT DESIGN",
+    "A model per agent matched to its task  ·  only the context the next agent needs  ·  iteration limits  ·  instrumentation of every hand-off"
+   ],
+   "notes": "The Azure Architecture Center describes a complexity spectrum: a direct model call, a single agent with tools, and multi-agent orchestration. Each step adds coordination overhead, latency and cost. A single agent with tools is often the right default for enterprise use cases; set iteration limits to avoid tool-call loops. Sequential orchestration has no parallelism, so avoid it when stages are independent. Concurrent orchestration reduces overall run time, but the slowest agent sets the pace and model quota can make parallel work inefficient. Hand-off adds a model call for every transfer; when the right agent is clear from the first input, a deterministic router or a simple dispatcher is better. Group chat should stay at three or fewer agents and does not fit real-time requirements. Magentic orchestration focuses on building and debating plans, not on speed, and is slow to converge, so avoid it for time-sensitive work. Antipatterns include overlooking multi-hop latency, adding agents without real specialization and letting context windows grow. Microsoft Agent Framework implements all five patterns with streaming and checkpointing. A likely question: when is multi-agent worth it? When specialization or security boundaries require it and evaluation shows a quality gain that justifies the extra time."
+  },
+  {
+   "id": "tree-patterns",
+   "type": "tree",
+   "section": "s3",
+   "slide": 11,
+   "short": "Orchestration pattern tree",
+   "kicker": "03 · AGENTS, TOOLS AND PROTOCOLS",
+   "title": "Orchestration pattern decision tree",
+   "subtitle": "Five questions lead from the task to the simplest pattern that meets it; the first Yes decides.",
+   "tags": [
+    "avoid"
+   ],
+   "sources": [
+    "patterns",
+    "aforch"
+   ],
+   "qs": [
+    {
+     "q": "One model call with the right context solves it?",
+     "t": "Direct model call",
+     "s": "Responses API with grounding in the prompt",
+     "src": [
+      "patterns",
+      "responses"
+     ],
+     "detail": "If one model call with the right context solves the task, a direct Responses API call is the fastest option; the orchestration guide says that if prompt engineering can solve the problem, an agent is not needed."
+    },
+    {
+     "q": "One domain, and its tools cover the work?",
+     "t": "Single agent with tools",
+     "s": "often the right default for enterprise use cases",
+     "src": [
+      "patterns"
+     ],
+     "detail": "If one domain and its tools cover the work, a single agent with tools is the default; set iteration limits on tool rounds."
+    },
+    {
+     "q": "Specialist known from the first message?",
+     "t": "Deterministic router to one specialist",
+     "s": "code or a classifier, not a chain of hand-offs",
+     "src": [
+      "patterns",
+      "decisions"
+     ],
+     "detail": "If the specialist is known from the first message, route deterministically, in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models."
+    },
+    {
+     "q": "Independent subtasks?",
+     "t": "Concurrent orchestration",
+     "s": "subtasks in parallel, results aggregated",
+     "src": [
+      "aforch"
+     ],
+     "detail": "Independent subtasks run concurrently and the results are aggregated; the slowest agent sets the pace."
+    },
+    {
+     "q": "Fixed, ordered stages?",
+     "t": "Sequential orchestration",
+     "s": "each stage gets only the context it needs",
+     "src": [
+      "aforch"
+     ],
+     "detail": "Fixed, ordered stages run sequentially, with each stage receiving only the context it needs."
+    }
+   ],
+   "other": {
+    "t": "Group chat or magentic orchestration",
+    "s": "open-ended work; background run, not a chat turn",
+    "src": [
+     "patterns",
+     "responses"
+    ],
+    "detail": "Open-ended work with no fixed plan is where group chat and magentic orchestration belong. Those runs fit background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that."
+   },
+   "aside": {
+    "h": "GUARDRAILS FOR MULTI-AGENT DESIGNS",
+    "items": [
+     [
+      "Iteration limits",
+      "on tool rounds, hand-offs and review loops"
+     ],
+     [
+      "Context compaction",
+      "only what the next agent needs"
+     ],
+     [
+      "Model per agent role",
+      "smaller models for classification"
+     ],
+     [
+      "Three or fewer agents",
+      "in a group chat"
+     ],
+     [
+      "Every hand-off traced",
+      "one trace per user turn"
+     ]
+    ]
+   },
+   "next": {
+    "t": "Where the chosen pattern runs",
+    "go": "tree-runtime"
+   },
+   "notes": "This tree applies the complexity spectrum, so always start at the top. If one model call with the right context solves the task, a direct Responses API call is the fastest option; the orchestration guide says that if prompt engineering can solve the problem, an agent is not needed. If one domain and its tools cover the work, a single agent with tools is the default. If the specialist is known from the first message, route deterministically, in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models. Independent subtasks run concurrently; fixed, ordered stages run sequentially, with each stage receiving only the context it needs. Open-ended work with no fixed plan is where group chat and magentic orchestration belong, and those runs fit background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that. For any multi-agent design, the guide recommends a model per agent matched to task complexity, compaction between agents, iteration limits and instrumentation of every hand-off. A likely question: is hand-off ever right for chat? Yes, when the route truly depends on the conversation, with iteration limits and loop detection in place."
+  },
+  {
+   "id": "tree-runtime",
+   "type": "tree",
+   "section": "s3",
+   "slide": 12,
+   "short": "Runtime and framework tree",
+   "kicker": "03 · AGENTS, TOOLS AND PROTOCOLS",
+   "title": "Agent runtime and framework decision tree",
+   "subtitle": "Four questions lead from the chosen pattern to where the agent runs and what builds it.",
+   "tags": [
+    "reduce"
+   ],
+   "sources": [
+    "agents",
+    "hosted",
+    "af"
+   ],
+   "preview": true,
+   "qs": [
+    {
+     "q": "Instructions, a model and built-in tools are enough?",
+     "t": "Prompt agent in Foundry Agent Service",
+     "s": "Foundry runs the tool loop and keeps the state",
+     "src": [
+      "agents"
+     ],
+     "detail": "A prompt agent in Foundry Agent Service runs on the Responses API-based runtime: the service handles tool loops and conversation state, and Foundry manages autoscale. There is no client round trip per tool."
+    },
+    {
+     "q": "Multi-step tool, file or command work, run by Foundry?",
+     "t": "Prompt agent with the Copilot harness*",
+     "s": "Microsoft Copilot harness, chosen at creation",
+     "src": [
+      "harness"
+     ],
+     "detail": "The Microsoft Copilot harness, in preview, is a managed runtime for prompt agents that need multi-step tool, file or command work; it is chosen when the agent is created."
+    },
+    {
+     "q": "Agent must run inside existing application compute?",
+     "t": "Microsoft Agent Framework in the app",
+     "s": "Foundry Models as the model client",
+     "src": [
+      "af",
+      "afrel"
+     ],
+     "detail": "When the agent must live inside existing application compute, Microsoft Agent Framework runs in the application with Foundry Models as the model client. Agent Framework streams in every orchestration pattern."
+    },
+    {
+     "q": "Real-time voice over one connection?",
+     "t": "Hosted agent over WebSocket",
+     "s": "Invocations over WebSocket; frames not buffered",
+     "src": [
+      "hosted"
+     ],
+     "detail": "For real-time voice, hosted agents offer Invocations over WebSocket, a full-duplex connection that passes frames through without buffering."
+    }
+   ],
+   "other": {
+    "t": "Hosted agent",
+    "s": "Agent Framework or other framework in a container",
+    "src": [
+     "hosted",
+     "hostedlat",
+     "debughosted"
+    ],
+    "detail": "Other custom orchestration fits a hosted agent, generally available since July 2026. Hosted agents scale per session with no warm pool to configure; keep start-up and readiness checks lean, and the x-ms-debug-latency-enabled header reports cold, warm or resume starts."
+   },
+   "aside": {
+    "h": "LATENCY NOTES PER RUNTIME",
+    "items": [
+     [
+      "Prompt agents",
+      "server-side tool loop; no client round trip per tool"
+     ],
+     [
+      "Hosted agents",
+      "per-session start; lean start-up and readiness"
+     ],
+     [
+      "Start type visible",
+      "debug header reports cold, warm or resume"
+     ],
+     [
+      "Agent Framework",
+      "streaming in every orchestration pattern"
+     ],
+     [
+      "Portal workflows*",
+      "retire on 1 December 2026"
+     ]
+    ]
+   },
+   "notes": "This tree decides where the agent runs and what builds it, once the pattern is known. A prompt agent in Foundry Agent Service runs on the Responses API-based runtime: the service handles tool loops and conversation state, and Foundry manages autoscale. The Microsoft Copilot harness, in preview, is a managed runtime for prompt agents that need multi-step tool, file or command work; it is chosen when the agent is created. When the agent must live inside existing application compute, Microsoft Agent Framework runs in the application with Foundry Models as the model client; version 1.0 shipped in April 2026, and Python 1.26.0 and .NET 1.28.0 are current in November 2026. For real-time voice, hosted agents offer Invocations over WebSocket, a full-duplex connection that passes frames through without buffering. Other custom orchestration fits a hosted agent, generally available since July 2026. Hosted agents scale per session with no warm pool to configure, and the x-ms-debug-latency-enabled header reports cold, warm or resume starts. Workflows in the Foundry portal are in preview and retire on 1 December 2026. A likely question: do hosted agents have cold starts? Yes. Keep start-up and readiness checks lean, and consider memory snapshots."
+  },
+  {
+   "id": "tree-tools",
+   "type": "tree",
+   "section": "s3",
+   "slide": 13,
+   "short": "Tools, protocols, retrieval tree",
+   "kicker": "03 · AGENTS, TOOLS AND PROTOCOLS",
+   "title": "Tools, protocols and retrieval decision tree",
+   "subtitle": "Five questions lead from what the agent needs to a tool type, with the setting that matters for latency.",
+   "tags": [
+    "reduce",
+    "avoid"
+   ],
+   "sources": [
+    "mcp",
+    "toolbox",
+    "agentic"
+   ],
+   "qs": [
+    {
+     "q": "Grounding on indexed enterprise content?",
+     "t": "Foundry IQ knowledge base",
+     "s": "minimal retrieval effort; extractive output",
+     "src": [
+      "agentic",
+      "effort"
+     ],
+     "detail": "A Foundry IQ knowledge base uses agentic retrieval. Minimal retrieval reasoning effort skips query planning by a language model and gives the lowest latency; low, the default, adds planning, and medium can add one follow-up iteration. Low, medium and answer synthesis are in preview; extractive output is recommended for agents."
+    },
+    {
+     "q": "Logic lives in the application code?",
+     "t": "Function calling",
+     "s": "application runs it; independent calls in parallel",
+     "src": [
+      "toolbp"
+     ],
+     "detail": "Function calling keeps logic in the application, and independent calls can run in parallel."
+    },
+    {
+     "q": "Tool shared by many agents or teams?",
+     "t": "MCP server or toolbox",
+     "s": "approval only where needed; tool search",
+     "src": [
+      "mcp",
+      "toolbox"
+     ],
+     "detail": "MCP approval defaults to always, and each approval adds a round trip, so set never or a per-tool list for trusted tools. An empty allowed-tools list allows every tool, and tool search, generally available since September 2026, exposes tools on demand to save tokens."
+    },
+    {
+     "q": "Existing REST API with an OpenAPI description?",
+     "t": "OpenAPI tool",
+     "s": "return only the fields the agent needs",
+     "src": [
+      "toolbp"
+     ],
+     "detail": "OpenAPI tools call existing REST APIs; returning only the fields the agent needs keeps the prompt small."
+    },
+    {
+     "q": "Another agent owns the whole task?",
+     "t": "Agent2Agent (A2A) tool",
+     "s": "adds the other agent's own model calls",
+     "src": [
+      "a2a"
+     ],
+     "detail": "The Agent2Agent tool hands over a whole task; the called agent runs its own model calls, and Foundry agent targets support text only, without streaming."
+    }
+   ],
+   "other": {
+    "t": "Built-in tools",
+    "s": "web search, file search, code interpreter",
+    "src": [
+     "agents"
+    ],
+    "detail": "Otherwise the built-in tools of Foundry Agent Service cover web search, file search and code interpreter."
+   },
+   "aside": {
+    "h": "PROTOCOLS AND TOOL SETTINGS",
+    "items": [
+     [
+      "Model Context Protocol (MCP)",
+      "agent to tool; the calling agent orchestrates"
+     ],
+     [
+      "Agent2Agent (A2A)",
+      "agent to agent; the called agent orchestrates"
+     ],
+     [
+      "Tool definitions cost tokens",
+      "small tool set, or tool search on demand"
+     ],
+     [
+      "tool_choice",
+      "set explicitly where a turn needs no tool"
+     ],
+     [
+      "Retrieval effort",
+      "minimal skips query planning"
+     ]
+    ]
+   },
+   "notes": "The first Yes decides, and each answer names the setting that matters for latency. For grounding, a Foundry IQ knowledge base uses agentic retrieval. Minimal retrieval reasoning effort skips query planning by a language model and gives the lowest latency; low, the default, adds planning, and medium can add one follow-up iteration. Low, medium and answer synthesis are in preview, and extractive output is recommended for agents. Function calling keeps logic in the application, and independent calls can run in parallel. MCP servers and toolboxes share tools across agents. MCP approval defaults to always, and each approval adds a round trip, so set never or a per-tool list for trusted tools. An empty allowed-tools list allows every tool, and tool search, generally available since September 2026, exposes tools on demand to save tokens. OpenAPI tools call existing REST APIs. The Agent2Agent tool hands over a whole task; the called agent runs its own model calls, and Foundry agent targets support text only, without streaming. A2A version 1.0 is generally available. A likely question: is MCP slower than function calling? MCP adds a call to the server, plus a round trip when approval is on; execute_tool spans show the difference."
+  },
+  {
+   "id": "trace",
+   "type": "trace",
+   "section": "s4",
+   "slide": 14,
+   "short": "Observability and budgets",
+   "kicker": "04 · OPERATIONS",
+   "title": "Latency observability and budgets",
+   "subtitle": "One trace per user turn shows where the time goes; budgets turn percentiles into release gates.",
+   "tags": [
+    "measure"
+   ],
+   "sources": [
+    "trace",
+    "afobs"
+   ],
+   "beats": 2,
+   "spans": [
+    [
+     "invoke_agent",
+     "agent run",
+     0,
+     1,
+     "agent"
+    ],
+    [
+     "chat",
+     "model call: plan",
+     0.02,
+     0.3,
+     "model"
+    ],
+    [
+     "execute_tool",
+     "tool call A",
+     0.32,
+     0.58,
+     "tool"
+    ],
+    [
+     "execute_tool",
+     "tool call B, in parallel",
+     0.32,
+     0.49,
+     "tool"
+    ],
+    [
+     "chat",
+     "model call: answer",
+     0.6,
+     0.98,
+     "model"
+    ]
+   ],
+   "ft": 0.68,
+   "caption": "OpenTelemetry spans with token usage, stored in Application Insights.",
+   "monitor": [
+    [
+     "First-token time",
+     "p50, p95 and p99 per agent and model"
+    ],
+    [
+     "Generation time",
+     "always next to generated tokens"
+    ],
+    [
+     "Model calls per turn",
+     "chat spans in one trace"
+    ],
+    [
+     "Tool time",
+     "execute_tool span duration"
+    ],
+    [
+     "Cache hits",
+     "cached_tokens in the usage data"
+    ],
+    [
+     "Throttling",
+     "429 responses, spillover, tier downgrades"
+    ]
+   ],
+   "band": [
+    "LATENCY BUDGET",
+    "p50, p95 and p99 targets per user journey and pattern  ·  release gates that fail on regressions  ·  evaluations rerun when a model or prompt changes"
+   ],
+   "notes": "A trace per user turn is the only way to see where time goes across hops. Microsoft Agent Framework emits OpenTelemetry spans by default, following the generative AI semantic conventions: invoke_agent for the run, chat for each model call and execute_tool for each tool call, with token usage as attributes; trace context also reaches MCP servers. Foundry tracing is generally available for prompt and hosted agents and stores spans in Application Insights. The agent monitoring dashboard, in preview, shows latency, token usage, run success rate and evaluation results; official documentation notes that run latency above ten seconds can point to throttling, complex tool calls or network issues. Insights, also in preview, groups recurring trace behaviour, including latency findings. Monitor first-token percentiles, generation time next to token counts, model calls per turn, tool span durations, cache hits and throttling. Then set a budget: p50, p95 and p99 targets per user journey and pattern, with release gates that fail on regressions and evaluations that rerun when a model or prompt changes. A likely question: is extra tooling needed? No. Connect Application Insights to the Foundry project and enable tracing in the framework."
+  },
+  {
+   "id": "compare",
+   "type": "compare",
+   "section": "s4",
+   "slide": 15,
+   "short": "Caching and capacity compared",
+   "kicker": "04 · OPERATIONS",
+   "title": "Comparison of caching and capacity features",
+   "subtitle": "Four features often confused, asked the same six questions.",
+   "tags": [
+    "avoid",
+    "reduce",
+    "steady"
+   ],
+   "sources": [
+    "caching",
+    "semcache",
+    "priority"
+   ],
+   "beats": 4,
+   "feats": [
+    [
+     "Prompt caching",
+     "reduce"
+    ],
+    [
+     "Semantic caching",
+     "avoid"
+    ],
+    [
+     "Priority processing",
+     "steady"
+    ],
+    [
+     "Provisioned throughput",
+     "steady"
+    ]
+   ],
+   "rows": [
+    [
+     "What it does",
+     "Reuses processing of an identical prompt prefix",
+     "Returns a stored answer for a similar prompt",
+     "Serves requests in a faster lane",
+     "Reserves dedicated model capacity"
+    ],
+    [
+     "Where it runs",
+     "Model service, automatically",
+     "API Management with Azure Managed Redis",
+     "Deployment setting or per request",
+     "Model deployment"
+    ],
+    [
+     "Latency effect",
+     "Shorter first-token time on a hit",
+     "No model call on a hit; small overhead on a miss",
+     "Latency targets per model",
+     "Lowest variance under steady load"
+    ],
+    [
+     "Effect on the answer",
+     "Still generated for every request",
+     "May reuse an answer written for another prompt",
+     "Same model, different lane",
+     "Same model, reserved capacity"
+    ],
+    [
+     "Cost effect",
+     "Lower cost for cached input tokens",
+     "Fewer model calls; adds embeddings and a cache",
+     "Higher per-token rate",
+     "Hourly or reserved capacity"
+    ],
+    [
+     "Best fit",
+     "Long, stable instructions and tool definitions",
+     "Repeated questions with stable answers",
+     "Interactive traffic with variable volume",
+     "Steady, predictable high volume"
+    ]
+   ],
+   "band": [
+    "USED TOGETHER",
+    "Prompt caching on every call  ·  semantic caching where answers repeat  ·  one capacity option for the latency target"
+   ],
+   "notes": "These four features are often grouped together as ways to go faster, but they work at different layers. Prompt caching reuses the processing of an identical prompt prefix inside the model service; the answer is still generated for every request, and the saving is in first-token time and input cost. Semantic caching in Azure API Management returns a stored answer for a prompt that is similar enough, judged against a score threshold, using an embeddings deployment and Azure Managed Redis. A hit skips the model call entirely, a miss pays for the embedding and lookup on top, and a similarity match can return an answer written for a different question, so it suits stable, repeated questions. Priority processing changes the service lane on a standard deployment, at a higher per-token rate. Provisioned throughput reserves capacity and gives the lowest variance under steady load. They combine well: prompt caching on every call, semantic caching where answers repeat, and one capacity option for the latency target. A likely question: does semantic caching break personalization? It can, so include tenant, user and prompt version in the cache scope, as the Well-Architected guidance for AI workloads advises."
+  },
+  {
+   "id": "phases",
+   "type": "phases",
+   "section": "s5",
+   "slide": 16,
+   "short": "Optimization path",
+   "kicker": "05 · OPTIMIZATION PATH",
+   "title": "Optimization path",
+   "subtitle": "Five phases from a measured baseline to governed latency budgets, cheapest changes first.",
+   "tags": [
+    "measure",
+    "hide",
+    "reduce",
+    "avoid",
+    "steady"
+   ],
+   "sources": [
+    "latency",
+    "waf"
+   ],
+   "beats": 5,
+   "phases": [
+    [
+     "Measure",
+     "measure",
+     [
+      "Baseline per user journey",
+      "Timestamps at every hop",
+      "Percentiles with token counts",
+      "Streaming as in production"
+     ]
+    ],
+    [
+     "Quick wins",
+     "hide",
+     [
+      "Streaming end to end",
+      "Output caps, low verbosity",
+      "Lowest sufficient reasoning effort",
+      "Stable prompt prefix"
+     ]
+    ],
+    [
+     "Design",
+     "avoid",
+     [
+      "Simplest orchestration pattern",
+      "Model per agent role",
+      "Parallel tool calls",
+      "Minimal retrieval effort"
+     ]
+    ],
+    [
+     "Capacity",
+     "steady",
+     [
+      "Priority or provisioned",
+      "Separate deployments per workload",
+      "Co-located regions",
+      "Gateway cache for repeats"
+     ]
+    ],
+    [
+     "Govern",
+     "measure",
+     [
+      "Latency budgets in release gates",
+      "Continuous evaluation",
+      "Alerts on percentiles"
+     ]
+    ]
+   ],
+   "prove": [
+    "Streaming reaches the client without buffering",
+    "Generated tokens explain the slow requests",
+    "Fewer model calls in series keep quality",
+    "Capacity option meets the percentile target"
+   ],
+   "notes": "The path orders changes by cost and risk. Phase one measures: a baseline per user journey with timestamps at every hop, percentiles paired with token counts, and streaming configured as in production. Phase two takes the quick wins that need no redesign: streaming from model to client without buffering, output caps and low verbosity, the lowest reasoning effort that passes evaluation, and a stable prompt prefix for caching. Phase three changes the design: the simplest orchestration pattern, a model per agent role, parallel tool calls and minimal retrieval effort. Phase four covers capacity and platform: priority processing or provisioned throughput, separate deployments per workload, co-located regions, and gateway caching where answers repeat. Phase five governs: latency budgets in release gates, continuous evaluation on sampled traffic, and alerts on percentiles. The four checks at the bottom are what to prove first, because each one decides whether the next phase is needed. Order matters: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove. A likely question: what gives the fastest visible improvement? End-to-end streaming, because it changes when the user sees the first words."
+  },
+  {
+   "id": "status",
+   "type": "status",
+   "section": "s6",
+   "slide": 17,
+   "short": "Status and recent changes",
+   "kicker": "06 · STATUS AND REFERENCES",
+   "title": "Status and recent changes",
+   "subtitle": "Status as published on 14 November 2026; an asterisk marks preview.",
+   "tags": [],
+   "sources": [
+    "devblog",
+    "agents",
+    "router"
+   ],
+   "beats": 0,
+   "preview": true,
+   "rows": [
+    [
+     "Priority processing",
+     "Global Standard and US Data Zone Standard; latency targets for newer models",
+     false
+    ],
+    [
+     "Flex processing",
+     "Global Standard, selected GPT-5.6 and GPT-6 models; no latency target",
+     true
+    ],
+    [
+     "Prompt caching",
+     "prompt_cache_key and cache breakpoints for GPT-5.6 and later",
+     false
+    ],
+    [
+     "Predicted outputs",
+     "Chat Completions with GPT-4o and GPT-4.1 models",
+     true
+    ],
+    [
+     "Model Router",
+     "Version 2025-11-18, updated in place; session affinity in preview",
+     false
+    ],
+    [
+     "Decisions API",
+     "Generally available since 22 October 2026, with gpt-6-luna",
+     false
+    ],
+    [
+     "Microsoft-Decision-1",
+     "Decision model for classification and routing steps",
+     true
+    ],
+    [
+     "Hosted agents",
+     "Generally available since 9 July 2026; long-running resilience since 28 October 2026",
+     false
+    ],
+    [
+     "Microsoft Copilot harness",
+     "Managed runtime for prompt agents, chosen at creation",
+     true
+    ],
+    [
+     "Workflows in the Foundry portal",
+     "Retire on 1 December 2026; new workflows use Microsoft Agent Framework",
+     true
+    ],
+    [
+     "Toolboxes and tool search",
+     "Toolboxes generally available for hosted agents, preview for prompt agents; tool search since 24 September 2026",
+     false
+    ],
+    [
+     "Foundry IQ retrieval effort",
+     "Minimal effort generally available; low, medium and answer synthesis in preview",
+     false
+    ],
+    [
+     "Agent monitoring dashboard",
+     "Metrics, alerts and Insights in preview; tracing for prompt and hosted agents",
+     true
+    ],
+    [
+     "Microsoft Agent Framework",
+     "Version 1.0 since April 2026; Python 1.26.0 and .NET 1.28.0 in November 2026",
+     false
+    ]
+   ],
+   "notes": "This is the status as published on 14 November 2026; an asterisk marks a preview feature without a service level agreement. Several pages carry no explicit generally available wording, only the absence of a preview label: priority processing, provisioned throughput, spillover, prompt caching and Model Router among them. They are shown unmarked, following the kit convention. Recent changes worth calling out: the Decisions API became generally available on 22 October 2026; hosted agents on 9 July 2026, with long-running resilience on 28 October 2026; and tool search on 24 September 2026. Workflows in the Foundry portal retire on 1 December 2026, and new workflows should use Microsoft Agent Framework. Stored completions and distillation in Foundry classic retired on 15 October 2026. Foundry IQ is partly generally available: minimal, extractive retrieval is in the generally available REST version, while query planning, answer synthesis and higher effort levels are in preview. A likely question: how to stay current? Use the monthly what's new page for Foundry and the Foundry developer blog."
+  },
+  {
+   "id": "refs",
+   "type": "refs",
+   "section": "s6",
+   "slide": 18,
+   "short": "References",
+   "kicker": "06 · STATUS AND REFERENCES",
+   "title": "References",
+   "subtitle": "Microsoft Learn and GitHub pages behind this story, all checked on 14 November 2026.",
+   "tags": [],
+   "sources": [
+    "learn-home"
+   ],
+   "beats": 0,
+   "groups": [
+    [
+     "Models and capacity",
+     [
+      "latency",
+      "priority",
+      "flex",
+      "ptu",
+      "spillover",
+      "caching",
+      "predicted",
+      "reasoning",
+      "router",
+      "responses",
+      "realtime",
+      "decisions",
+      "streaming",
+      "monitor",
+      "deploytypes"
+     ]
+    ],
+    [
+     "Agents, tools and protocols",
+     [
+      "patterns",
+      "agents",
+      "hosted",
+      "hostedlat",
+      "debughosted",
+      "toolbox",
+      "mcp",
+      "a2a",
+      "toolbp",
+      "aforch",
+      "harness",
+      "afrel"
+     ]
+    ],
+    [
+     "Retrieval, gateway and operations",
+     [
+      "agentic",
+      "effort",
+      "genai",
+      "semcache",
+      "gateway",
+      "baseline",
+      "trace",
+      "dashboard",
+      "afobs",
+      "waf"
+     ]
+    ]
+   ],
+   "current": [
+    "whatsnew",
+    "devblog"
+   ],
+   "notes": "These are the pages used to build and check this deck, all fetched on 14 November 2026. The models and capacity group covers the performance and latency guide, priority and flex processing, provisioned throughput and spillover, deployment types, prompt caching, predicted outputs, reasoning models, Model Router, the Responses API, real-time audio, the Decisions API, content streaming and the monitoring reference. The agents group covers the Azure Architecture Center orchestration patterns, Foundry Agent Service, hosted agents including the latency optimization and debugging pages, toolboxes, the MCP and Agent2Agent tools, tool best practices, and Microsoft Agent Framework orchestrations, compaction, harness and observability. The retrieval, gateway and operations group covers agentic retrieval, the AI gateway and semantic caching policies, the baseline Microsoft Foundry chat architecture, Foundry tracing, the agent monitoring dashboard and the Well-Architected guidance for AI workloads. Related decks in this kit go deeper into prompt caching, the AI gateway, hosted agents, Agent2Agent and Voice Live. Model names, per-model targets and preview status change often, so recheck them before each delivery. A likely question: which single page is the best starting point? The performance and latency guide for Azure OpenAI in Foundry."
+  }
+ ]
+}

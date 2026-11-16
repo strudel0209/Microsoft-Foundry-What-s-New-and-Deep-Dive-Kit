@@ -1,15 +1,15 @@
 # kit.yaml — manifest of the Microsoft Foundry What's New and Deep-Dive Kit.
-# Read on every run by the three kit skills (azure-ai-deep-dive-deck, foundry-whats-new-deck,
-# deck-companion-notebook). The files in the repository win over this manifest: when they
-# disagree, fix this file in the same pull request.
+# Read on every run by the four kit skills (azure-ai-deep-dive-deck, foundry-whats-new-deck,
+# deck-companion-notebook, interactive-deck-story). The files in the repository win over this
+# manifest: when they disagree, fix this file in the same pull request.
 # Personal values (private package index, tenant, subscription, resource names) never go here:
 # put them in .env (git-ignored) or kit.local.yaml (git-ignored).
 
 kit:
   name: Microsoft Foundry What's New and Deep-Dive Kit
   manifest_version: 1
-  skills_version: 1.2.0          # see skills/CHANGELOG.md
-  updated: 2026-11-09
+  skills_version: 1.3.0          # see skills/CHANGELOG.md
+  updated: 2026-11-16
   python_kernel: "3.12"          # notebooks (devcontainer)
   hosted_agent_runtime: ["3.13"]   # agent/azure.yaml and private-agent/azure.yaml — separate from the kernel
 
@@ -18,6 +18,7 @@ paths:
   decks: decks/
   deck_changelog: decks/CHANGELOG.md            # owned by foundry-whats-new-deck
   deep_dive_register: decks/DEEP-DIVE-DECKS.md  # owned by azure-ai-deep-dive-deck
+  interactive_stories: interactive-stories/     # owned by interactive-deck-story; story sources in src/<topic>/
   notebooks: ./                                 # foundry-demo-<n>-<topic>.ipynb at the root
   notebooks_changelog: NOTEBOOKS-CHANGELOG.md   # owned by deck-companion-notebook
   requirements: requirements.txt
@@ -29,13 +30,14 @@ naming:
   whats_new_deck: "Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx"
   deep_dive_deck: "Microsoft Foundry <Subject>.pptx"   # Title Case subject, no "deep dive", no date; edition in decks[].edition
   notebook: "foundry-demo-<n>-<topic>.ipynb"
+  interactive_story: "<deck base name> - Interactive.html"   # in interactive-stories/; sources in interactive-stories/src/<topic>/
   rule: >-
     New files use these patterns. A deep-dive deck keeps one file name across editions: a new
     edition replaces the file in a pull request and gets a new register entry (git history is
     the rollback). The what's-new deck gets a new dated file per edition. Never rename or
     renumber another contributor's file.
 
-next_notebook_number: 10
+next_notebook_number: 11
 
 decks:
   - file: Microsoft-Foundry-Whats-New-2026-10-26.pptx
@@ -90,6 +92,24 @@ decks:
     slides: 17
     pairs_with: []          # no companion notebook yet
     note: Fabric IQ ontologies with structured and unstructured data for Foundry, Copilot Studio and Microsoft 365 Copilot agents; customer-neutral kit copy (first built for a customer session); carries the Microsoft sensitivity label from OneDrive, no encryption
+  - file: "Microsoft Foundry Latency Optimization for Models and Agents.pptx"
+    kind: deep-dive
+    edition: 2026-11
+    slides: 18
+    pairs_with: [10]        # related: NB1 priority processing, NB4 prompt caching, NB8 semantic caching
+    note: latency best practices and decision trees (model, capacity, orchestration pattern, agent runtime and framework, tools and protocols) with the Foundry features that shorten response time; customer-neutral kit copy (built after a customer latency review); carries a Microsoft sensitivity label with encryption applied in OneDrive — see known_issues
+
+# Offline interactive HTML stories built from decks by interactive-deck-story (owned by that skill).
+# Paths in an entry are relative to paths.interactive_stories; deck entries above are never changed for a story.
+interactive_stories:
+  - file: "Microsoft Foundry Latency Optimization for Models and Agents - Interactive.html"
+    source: src/latency-optimization-for-models-and-agents/   # story.json and renderers.js (two topic renderers)
+    deck: "Microsoft Foundry Latency Optimization for Models and Agents.pptx"
+    deck_edition: 2026-11
+    scenes: 18
+    engine: 1.0.1
+    built: 2026-11-16
+    checks: "story_check pass; HTML validator 0 errors, 0 warnings; render_check pass (headless Chromium, every scene); full-screen fallback tested in Chromium (page, sandboxed frame, denied frame, refused request, prefixed API); not tested in Safari or Firefox"
 
 notebooks:
   - n: 1
@@ -132,6 +152,12 @@ notebooks:
     env_block: core + FOUNDRY_EMBEDDING_NAME + AZURE_SEARCH_ENDPOINT, FABRIC_WORKSPACE_ID, FABRIC_LAKEHOUSE_ID, FABRIC_ONTOLOGY_ID, FABRIC_DOCS_FOLDER (optional); steps 5-6 add AZURE_SUBSCRIPTION_ID, AZURE_RESOURCE_GROUP, FOUNDRY_PROJECT_NAME (optional), APP_INSIGHTS_RESOURCE_ID (optional), FOUNDRY_CONNECTIONS_API_VERSION (optional); step 7 adds FABRIC_RLS_TEST_USER
     hosted_agent: samples/games-operations/hosted-agent   # separate azd project; agent/azure.yaml unchanged
     status: steps 0-4 (knowledge layer, run by the owner 2026-11-10); steps 5-6 (agents, evaluations, tracing) run by the owner 2026-11-11; step 7 (permission test) run by the owner 2026-11-12; step 9 (publishing to Microsoft 365 Copilot and Teams, web app call, A2A) added 2026-11-12, not yet run; steps 8, 10 and 11 to follow
+  - n: 10
+    file: foundry-demo-10-latency-optimization-for-models-and-agents.ipynb
+    deck: "Microsoft Foundry Latency Optimization for Models and Agents.pptx"   # edition 2026-11; step headings carry its slide numbers
+    env_block: core + NB10_SMALL_MODEL_NAME (optional, step 3), NB10_KNOWLEDGE_BASE (optional, step 12); optional steps reuse FOUNDRY_DECISIONS_NAME (3), FOUNDRY_ROUTER_NAME (4), HOSTED_AGENT_NAME (11), AZURE_SEARCH_ENDPOINT (12)
+    reuses: [2, 9]          # step 11 calls notebook 2's hosted agent; step 12 queries notebook 9's knowledge base
+    status: written 2026-11-14 against agent-framework 1.25.0 and agent-framework-foundry 1.16.2; not yet run against Azure
 
 samples:
   - name: games-operations
@@ -159,20 +185,20 @@ samples:
 # Shared variables: a new notebook reuses one ONLY with the identical meaning;
 # otherwise it adds a prefixed name (feature prefix or NB<n>_).
 env:
-  FOUNDRY_PROJECT_ENDPOINT: {meaning: "Foundry project endpoint https://<resource>.services.ai.azure.com/api/projects/<project>", notebooks: [1, 2, 4, 5, 7, 8, 9]}
-  FOUNDRY_MODEL_NAME:       {meaning: "chat model deployment name (or the Model Router deployment)", notebooks: [1, 4, 5, 9]}
-  FOUNDRY_ROUTER_NAME:      {meaning: "Model Router deployment name", notebooks: [1]}
+  FOUNDRY_PROJECT_ENDPOINT: {meaning: "Foundry project endpoint https://<resource>.services.ai.azure.com/api/projects/<project>", notebooks: [1, 2, 4, 5, 7, 8, 9, 10]}
+  FOUNDRY_MODEL_NAME:       {meaning: "chat model deployment name (or the Model Router deployment)", notebooks: [1, 4, 5, 9, 10]}
+  FOUNDRY_ROUTER_NAME:      {meaning: "Model Router deployment name", notebooks: [1, 10]}
   FOUNDRY_EMBEDDING_NAME:   {meaning: "embedding model deployment name", notebooks: [1, 9]}
-  FOUNDRY_DECISIONS_NAME:   {meaning: "optional gpt-6-luna deployment name for the Decisions API step; blank skips the step", notebooks: [1]}
+  FOUNDRY_DECISIONS_NAME:   {meaning: "optional gpt-6-luna deployment name for the Decisions API step; blank skips the step", notebooks: [1, 10]}
   FOUNDRY_PROJECT_NAME:     {meaning: "Foundry project name matching FOUNDRY_PROJECT_ENDPOINT; NB1 and NB9 derive it when blank or unset, NB7 requires it for Voice Live with an agent", notebooks: [1, 7, 9]}
-  FOUNDRY_ACCOUNT_NAME:     {meaning: "optional NB1 override of the Foundry account name; blank or unset derives it from FOUNDRY_PROJECT_ENDPOINT", notebooks: [1]}
+  FOUNDRY_ACCOUNT_NAME:     {meaning: "optional NB1 override of the Foundry account name; blank or unset derives it from FOUNDRY_PROJECT_ENDPOINT", notebooks: [1, 10]}
   AZURE_SUBSCRIPTION_ID:    {meaning: "shared subscription containing the kit's Foundry and API Management resources; PRIVATE_DEMO_SUBSCRIPTION_ID must use the same subscription", notebooks: [1, 8, 9]}
   AZURE_RESOURCE_GROUP:     {meaning: "Foundry resource group containing the account and project", notebooks: [1, 9]}
   APIM_RESOURCE_GROUP:      {meaning: "API Management resource group in the shared AZURE_SUBSCRIPTION_ID", notebooks: [8]}
   APIM_GATEWAY_URL:         {meaning: "API Management base URL https://<apim>.azure-api.net, without the API suffix (INFERENCE_API_PATH supplies it)", notebooks: [8]}
   AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING: {meaning: "opt-in for client-side generative AI tracing", notebooks: [1, 9]}
   OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT: {meaning: "record prompts and completions in traces (dev only, default false)", notebooks: [1, 9]}
-  AZURE_SEARCH_ENDPOINT:    {meaning: "Azure AI Search service endpoint https://<service>.search.windows.net (Basic tier or higher)", notebooks: [9]}
+  AZURE_SEARCH_ENDPOINT:    {meaning: "Azure AI Search service endpoint https://<service>.search.windows.net (Basic tier or higher)", notebooks: [9, 10]}
   FABRIC_WORKSPACE_ID:      {meaning: "Fabric workspace ID holding the games-operations items", notebooks: [9]}
   FABRIC_LAKEHOUSE_ID:      {meaning: "Fabric lakehouse item ID (GamesLakehouse) whose Files area holds the sample PDFs", notebooks: [9]}
   FABRIC_ONTOLOGY_ID:       {meaning: "Fabric ontology item ID (GamesOperationsOntology)", notebooks: [9]}
@@ -180,6 +206,8 @@ env:
   APP_INSIGHTS_RESOURCE_ID: {meaning: "resource ID of the Application Insights component connected to the Foundry project", notebooks: [2, 9]}
   FOUNDRY_CONNECTIONS_API_VERSION: {meaning: "optional ARM API version for Foundry project connections created over REST; blank uses 2025-10-01-preview", notebooks: [9]}
   FABRIC_RLS_TEST_USER:     {meaning: "sign-in name of the Norway-only test user for the permission test (workspace Viewer, member of the semantic model role)", notebooks: [9]}
+  NB10_SMALL_MODEL_NAME:    {meaning: "optional small model deployment for notebook 10's classification comparison, e.g. gpt-5.4-mini; blank skips that row", notebooks: [10]}
+  NB10_KNOWLEDGE_BASE:      {meaning: "optional knowledge base on AZURE_SEARCH_ENDPOINT with a model configuration; blank uses notebook 9's games-kb", notebooks: [10]}
 
 known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted for the owner's changes of 2026-10-11 (notebook 2 gateway removed, outputs cleared); re-run after every pull
   - "NB5 installs packages with %pip in two cells (azure-ai-projects>=2.5.0 vs root >=2.7.0,<3) — move to requirements.txt"
@@ -189,6 +217,7 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "decks/CHANGELOG.md lists editions 2026-09 to 2026-10-22 whose files are no longer in decks/ (only edition 2026-10-26 is); history kept on purpose"
   - "NB1 slide references were written against what's-new edition 2026-10 (25 slides); references to slide 11 are one lower and to slides 12-25 two lower than in edition 2026-10-26 (slides 1-10 unchanged) — run deck-companion-notebook DECK REFRESH MODE"
   - "Microsoft Foundry Copilot Harness Prompt Agents.pptx carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
+  - "Microsoft Foundry Latency Optimization for Models and Agents.pptx (added 2026-11-14) carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
   - "What's-new edition 2026-10-26: second-person wording remains on slides 5, 8, 15, 17, 21, 23, 24 and 25, text at 6.5-7.0pt on slides 24 and 25, and the notes of slides 1 and 5 still use the retired label style"
   - "samples/games-operations: the Fabric notebooks and KQL script have not yet been run in a Fabric workspace; ontology generation is a portal action (no public API), so the ontology is finished with agent prompts and checked by notebook 03; export TMDL with getDefinition once built"
   - "samples/games-operations: evaluation questions say 'NOC' in both themes; the neutral theme labels the entity 'National Committee'"

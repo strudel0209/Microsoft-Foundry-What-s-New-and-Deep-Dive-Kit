@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Best practices, decision trees and the Microsoft Foundry features that shorten response time in generative AI applications and agents.">
+<meta name="generator" content="interactive-deck-story engine 1.0.1">
+<title>Latency optimization for models and agents · interactive story</title>
+<style>
+:root{
+  --bg0:#060B1C; --bg1:#0B1229; --navy:#101A3C; --panel:rgba(24,36,78,.62); --panel2:rgba(16,26,60,.86);
+  --line:rgba(150,170,220,.22); --line2:rgba(150,170,220,.38);
+  --ink:#FFFFFF; --muted:#B9C2D6; --dim:#8590AD;
+  --teal:#00B39F; --teal-hi:#2CE5CB; --teal-dk:#008173;
+  --avoid:#34D399; --hide:#38BDF8; --reduce:#A78BFA; --steady:#FBBF24; --measure:#C7D2EC;
+  --client:#38BDF8; --azure:#7C8FE0; --foundry:#00B39F;
+  --font:"Segoe UI","Segoe UI Variable",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg0);color:var(--ink);font-family:var(--font);overflow:hidden}
+button{font-family:inherit}
+a{color:var(--teal-hi)}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.glow-a,.glow-b{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none}
+.glow-a{width:46vw;height:46vw;left:-12vw;top:-16vw;background:radial-gradient(circle,#0E4F6B 0%,transparent 70%)}
+.glow-b{width:50vw;height:50vw;right:-16vw;bottom:-22vw;background:radial-gradient(circle,#123A63 0%,transparent 70%)}
+
+/* ---------- top and bottom bars ---------- */
+#top,#bottom{position:fixed;left:0;right:0;z-index:20;display:flex;align-items:center;gap:12px;padding:0 18px}
+#top{top:0;height:54px;background:linear-gradient(180deg,rgba(6,11,28,.92),rgba(6,11,28,.55));border-bottom:1px solid var(--line)}
+#bottom{bottom:0;height:58px;background:linear-gradient(0deg,rgba(6,11,28,.94),rgba(6,11,28,.6));border-top:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;white-space:nowrap;color:var(--ink)}
+.brand i{width:14px;height:14px;background:var(--teal);display:inline-block;box-shadow:0 0 14px var(--teal)}
+.crumb{flex:1;min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb button{background:none;border:0;color:var(--teal-hi);font-size:13px;cursor:pointer;padding:0}
+.tb{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:rgba(20,30,66,.7);color:var(--ink);font-size:13px;cursor:pointer;white-space:nowrap}
+.tb:hover{border-color:var(--teal);background:rgba(0,179,159,.14)}
+.tb[aria-pressed="true"]{border-color:var(--teal);background:rgba(0,179,159,.22)}
+.tb kbd{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.tb.hidden{display:none}
+.tb.primary{background:var(--teal);border-color:var(--teal);color:#04231F;font-weight:700}
+.tb.primary:hover{background:var(--teal-hi)}
+#progress{flex:1;display:flex;gap:4px;align-items:center;min-width:0}
+#progress button{flex:1;height:6px;border:0;border-radius:3px;background:rgba(185,194,214,.18);cursor:pointer;padding:0;position:relative}
+#progress button.done{background:rgba(0,179,159,.55)}
+#progress button.cur{background:var(--teal-hi);box-shadow:0 0 10px var(--teal)}
+#progress button.hub{background:rgba(251,191,36,.45)}
+#progress button.hub.cur{background:var(--steady);box-shadow:0 0 10px var(--steady)}
+.beats{display:flex;gap:5px;min-width:60px;justify-content:center}
+.beats i{width:7px;height:7px;border-radius:50%;background:rgba(185,194,214,.25)}
+.beats i.on{background:var(--teal-hi)}
+.counter{font-size:12px;color:var(--dim);min-width:58px;text-align:end;font-variant-numeric:tabular-nums}
+
+/* ---------- stage ---------- */
+#viewport{position:fixed;left:0;right:0;top:54px;bottom:58px;z-index:5}
+#stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0}
+.scene{position:absolute;inset:0;transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+.scene.enter{opacity:0;transform:scale(1.035)}
+.scene.leave{opacity:0;transform:scale(.97)}
+.scene.dive{opacity:0;transform:scale(2.1);transition:opacity .5s ease,transform .6s cubic-bezier(.5,0,.8,.4)}
+.scene.rise{opacity:0;transform:scale(.55)}
+.wires{position:absolute;inset:0;width:1600px;height:900px;overflow:visible;pointer-events:none}
+.wires .hit{pointer-events:auto;cursor:pointer}
+.kicker{position:absolute;left:70px;top:40px;font-size:14px;font-weight:700;letter-spacing:.2em;color:var(--teal)}
+.title{position:absolute;left:70px;top:62px;margin:0;font-size:44px;line-height:1.15;font-weight:700;letter-spacing:-.01em}
+.subtitle{position:absolute;left:70px;top:122px;margin:0;font-size:20px;color:var(--muted);max-width:1180px}
+.tags{position:absolute;right:70px;top:30px;display:flex;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid currentColor;background:rgba(6,11,28,.5);white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.c-avoid{color:var(--avoid)} .c-hide{color:var(--hide)} .c-reduce{color:var(--reduce)} .c-steady{color:var(--steady)} .c-measure{color:var(--measure)}
+.foot{position:absolute;left:70px;right:70px;top:846px;display:flex;justify-content:space-between;gap:24px;font-size:14px;color:var(--dim)}
+.foot .src{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--dim)}
+.foot a:hover{color:var(--teal-hi)}
+.pnote{position:absolute;right:70px;top:820px;font-size:13px;color:var(--dim)}
+.edit-note{position:absolute;left:70px;top:818px;font-size:13px;color:var(--dim);font-style:italic}
+
+/* beat reveal */
+.scene [data-b]{opacity:0;transform:translateY(16px);transition:opacity .6s ease var(--d,0s),transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.scene [data-b].on{opacity:1;transform:none}
+.scene svg [data-b]{transform:none}
+.wire{fill:none;stroke:var(--line2);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s ease var(--d,0s),stroke .3s,opacity .4s}
+.wire.on{stroke-dashoffset:0}
+.wire.hot{stroke:var(--teal);stroke-width:2.5}
+.wire.dim{opacity:.25}
+
+/* generic boxes */
+.box{position:absolute;border-radius:12px}
+.card{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(4px)}
+.click{cursor:pointer;transition:border-color .25s,box-shadow .25s,background .25s,opacity .3s,transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.click:hover{border-color:var(--teal);box-shadow:0 0 0 1px rgba(0,179,159,.35),0 0 26px rgba(0,179,159,.18)}
+.click:focus-visible,.tb:focus-visible,button:focus-visible{outline:2px solid var(--teal-hi);outline-offset:2px}
+.h-sm{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+.band{position:absolute;left:70px;width:1460px;border-radius:12px;background:linear-gradient(90deg,rgba(0,179,159,.16),rgba(16,26,60,.7));border:1px solid rgba(0,179,159,.35);padding:14px 22px;font-size:17px;display:flex;align-items:center;gap:18px}
+.band .h-sm{white-space:nowrap}
+.legend{position:absolute;left:70px;top:792px;display:flex;gap:22px;font-size:13px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:16px;height:12px;border-radius:3px;margin-inline-end:7px;vertical-align:-1px}
+
+/* ---------- title scene ---------- */
+.hero-k{position:absolute;left:70px;top:150px;font-size:15px;font-weight:700;letter-spacing:.22em;color:var(--teal)}
+.hero-bar{position:absolute;left:70px;top:186px;width:90px;height:4px;background:var(--teal);box-shadow:0 0 16px var(--teal)}
+.hero-t{position:absolute;left:70px;top:214px;margin:0;font-size:72px;line-height:1.08;font-weight:800;letter-spacing:-.02em;max-width:900px}
+.hero-s{position:absolute;left:70px;top:420px;margin:0;font-size:23px;line-height:1.5;color:var(--muted);max-width:820px}
+.hero-go{position:absolute;left:70px;top:540px;display:flex;gap:14px;align-items:center}
+.hero-go .tb{height:46px;font-size:16px;padding:0 20px}
+.hero-keys{position:absolute;left:70px;top:620px;font-size:14px;color:var(--dim);line-height:1.9}
+.hero-keys kbd{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:1px 6px;margin:0 2px}
+.toc{position:absolute;left:1060px;top:190px;width:470px}
+.toc .h-sm{margin-bottom:18px}
+.toc button{display:flex;gap:18px;width:100%;text-align:start;background:none;border:0;border-top:1px solid var(--line);color:var(--muted);padding:16px 4px;font-size:17px;cursor:pointer;line-height:1.35}
+.toc button b{color:var(--teal);font-size:18px;min-width:30px}
+.toc button:hover{color:var(--ink);background:rgba(0,179,159,.08)}
+.hero-meta{position:absolute;left:70px;top:846px;right:70px;display:flex;justify-content:space-between;font-size:14px;color:var(--dim)}
+
+/* ---------- turn scene ---------- */
+.barlab{position:absolute;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal)}
+.seg{position:absolute;height:58px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;text-align:center;line-height:1.15;padding:0 8px;overflow:hidden;color:#fff;transform-origin:left center}
+.seg.hop{background:#33416B}.seg.model{background:#6A57C9}.seg.tool{background:#2F7FB8}.seg.ttft{background:#0B8F80}.seg.gen{background:linear-gradient(90deg,#00A08E,#0E6E7A)}
+.turnbar .seg{transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.turnbar.on .seg{transform:none}
+.ftmark{position:absolute;font-size:13px;color:var(--teal-hi);white-space:nowrap}
+.src-card{padding:18px 20px}
+.src-card .n{font-size:13px;font-weight:700;color:var(--dim);letter-spacing:.1em}
+.src-card h3{margin:4px 0 8px;font-size:21px}
+.src-card p{margin:0;font-size:15.5px;line-height:1.45;color:var(--muted)}
+.src-card .lev{position:absolute;left:20px;right:20px;bottom:16px;font-size:15px;color:var(--ink)}
+.src-card .lev span{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--teal);margin-inline-end:8px}
+.src-card .chip{position:absolute;right:16px;top:16px}
+
+/* ---------- map scene ---------- */
+.node-root{padding:18px 20px;background:linear-gradient(135deg,rgba(0,179,159,.25),rgba(16,26,60,.9));border:1.5px solid var(--teal);box-shadow:0 0 34px rgba(0,179,159,.25)}
+.node-root h3{margin:0 0 6px;font-size:22px}
+.node-root p{margin:0;font-size:15px;color:var(--muted);line-height:1.4}
+.mband{position:absolute;left:400px;width:1130px;height:42px;border-radius:10px;display:flex;align-items:center;gap:16px;padding:0 18px;font-size:15px;color:var(--muted);border:1px dashed var(--line2);background:rgba(16,26,60,.55)}
+.mband b{color:var(--ink);font-size:15px;white-space:nowrap}
+.mband .go{margin-inline-start:auto;color:var(--teal-hi);font-size:13px;white-space:nowrap}
+.qnode{padding:10px 18px 10px 22px;display:flex;flex-direction:column;justify-content:center;border-left:5px solid var(--k);overflow:hidden}
+.qnode .lab{font-size:12px;font-weight:800;letter-spacing:.18em;color:var(--k)}
+.qnode h3{margin:3px 0 2px;font-size:19px;line-height:1.25}
+.qnode p{margin:0;font-size:14px;color:var(--muted)}
+.qnode .cnt{position:absolute;right:14px;top:12px;font-size:12px;color:var(--dim)}
+.qnode.act{background:rgba(24,36,78,.95);box-shadow:0 0 0 1.5px var(--k),0 0 34px color-mix(in srgb,var(--k) 35%,transparent)}
+.qnode.mute{opacity:.45}
+.leaf{padding:12px 54px 12px 18px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateX(40px);pointer-events:none;border-left:3px solid var(--k);transition:opacity .45s ease var(--d,0s),transform .5s cubic-bezier(.2,.7,.2,1) var(--d,0s),border-color .25s,box-shadow .25s}
+.leaf.show{opacity:1;transform:none;pointer-events:auto}
+.leaf h4{margin:0;font-size:16.5px;line-height:1.3}
+.leaf .to{font-size:13px;color:var(--teal-hi);margin-top:4px}
+.leaf .dive{position:absolute;right:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;border:1px solid var(--teal);background:rgba(0,179,159,.15);color:var(--teal-hi);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.leaf .dive:hover{background:var(--teal);color:#04231F}
+.map-hint{position:absolute;left:930px;font-size:14px;color:var(--dim);width:600px;text-align:center;transition:opacity .4s}
+.order{position:absolute;left:930px;top:400px;width:600px;padding:22px 26px;border-radius:12px;border:1px solid rgba(251,191,36,.45);background:rgba(251,191,36,.07);font-size:18px;line-height:1.5;color:var(--ink)}
+.order b{display:block;color:var(--steady);font-size:12px;letter-spacing:.16em;margin-bottom:8px}
+
+/* ---------- path scene ---------- */
+.hoplab{position:absolute;width:224px;text-align:center}
+.hoplab h4{margin:0;font-size:17px}
+.hoplab p{margin:3px 0 0;font-size:14px;color:var(--muted)}
+.lchip{position:absolute;width:224px;min-height:42px;padding:8px 12px;border-radius:9px;background:rgba(24,36,78,.75);border:1px solid var(--line);font-size:14px;line-height:1.3;display:flex;align-items:center}
+.cube{cursor:pointer}
+.cube .top{transition:filter .25s}
+.cube:hover .top{filter:brightness(1.35)}
+.float{animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.stepb{font-size:13px;font-weight:700;fill:#04231F}
+
+/* ---------- anatomy ---------- */
+.ctl{position:absolute;display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted)}
+.ctl input[type=range]{width:180px;accent-color:var(--teal)}
+.seg2{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
+.seg2 button{background:transparent;border:0;color:var(--muted);padding:6px 12px;font-size:13px;cursor:pointer}
+.seg2 button.sel{background:var(--teal);color:#04231F;font-weight:700}
+.formula{position:absolute;left:70px;width:1460px;top:470px;height:60px;border-radius:12px;display:flex;align-items:center;gap:26px;padding:0 24px;background:rgba(16,26,60,.8);border:1px solid var(--line)}
+.formula code{font-family:var(--mono);font-size:21px;color:var(--teal-hi);white-space:nowrap}
+.formula span{font-size:16px;color:var(--muted)}
+table.tbl{position:absolute;border-collapse:separate;border-spacing:0;font-size:15px}
+.tbl th{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);text-align:start;font-weight:700;padding:10px 14px;border-bottom:1px solid var(--line2)}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:middle;line-height:1.35}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+.tbl td code{font-family:var(--mono);font-size:13.5px;color:#CFE9FF}
+.tbl tr{transition:background .2s,opacity .3s}
+.tbl tbody tr:hover{background:rgba(0,179,159,.08)}
+.aside{padding:22px 24px;border-top:4px solid var(--teal)}
+.aside .it{margin-top:16px}
+.aside .it b{display:block;font-size:16px}
+.aside .it span{font-size:14px;color:var(--muted)}
+
+/* ---------- features ---------- */
+.fpanel{padding:18px 20px}
+.fpanel h3{margin:0;font-size:21px;line-height:1.2}
+.fpanel .chip{position:absolute;left:20px;bottom:16px}
+.fpanel svg{position:absolute;left:0;top:84px}
+.fpanel ul{position:absolute;left:20px;right:18px;top:344px;margin:0;padding:0;list-style:none}
+.fpanel li{font-size:15px;line-height:1.4;color:var(--muted);padding:7px 0 7px 18px;position:relative;border-top:1px solid var(--line)}
+.fpanel li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.fpanel.focus{box-shadow:0 0 0 2px var(--teal-hi),0 0 40px rgba(44,229,203,.3)}
+.svgt{font-family:var(--font);fill:#B9C2D6;font-size:13px}
+.svgt.b{fill:#fff;font-weight:700}
+.svgt.t{fill:var(--teal-hi)}
+.grow{transform-box:fill-box;transform-origin:left center}
+.eff{display:flex;gap:3px;position:absolute;left:14px;right:14px;top:96px}
+.eff button{flex:1 1 0;min-width:0;padding:6px 0;border-radius:7px;border:1px solid var(--line2);background:rgba(16,26,60,.8);color:var(--muted);font-size:11px;cursor:pointer}
+.eff button.sel{background:var(--reduce);border-color:var(--reduce);color:#160F33;font-weight:700}
+
+/* ---------- table scene ---------- */
+.tbl.big td{font-size:15px}
+.tbl tbody tr.sel{background:rgba(0,179,159,.12)}
+
+/* ---------- trees ---------- */
+.q{display:flex;align-items:center;padding:0 22px 0 46px;font-size:17px;font-weight:600;line-height:1.3;background:rgba(235,239,247,.07);border:1px solid var(--line)}
+.num{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;border:3px solid #DDF7F3;box-shadow:0 0 18px rgba(0,179,159,.6)}
+.rec{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 18px;background:linear-gradient(135deg,rgba(0,179,159,.2),rgba(16,26,60,.92));border:1.5px solid rgba(0,179,159,.75)}
+.rec b{font-size:17.5px}
+.rec span{font-size:14px;color:var(--muted);margin-top:3px}
+.fb{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 18px;border:1.5px dashed var(--line2);background:rgba(6,11,28,.35)}
+.fb b{font-size:17px}.fb span{font-size:14px;color:var(--muted);margin-top:3px}
+.qo{display:flex;align-items:center;padding:0 22px 0 46px;font-size:17px;font-weight:600;color:var(--muted);border:1.5px dashed var(--line2);background:transparent}
+.yn{position:absolute;font-size:13px;font-weight:700;color:var(--teal-hi)}
+.yn.no{color:var(--muted)}
+.row.dim{opacity:.22!important}
+.row.win{box-shadow:0 0 0 2px var(--teal-hi),0 0 44px rgba(44,229,203,.45)}
+.row.focus{animation:pulse 1.6s ease-in-out 3}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(44,229,203,0)}50%{box-shadow:0 0 0 3px var(--teal-hi),0 0 46px rgba(44,229,203,.5)}}
+.walk{position:absolute;display:flex;gap:8px}
+.walk button{height:34px;padding:0 16px;border-radius:8px;border:1px solid var(--teal);background:rgba(0,179,159,.18);color:#fff;font-weight:700;cursor:pointer;font-size:14px}
+.walk button.n{border-color:var(--line2);background:rgba(16,26,60,.9)}
+.walk button:hover{background:var(--teal);color:#04231F}
+.walkbar{position:absolute;right:70px;top:136px;display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.nextlink{position:absolute;right:70px;top:792px;font-size:14px;background:none;border:0;color:var(--teal-hi);cursor:pointer}
+
+/* ---------- spectrum ---------- */
+.pcol{padding:16px 16px}
+.pcol h3{margin:0;font-size:18px;min-height:46px;line-height:1.25}
+.pcol .lab{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--teal);margin-top:6px}
+.pcol .calls{font-size:14.5px;color:var(--ink);min-height:40px;line-height:1.35;margin-top:3px}
+.pcol svg{position:absolute;left:0;top:150px}
+.pcol .cap{position:absolute;left:16px;right:14px;top:338px;font-size:14px;color:var(--muted);line-height:1.4;border-top:1px solid var(--line);padding-top:10px}
+.arrowband{position:absolute;left:70px;width:1460px;height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;letter-spacing:.16em;color:#fff;background:linear-gradient(90deg,rgba(52,211,153,.35),rgba(56,189,248,.35),rgba(167,139,250,.45),rgba(251,191,36,.55));clip-path:polygon(0 0,97.5% 0,100% 50%,97.5% 100%,0 100%)}
+
+/* ---------- trace ---------- */
+.span-l{position:absolute;width:270px;font-size:14px;color:var(--muted)}
+.span-l code{display:block;font-family:var(--mono);font-size:15px;color:var(--ink)}
+.mon{padding:20px 22px}
+.mon .it{display:flex;flex-direction:column;padding:9px 0;border-top:1px solid var(--line)}
+.mon .it b{font-size:16px}.mon .it span{font-size:14px;color:var(--muted)}
+
+/* ---------- compare ---------- */
+.cmp-h{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 16px;text-align:start}
+.cmp-h b{font-size:18px}
+.cmp-h .chip{align-self:flex-start}
+.cmp-q{display:flex;align-items:center;padding:0 16px;font-size:16px;font-weight:600}
+.cmp-c{display:flex;align-items:center;padding:0 16px;font-size:15px;line-height:1.35;color:var(--muted);background:rgba(24,36,78,.45);border:1px solid var(--line);transition:opacity .3s,background .3s,border-color .3s,transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.cmp-c.hl{background:rgba(0,179,159,.16);border-color:rgba(0,179,159,.6);color:#fff}
+.cmp-c.lo{opacity:.3}
+
+/* ---------- phases ---------- */
+.chev{position:absolute;height:84px;display:flex;align-items:center;gap:14px;padding:0 34px 0 40px;font-size:20px;font-weight:700;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,9% 50%)}
+.chev:first-child{clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%)}
+.chev .pn{font-size:28px;font-weight:800;opacity:.9}
+.pbul{padding:16px 18px}
+.pbul div{font-size:15px;line-height:1.4;color:var(--muted);padding:8px 0;border-top:1px solid var(--line)}
+.pbul div:first-child{border-top:0}
+.prove{padding:20px 24px}
+.prove .h-sm{margin-bottom:14px}
+.pv{display:flex;align-items:center;gap:14px;font-size:17px;padding:10px 0}
+.pv i{width:28px;height:28px;border-radius:50%;border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;color:var(--teal-hi);font-style:normal;font-weight:800;flex:none}
+
+/* ---------- status and refs ---------- */
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;padding:3px 8px;border-radius:999px;color:#1B1300;background:var(--steady)}
+.filters{position:absolute;right:70px;top:136px;display:flex;gap:8px}
+.refcol{padding:18px 20px}
+.refcol h3{margin:0 0 6px;font-size:18px}
+.refcol a{display:block;font-size:14.5px;line-height:1.3;padding:6px 0;border-top:1px solid var(--line);color:var(--muted);text-decoration:none}
+.refcol a:hover{color:var(--teal-hi)}
+.refcol a small{display:block;font-size:12px;color:var(--dim);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- drawer, notes, rail ---------- */
+#drawer{position:fixed;top:54px;bottom:58px;right:0;width:min(440px,92vw);z-index:30;background:rgba(9,15,36,.97);border-left:1px solid var(--line2);box-shadow:-20px 0 60px rgba(0,0,0,.45);transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.7,.2,1);padding:24px 26px;overflow:auto}
+#drawer.open{transform:none}
+#drawer .x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:8px;border:1px solid var(--line2);background:none;color:var(--muted);font-size:18px;cursor:pointer}
+#drawer .dk{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-top:6px;padding-inline-end:40px}
+#drawer h2{margin:10px 0 12px;font-size:25px;line-height:1.25}
+#drawer p{font-size:16px;line-height:1.6;color:var(--muted)}
+#drawer ul{padding-inline-start:18px;color:var(--muted);font-size:15px;line-height:1.6}
+#drawer .srcs{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+#drawer .srcs a{display:block;font-size:14px;padding:5px 0;text-decoration:none}
+#drawer .srcs a:hover{text-decoration:underline}
+#drawer .act{margin-top:22px}
+#notes{position:fixed;left:0;right:0;bottom:58px;z-index:15;max-height:38vh;overflow:auto;background:rgba(9,15,36,.97);border-top:1px solid var(--line2);padding:18px 28px 22px;transform:translateY(calc(100% + 64px));transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+#notes.open{transform:none}
+#notes h2{margin:0 0 8px;font-size:12px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+#notes p{margin:0;font-size:16px;line-height:1.65;color:var(--muted);max-width:1200px}
+#notes p b{color:var(--ink)}
+#rail{position:fixed;top:54px;bottom:58px;left:0;width:min(360px,90vw);z-index:30;background:rgba(9,15,36,.97);border-right:1px solid var(--line2);transform:translateX(-105%);transition:transform .35s cubic-bezier(.2,.7,.2,1);overflow:auto;padding:16px 0}
+#rail.open{transform:none}
+#rail h3{margin:16px 22px 6px;font-size:12px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+#rail button{display:flex;gap:10px;align-items:center;width:100%;background:none;border:0;color:var(--muted);text-align:start;padding:8px 22px;font-size:14.5px;cursor:pointer}
+#rail button:hover{background:rgba(0,179,159,.1);color:#fff}
+#rail button.cur{color:#fff;background:rgba(0,179,159,.18);box-shadow:inset 3px 0 0 var(--teal)}
+#rail button small{margin-inline-start:auto;color:var(--dim);font-size:12px}
+#rail .dots{display:flex;gap:3px}
+#rail .dots i{width:6px;height:6px;border-radius:50%}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:40;background:rgba(9,15,36,.95);border:1px solid var(--teal);padding:8px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+
+@media (max-width:900px){.brand span,.tb kbd,.counter{display:none}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+@media print{#top,#bottom,#bg,#drawer,#notes,#rail{display:none}}
+
+.scene .click[data-b]{transition:opacity .6s ease var(--d,0s),transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s),border-color .25s,box-shadow .25s,background .25s}
+.scene .qnode.mute.on{opacity:.45}
+.scene .cmp-c.lo.on{opacity:.3}
+
+.rec.pending>*{opacity:0}
+.scene .row.pending.on{opacity:1!important}
+#rail button small{white-space:nowrap}
+body.pres #viewport{top:0;bottom:0}
+body.pres #top,body.pres #bottom{opacity:0;transition:opacity .4s;pointer-events:none}
+body.pres.ui #top,body.pres.ui #bottom{opacity:1;pointer-events:auto}
+
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="glow-a" aria-hidden="true"></div><div class="glow-b" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs><filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+</svg>
+<header id="top">
+  <div class="brand"><i></i><span>Latency optimization · Microsoft Foundry</span></div>
+  <nav class="crumb" id="crumb" aria-label="Location"></nav>
+  <button class="tb" id="mapBtn" type="button">Main tree <kbd>M</kbd></button>
+  <button class="tb" id="railBtn" type="button" aria-pressed="false" aria-controls="rail">Chapters <kbd>C</kbd></button>
+  <button class="tb hidden" id="walkBtn" type="button">Walk <kbd>W</kbd></button>
+  <button class="tb" id="notesBtn" type="button" aria-pressed="false" aria-controls="notes">Notes <kbd>N</kbd></button>
+  <button class="tb" id="playBtn" type="button" aria-pressed="false"><span>Play</span> <kbd>P</kbd></button>
+  <button class="tb" id="fsBtn" type="button" aria-pressed="false">Full screen <kbd>F</kbd></button>
+</header>
+<main id="viewport"><div id="stage" aria-live="polite"></div></main>
+<footer id="bottom">
+  <button class="tb" id="prevBtn" type="button" aria-label="Previous step">‹ Back</button>
+  <div id="progress" role="navigation" aria-label="Scenes"></div>
+  <div class="beats" id="beats" aria-hidden="true"></div>
+  <div class="counter" id="counter"></div>
+  <button class="tb primary" id="nextBtn" type="button" aria-label="Next step">Next ›</button>
+</footer>
+<nav id="rail" aria-label="Chapters"><div class="body"></div></nav>
+<aside id="drawer" aria-hidden="true" aria-label="Details"><button class="x" type="button" aria-label="Close details">✕</button><div class="body"></div></aside>
+<section id="notes" aria-label="Presenter notes"><h2>Presenter notes</h2><p></p></section>
+<div class="toast" id="toast" role="status"></div>
+<script type="application/json" id="story-data">{"$schema_note":"interactive-deck-story content, format 1.0 — see references/story-format.md","meta":{"lang":"en","brand":"Latency optimization · Microsoft Foundry","title":"Latency optimization for models and agents","kicker":"MICROSOFT FOUNDRY  ·  INTERACTIVE DEEP DIVE","subtitle":"Best practices, decision trees and the Microsoft Foundry features that shorten response time in generative AI applications and agents.","footer":"Latency optimization · November 2026","edition":"November 2026","checked":"14 November 2026","deck":"Microsoft Foundry Latency Optimization for Models and Agents.pptx","previewNote":"* preview — no service level agreement.","editorial":"Grouping into avoid, hide, reduce and steady is an editorial aid of this page; every lever comes from the paired deck and its sources.","labels":{"hub":"Main decision tree","hubShort":"Main tree","jumpHub":"Jump to the main decision tree"}},"strategies":{"avoid":{"label":"Avoid","line":"Skip a model call, a tool call or a hop entirely","color":"#34D399"},"hide":{"label":"Hide","line":"Show the first words sooner while work continues","color":"#38BDF8"},"reduce":{"label":"Reduce","line":"Make each remaining call and wait shorter","color":"#A78BFA"},"steady":{"label":"Steady","line":"Keep percentiles consistent under load","color":"#FBBF24"},"measure":{"label":"Measure","line":"See where the time goes, then govern it","color":"#C7D2EC"}},"sections":[{"id":"start","num":"00","name":"The story"},{"id":"s1","num":"01","name":"Latency fundamentals"},{"id":"s2","num":"02","name":"Model calls"},{"id":"s3","num":"03","name":"Agents, tools and protocols"},{"id":"s4","num":"04","name":"Operations"},{"id":"s5","num":"05","name":"Optimization path"},{"id":"s6","num":"06","name":"Status and references"}],"scenes":[{"id":"intro","type":"title","section":"start","short":"Title","chapters":[["01","Where the time goes","turn"],["02","Main decision tree: avoid, hide, reduce, steady","map"],["03","Fundamentals: request path and anatomy of a model call","path"],["04","Model calls: features, capacity, model and capacity trees","features"],["05","Agents: patterns, orchestration, runtime and tool trees","patterns"],["06","Operations, optimization path, status and references","trace"]],"notes":"This session is about response time in generative AI applications and agents built on Microsoft Foundry. The main takeaway is that latency is a property of the whole request path, not of one model. In most agentic applications the time goes to two places: the number of tokens the model generates, and the number of model calls that run one after another before the user sees an answer. The deck starts with the fundamentals, then covers the features that shorten a single model call, then the agent-level choices (orchestration pattern, runtime, tools and protocols) that decide how many calls happen, and finally how to measure and govern latency. Each decision tree is a starting point and must be checked against evaluation results for the actual workload. All facts were checked against official documentation on 14 November 2026; preview features carry an asterisk. Model names are examples current at that date and change quickly. A likely question: is this specific to one model family? No. The levers apply across models; only the model names and per-model targets change.","slide":[1,2]},{"id":"turn","type":"turn","section":"start","slide":3,"short":"Where the time goes","kicker":"THE PROBLEM","title":"Sources of latency in agentic applications","subtitle":"One user turn adds up model calls, tool and retrieval waits, network hops and safety checks.","tags":["avoid","hide","reduce","steady"],"sources":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}],"beats":2,"bar":[["Hops",0.06,"hop"],["Model call: plan",0.17,"model"],["Tool and retrieval calls",0.21,"tool"],["First token",0.1,"ttft"],["Answer generation: time between tokens × generated tokens",0.46,"gen"]],"cards":[{"t":"Generated tokens","d":"Each output token adds time; output length usually dominates one model call.","lever":"Output caps, concise answers","tag":"reduce","go":"anatomy","detail":"As per official documentation, the time for one model call is the time to the first token plus the time between tokens multiplied by the number of generated tokens. Output length is usually the largest single factor; each prompt token adds far less time than each generated token.","src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"}]},{"t":"Sequential model calls","d":"Every planning, routing or hand-off step is another full model call.","lever":"Simplest orchestration pattern","tag":"avoid","go":"tree-patterns","detail":"In an agent, every planning, routing or hand-off step is another full model call that runs before the user sees an answer. The orchestration guide recommends the lowest level of complexity that reliably meets the requirement.","src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}]},{"t":"Tool and retrieval waits","d":"Each tool call adds a round trip; tool definitions add prompt tokens.","lever":"Fewer tools, parallel calls","tag":"reduce","go":"tree-tools","detail":"Each tool call adds a round trip, and tool definitions add input tokens to every prompt. A small tool set, tool search on demand and parallel independent calls keep this part short.","src":[{"label":"Tool best practices","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"},{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}]},{"t":"Network hops","d":"Gateways, middleware and cross-region calls add time to every request.","lever":"Co-located regions, unbuffered streams","tag":"reduce","go":"path","detail":"Every hop between client, web application, gateway, agent, model and tools adds time to every request. The baseline architecture recommends models in the same data region as the agents, and every hop must pass the stream through without buffering.","src":[{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"},{"label":"Generative AI gateway guide","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/generative-ai-gateway"}]},{"t":"Capacity and queueing","d":"Best-effort capacity varies more under high load; throttling adds retries.","lever":"Priority or provisioned capacity","tag":"steady","go":"tree-capacity","detail":"Standard deployments are best effort and vary more at high, steady volume; throttling adds retries. The deployment type and service tier decide how consistent latency stays under load.","src":[{"label":"Deployment types","url":"https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}]},{"t":"Safety filtering","d":"Content filtering adds latency; the streaming mode decides when text is released.","lever":"Asynchronous filter where risk allows","tag":"hide","go":"features","detail":"Content filtering adds latency. With the asynchronous filter, tokens return at once while filters run in parallel; this suits lower-risk use cases where the client can remove text already shown.","src":[{"label":"Content streaming","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"},{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"}]}],"principle":"Use the lowest level of complexity that reliably meets the requirement: a direct model call first, then a single agent with tools, and multi-agent orchestration only when needed.","notes":"The key point is that one user turn is a sum of parts, and most of them run in series. As per official documentation, the time for one model call is the time to the first token plus the time between tokens multiplied by the number of generated tokens, so output length is usually the largest single factor; each prompt token adds far less time than each generated token. In an agent, every planning, routing or hand-off step is another full model call, and each tool call adds a round trip; tool definitions also add input tokens to every prompt. Network hops add time to every request, best-effort capacity varies more under high load, and content filtering adds latency too. The bar at the top is illustrative only; real proportions depend on the workload and must be measured. The design principle comes from the Azure Architecture Center guide to AI agent orchestration patterns: use the lowest level of complexity that reliably meets the requirement. Sources: learn.microsoft.com/azure/foundry/openai/how-to/latency and the agent design patterns guide. A likely question: which part is usually biggest? In chat workloads, generated tokens multiplied by the number of sequential model calls; a trace per user turn confirms it.","cardKicker":"Source of latency","marker":{"after":"ttft","text":"first token: the first words can appear here with streaming"}},{"id":"map","type":"map","section":"start","short":"Main decision tree","kicker":"THE MAIN DECISION TREE","title":"Four questions for a slow user turn","subtitle":"Asked in order, cheapest changes first; each answer opens a deeper decision tree.","tags":["avoid","hide","reduce","steady","measure"],"sources":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Well-Architected: AI application design","url":"https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design"},{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}],"beats":5,"root":{"t":"One slow user turn","d":"model calls, tool waits, hops and checks in series"},"measure":{"t":"Measure first","d":"one trace per user turn  ·  p50, p95 and p99 with token counts  ·  timestamps at every hop","go":"trace"},"govern":{"t":"Then govern","d":"latency budgets per user journey  ·  release gates that fail on regressions  ·  evaluations rerun on change","go":"phases"},"order":"Order matters: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove.","questions":[{"k":"avoid","q":"Can a model call, tool call or hop be skipped?","d":"Fewer steps in series","leaves":[{"t":"Direct model call when one call with the right context solves it","go":"tree-patterns","focus":0,"src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}],"detail":"The orchestration guide says that if prompt engineering can solve the problem, an agent is not needed. A direct Responses API call with grounding in the prompt is the fastest option."},{"t":"Deterministic router instead of a chain of hand-offs","go":"tree-patterns","focus":2,"src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}],"detail":"When the specialist is known from the first message, route in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models."},{"t":"Decisions API for classify, route or score steps","go":"tree-model","focus":1,"src":[{"label":"Decisions API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"}],"detail":"For fixed-choice steps, the Decisions API returns a probability, a choice or a score instead of generated text. It is generally available since 22 October 2026, with gpt-6-luna."},{"t":"Semantic cache for repeated questions","go":"compare","focus":1,"src":[{"label":"Semantic cache lookup policy","url":"https://learn.microsoft.com/en-us/azure/api-management/llm-semantic-cache-lookup-policy"},{"label":"AI gateway capabilities in API Management","url":"https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities"}],"detail":"Semantic caching in Azure API Management returns a stored answer for a similar prompt, so a hit skips the model call entirely. A miss pays for the embedding and lookup, and a similarity match can return an answer written for a different question."}]},{"k":"hide","q":"Can the first words reach the user sooner?","d":"Earlier visible text, same total work","leaves":[{"t":"Streaming end to end, without buffering","go":"anatomy","src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"}],"detail":"Streaming does not change the total time, but the user starts reading at the first token. Every hop, including the web application and the gateway, must pass the stream through without buffering."},{"t":"Asynchronous filter where risk allows","go":"features","focus":1,"src":[{"label":"Content streaming","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"}],"detail":"Tokens return at once while content filters run in parallel. The filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown."},{"t":"Progress shown during tool calls","go":"path","src":[{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"}],"detail":"The client renders tokens as they arrive and shows progress while the agent waits for tools, so the wait is visible rather than silent."},{"t":"Short preamble before deeper reasoning","go":"features","focus":3,"src":[{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"}],"detail":"With reasoning models, a short preamble before deeper reasoning gives an earlier first visible text."},{"t":"Background run for open-ended work","go":"tree-patterns","focus":5,"src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Responses API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"}],"detail":"Open-ended work with no fixed plan fits background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that."}]},{"k":"reduce","q":"Can each remaining call and wait be shorter?","d":"Fewer tokens, smaller models, leaner tools","leaves":[{"t":"Smallest model that passes evaluation","go":"tree-model","focus":2,"src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Model Router","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"}],"detail":"For short answers without multi-step reasoning, a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts. Pick the smallest model that passes evaluation."},{"t":"Lowest sufficient reasoning effort, capped output","go":"features","focus":2,"src":[{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"},{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"}],"detail":"Output caps reserve less compute and stop generation earlier. For reasoning models the cap includes reasoning tokens; too low a cap can return no visible output. Reasoning effort none suits classification and voice."},{"t":"Stable prompt prefix for prompt caching","go":"features","focus":0,"src":[{"label":"Prompt caching","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"}],"detail":"Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. The work is ordering prompts so that stable content comes first."},{"t":"Small tool set, parallel calls, minimal retrieval effort","go":"tree-tools","src":[{"label":"Tool best practices","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"},{"label":"Retrieval reasoning effort","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort"}],"detail":"Tool definitions cost tokens, so keep the tool set small or use tool search on demand. Independent function calls can run in parallel, and minimal retrieval effort skips query planning by a language model."},{"t":"Lean hosted-agent start-up","go":"tree-runtime","focus":4,"src":[{"label":"Hosted agents","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"},{"label":"Optimize hosted agent latency","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/optimize-hosted-agent-latency"},{"label":"Debug a hosted agent","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/debug-hosted-agent"}],"detail":"Hosted agents scale per session with no warm pool to configure. Keep start-up and readiness checks lean and consider memory snapshots; the debug latency header reports cold, warm or resume starts."}]},{"k":"steady","q":"Does latency hold at p95 under load?","d":"Consistent percentiles, not only a fast average","leaves":[{"t":"Priority processing or provisioned throughput","go":"tree-capacity","focus":2,"src":[{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"},{"label":"Provisioned throughput","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"}],"detail":"Priority processing publishes latency targets per model and suits variable volume; provisioned throughput with spillover gives the lowest variance for steady, predictable volume."},{"t":"Separate deployments per workload","go":"tree-capacity","focus":4,"src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"}],"detail":"Mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate."},{"t":"Model in the same data region as the agent","go":"path","src":[{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"}],"detail":"The baseline Microsoft Foundry chat architecture recommends deploying models in the same data region as the agents."},{"t":"Throttling watched: 429 responses, spillover, service tier","go":"trace","src":[{"label":"Spillover traffic management","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"detail":"Watch 429 responses, spillover headers and the service tier returned in each response; priority requests can drop to standard on sudden ramps or peaks."}]}],"notes":"This is the main decision tree of the story. Every slow user turn gets the same four questions, in order. First, avoid work: can a model call, a tool call or a hop be skipped altogether, for example with a direct model call, a deterministic router, the Decisions API or a semantic cache? Second, hide the wait: can the first words reach the user sooner through streaming end to end, the asynchronous filter, visible progress during tool calls or a short preamble? Third, reduce what remains: a smaller model, lower reasoning effort, capped output, a stable prompt prefix, a lean tool set and minimal retrieval effort. Fourth, keep it steady: priority processing or provisioned throughput, separate deployments and co-located regions. The order follows the optimization path: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove. Measurement frames the tree: a trace per user turn shows which question matters most, and latency budgets keep the gains. Each leaf opens a deeper decision tree from the deck."},{"id":"path","type":"path","section":"s1","slide":4,"short":"Request path","kicker":"01 · LATENCY FUNDAMENTALS","title":"Latency levers along the request path","subtitle":"Request path of the baseline Microsoft Foundry chat architecture, with the main latency levers at each hop.","tags":["hide","reduce","steady"],"sources":[{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"},{"label":"Generative AI gateway guide","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/generative-ai-gateway"}],"beats":4,"preview":true,"hops":[{"t":"Client application","d":"web, mobile or Teams","kind":"client","lev":["Render tokens as they arrive","Show progress during tool calls"],"detail":"The client sends the request to the web application. It renders tokens as they arrive and shows progress while the agent waits for tools."},{"t":"Web application","d":"Azure App Service","kind":"azure","lev":["Pass the stream through without buffering","Same region as the agent"],"detail":"The web application calls through the optional AI gateway. It passes the stream through without buffering and runs in the same region as the agent."},{"t":"AI gateway","d":"API Management · optional","kind":"azure","optional":true,"lev":["Semantic cache for repeated questions","Load balancing and circuit breaker","Keeps streaming connections open"],"detail":"A gateway adds a hop to every call, so place it close to users and Foundry resources, and make sure it keeps streaming connections open. It can add a semantic cache, load balancing and a circuit breaker."},{"t":"Agent","d":"Foundry Agent Service or Agent Framework","kind":"foundry","lev":["Fewest model calls in series","Compact context between steps","Iteration limits on tool loops"],"detail":"The agent runs in Foundry Agent Service or in Microsoft Agent Framework code and calls its model deployment and tools. Fewer model calls in series, compact context and iteration limits keep it short."},{"t":"Model deployment","d":"Foundry Models","kind":"foundry","lev":["Right-size the model","Cap generated tokens","Stable prompt prefix for caching","Priority or provisioned capacity"],"detail":"The baseline recommends deploying models in the same data region as the agents. Model size, output length, prompt caching and the capacity option decide the time of each call."},{"t":"Tools and knowledge","d":"Foundry IQ · AI Search · tool servers","kind":"azure","lev":["Small tool set, or tool search","Minimal retrieval effort","Model Context Protocol (MCP) approval only where needed"],"detail":"The agent calls tools and knowledge sources such as Foundry IQ, Azure AI Search or MCP servers. The baseline recommends keeping the number of tools small and tracking agent and tool latency in Application Insights."}],"obs":"OpenTelemetry traces in Application Insights  ·  Azure Monitor model metrics  ·  Foundry agent monitoring dashboard*","notes":"This diagram follows the request path of the baseline Microsoft Foundry chat reference architecture in the Azure Architecture Center, simplified to the hops that matter for latency; security components are left out and the AI gateway comes from the generative AI gateway guide. Step 1: the client sends the request to the web application on App Service. Step 2: the web application calls through the optional AI gateway in Azure API Management. Step 3: the gateway forwards the call to the agent, which runs in Foundry Agent Service or in Microsoft Agent Framework code. Step 4: the agent calls its model deployment. Step 5: the agent calls tools and knowledge sources such as Foundry IQ, Azure AI Search or MCP servers. The baseline recommends deploying models in the same data region as the agents, keeping the number of tools small, and tracking agent and tool latency in Application Insights. A gateway adds a hop to every call, so place it close to users and Foundry resources, and make sure it keeps streaming connections open. A likely question: does a gateway slow responses down? It adds a hop, usually small compared with generation time, if nothing buffers the stream.","chain":5,"loop":[3,5]},{"id":"anatomy","type":"anatomy","section":"s1","slide":5,"short":"Anatomy of a model call","kicker":"01 · LATENCY FUNDAMENTALS","title":"Latency anatomy and metrics","subtitle":"One model call split into first-token time and generation time, with the Azure Monitor metric for each part.","tags":["hide","measure"],"sources":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Monitoring data reference","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/monitor-openai-reference"}],"beats":3,"formula":"TTLT = TTFT + (TBT × generated tokens)","formulaNote":"Each generated token adds far more time than each prompt token, so output length usually dominates.","metrics":[["Time to Response","AzureOpenAITimeToResponse","Responsiveness of streamed answers"],["Time Between Tokens","AzureOpenAINormalizedTBTInMS","Generation speed across models and capacity"],["Time to Last Byte","AzureOpenAITTLTInMS","Duration of the whole model call"],["Normalized Time to First Byte","AzureOpenAINormalizedTTFTInMS","Comparison across prompt sizes only"],["Generated and processed tokens","GeneratedTokens · ProcessedPromptTokens","Context for every latency metric"]],"reading":[["Percentiles","p50, p95 and p99, not averages"],["Token counts","paired with every latency metric"],["Service-side view","client, network and application time come on top"]],"notes":"This slide gives the vocabulary for the rest of the deck. Time to first token covers queueing and prompt processing; generation time is the time between tokens multiplied by the generated tokens; time to last token is the sum. Streaming does not change the total time, but it lets the user start reading at the first token, which is why first-token time is the right responsiveness metric for chat. Azure Monitor exposes these as Time to Response, Time Between Tokens, Time to Last Byte and Normalized Time to First Byte; the normalized metric is only for comparing across prompt sizes. Official documentation recommends always pairing a latency metric with a token-count metric, and percentiles describe user experience better than averages. These metrics are measured at the service, so client, network and application time come on top. Source: learn.microsoft.com/azure/foundry/openai/monitor-openai-reference. A likely question: why does a client test show more time than Azure Monitor? The gap is network, gateway and application time, which only a trace across every hop reveals."},{"id":"features","type":"features","section":"s2","slide":6,"short":"Model-call features","kicker":"02 · MODEL CALLS","title":"Model-call optimization features","subtitle":"Four ways to shorten one model call: reuse the prompt prefix, release text earlier, generate less, reason less.","tags":["hide","reduce"],"sources":[{"label":"Prompt caching","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"},{"label":"Content streaming","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"},{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"}],"beats":3,"preview":true,"panels":[{"t":"Prompt caching","tag":"reduce","anim":"cache","src":[{"label":"Prompt caching","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"}],"b":["On by default for GPT-4o and newer models","prompt_cache_key groups requests that share a prefix","Extended retention (24 hours) on supported models"],"detail":"Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. Hits show as cached tokens in the usage data, and in-memory caches usually clear after five to ten minutes of inactivity."},{"t":"Streaming and asynchronous filter","tag":"hide","anim":"stream","src":[{"label":"Content streaming","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"}],"b":["Default: text in chunks, after filtering","Asynchronous: text at once; filter signal follows","Trade-off: earlier text versus real-time vetting; suited to lower-risk use cases"],"detail":"Streaming with the asynchronous filter returns tokens at once while content filters run in parallel. The filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown."},{"t":"Output length controls","tag":"reduce","anim":"caps","src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Predicted outputs","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/predicted-outputs"}],"b":["max_output_tokens · max_completion_tokens","Stop sequences","Verbosity: low","Predicted outputs* for edits to known text"],"detail":"Output caps reserve less compute and stop generation earlier. Predicted outputs is in preview, for Chat Completions with GPT-4o and GPT-4.1 models."},{"t":"Reasoning effort","tag":"reduce","anim":"effort","src":[{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"}],"b":["none: latency-critical work such as classification and voice","Output caps include reasoning tokens; too low a cap can return no visible text","A short preamble before deeper reasoning gives an earlier first visible text"],"detail":"More reasoning effort means more reasoning tokens and longer calls; supported values vary by model. For reasoning models the cap is max_completion_tokens or max_output_tokens, and it includes reasoning tokens."}],"notes":"These four features shorten a single model call. Prompt caching applies to prompts of at least 1,024 tokens whose beginning is identical; one changed character is a miss. It is on by default for supported models, hits show as cached tokens in the usage data, and in-memory caches usually clear after five to ten minutes of inactivity. The prompt_cache_key parameter groups requests that share a prefix on GPT-5.6 and later, and extended 24-hour retention exists for several GPT-5 and GPT-4.1 models. Streaming with the asynchronous filter returns tokens at once while content filters run in parallel; the filter signal can arrive up to about 1,000 characters later, so the client must be able to remove text already shown. Output caps reserve less compute and stop generation earlier. For reasoning models the cap is max_completion_tokens or max_output_tokens, and it includes reasoning tokens; too low a cap can return no visible output. Reasoning effort none suits classification and voice. Predicted outputs is in preview, for Chat Completions with GPT-4o and GPT-4.1 models. A likely question: does prompt caching need code changes? No. The work is ordering prompts so that stable content comes first."},{"id":"capacity","type":"table","section":"s2","slide":7,"short":"Capacity options","kicker":"02 · MODEL CALLS","title":"Deployment and capacity options","subtitle":"The deployment type and service tier decide how consistent latency stays under load.","tags":["steady"],"sources":[{"label":"Deployment types","url":"https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"beats":2,"preview":true,"cols":["Option","Latency behaviour","Spread (illustrative)","Billing","Where data is processed","Best fit"],"widths":[250,300,190,200,250,270],"rows":[["Standard — Global, Data Zone, Regional","Best effort; more variability at high, steady volume",{"jitter":0.85},"Pay per token","Any region, a data zone, or one geography","Low-to-medium or bursty traffic"],["Priority processing","Latency targets per model; can drop to standard on sudden ramps or peaks",{"jitter":0.3,"drop":true},"Pay per token at the priority rate","Global Standard or US Data Zone Standard only","Interactive traffic with variable volume"],["Provisioned throughput with spillover","Dedicated capacity; lowest latency variance; overflow to standard",{"jitter":0.1},"Per hour or by reservation","Global, Data Zone or Regional","Steady, predictable high volume"],["Flex processing*","Variable; can be rejected when capacity is unavailable",{"jitter":0.7,"gaps":true},"Lower than standard","Global Standard","Work that tolerates delay"],["Batch — Global, Data Zone","Asynchronous; 24-hour target",{"text":"asynchronous · 24-hour target"},"Lower than standard","Any region or a data zone","Offline jobs with no user waiting"]],"band":["COMBINATIONS","Provisioned throughput for the steady base load  ·  spillover to a standard deployment for overflow  ·  priority processing alongside provisioned capacity"],"notes":"The deployment type and service tier decide how consistent latency is under load, not the raw speed of the model. Standard deployments are best effort and vary more at high, steady volume. Priority processing uses the same quota as standard and publishes latency targets per model, for example 99 percent of five-minute windows above 100 tokens per second for gpt-5.4-mini. It is enabled per deployment or per request with the service_tier parameter. Requests can drop to standard after a ramp of more than 50 percent in tokens per minute within 15 minutes, at peak demand, or for long-context requests; the response shows which tier served it. Provisioned throughput gives dedicated capacity and the lowest variance; spillover sends overflow to a standard deployment in the same resource and is recommended for global and data zone provisioned deployments. Flex processing, in preview, costs 50 percent less than standard but has no latency target and no automatic fallback. Batch has a 24-hour target. A likely question: can priority processing run in the EU data zone? Not today. It supports Global Standard and US Data Zone Standard only, so EU data zone workloads use provisioned capacity with spillover."},{"id":"tree-model","type":"tree","section":"s2","slide":8,"short":"Model selection tree","kicker":"02 · MODEL CALLS","title":"Model selection decision tree","subtitle":"Four questions lead from the workload to a model choice; the first Yes decides.","tags":["avoid","reduce"],"sources":[{"label":"Decisions API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"},{"label":"Model Router","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"},{"label":"Realtime API over WebRTC","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc"}],"qs":[{"q":"Spoken, real-time conversation?","t":"Voice Live API or Realtime API","s":"speech in and out; WebRTC for client audio","src":[{"label":"Realtime API over WebRTC","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc"},{"label":"Voice Live API","url":"https://learn.microsoft.com/en-us/azure/ai-services/speech-service/voice-live"}],"detail":"Real-time speech has its own stack: the Realtime API over WebRTC, which official documentation recommends over WebSockets for client audio, or the Voice Live API, a managed speech-to-speech service for voice agents."},{"q":"Fixed-choice answer: classify, route or score?","t":"Decisions API","s":"a probability or a choice instead of generated text","src":[{"label":"Decisions API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"}],"detail":"For fixed-choice steps such as classification or routing, the Decisions API returns a probability, a choice or a score instead of generated text. It is generally available with gpt-6-luna. Microsoft-Decision-1, in preview, is a separate decision model designed for lower-latency, lower-cost workflows."},{"q":"Short answer without multi-step reasoning?","t":"Small model, lowest reasoning effort","s":"for example gpt-5.4-mini; reasoning effort none","src":[{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"},{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"}],"detail":"For short answers without multi-step reasoning, use a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts."},{"q":"Prompt difficulty varies widely?","t":"Model Router","s":"Balanced or Cost routing mode over a model subset","src":[{"label":"Model Router","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"},{"label":"Well-Architected: AI application design","url":"https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design"}],"detail":"Model Router picks a model per prompt. The routing decision adds a negligible share of inference time, but the Well-Architected guidance notes that routers add variability, so evaluate against a baseline."}],"other":{"t":"Reasoning model at the lowest sufficient effort","s":"cap output tokens; short preamble before reasoning","src":[{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"}],"detail":"Otherwise use a reasoning model at the lowest effort that passes evaluation, with capped output and a short preamble before deeper reasoning."},"aside":{"h":"APPLIES TO EVERY CHOICE","items":[["Evaluation against a baseline","same prompts, model versions and percentiles"],["One model per agent role","small models for routing, extraction, formatting"],["Fewer generated tokens","output caps, low verbosity, stop sequences"],["Smaller fine-tuned model","trained on examples from a larger model"],["Newer small models","per-model latency targets with priority processing"]]},"notes":"Read the tree from the top; the first Yes decides. Real-time speech has its own stack: the Realtime API over WebRTC, which official documentation recommends over WebSockets for client audio, or the Voice Live API, a managed speech-to-speech service for voice agents. For fixed-choice steps such as classification or routing, the Decisions API returns a probability, a choice or a score instead of generated text; it is generally available with gpt-6-luna. Microsoft-Decision-1, in preview, is a separate decision model designed for lower-latency, lower-cost workflows. For short answers without multi-step reasoning, use a small model such as gpt-5.4-mini at the lowest reasoning effort it accepts. When prompt difficulty varies widely, Model Router picks a model per prompt; the routing decision adds a negligible share of inference time, but the Well-Architected guidance notes that routers add variability, so evaluate against a baseline. Otherwise use a reasoning model at the lowest effort that passes evaluation. Fine-tuning a smaller model on examples from a larger one is a documented way to cut cost and latency. A likely question: always pick the smallest model? Pick the smallest one that passes evaluation."},{"id":"tree-capacity","type":"tree","section":"s2","slide":9,"short":"Capacity selection tree","kicker":"02 · MODEL CALLS","title":"Capacity selection decision tree","subtitle":"Four questions lead from traffic shape and data location to a deployment type and service tier.","tags":["steady"],"sources":[{"label":"Provisioned throughput","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"},{"label":"Spillover traffic management","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"preview":true,"qs":[{"q":"No user waiting for the answer?","t":"Batch deployment or Flex processing*","s":"lower cost; no latency target","src":[{"label":"Deployment types","url":"https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"},{"label":"Flex processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/flex-processing"}],"detail":"If no user waits for the answer, use Batch or Flex processing: both cost less than standard and have no latency target. Flex processing is in preview and has no automatic fallback."},{"q":"Data must stay in the EU data zone or one geography?","t":"Provisioned in that zone, with spillover","s":"priority processing is not offered on these types","src":[{"label":"Provisioned throughput","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"},{"label":"Spillover traffic management","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"detail":"Priority processing supports Global Standard and US Data Zone Standard only, so the documented option for consistent latency in the EU data zone or one geography is Data Zone or Regional provisioned throughput with spillover."},{"q":"Steady, predictable volume with a latency target?","t":"Provisioned throughput with spillover","s":"reserved capacity; overflow goes to standard","src":[{"label":"Provisioned throughput","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"},{"label":"Spillover traffic management","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"}],"detail":"Provisioned throughput gives dedicated capacity and the lowest variance; spillover sends overflow to a standard deployment in the same resource. For models before GPT-6, cached input tokens do not consume provisioned capacity."},{"q":"Variable volume with a latency target?","t":"Priority processing","s":"per deployment, or per request with service_tier","src":[{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"detail":"Priority processing uses the same quota as standard and publishes latency targets per model. Requests can drop to standard after a sudden ramp, at peak demand or for long-context requests; the response shows which tier served it."}],"other":{"t":"Global Standard","s":"separate deployments per workload","src":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Deployment types","url":"https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"}],"detail":"Everything else starts on Global Standard with separate deployments per workload, because mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate."},"aside":{"h":"APPLIES TO EVERY CHOICE","items":[["Separate workloads","short calls never queue behind long ones"],["Co-located regions","model in the same data region as the agent"],["Throttling watched","429 responses, spillover and service tier"],["Model support checked","tiers and targets differ per model"],["Cached tokens","do not consume provisioned capacity before GPT-6"]]},"notes":"This tree turns traffic shape and data location into a deployment type and service tier. If no user waits for the answer, use Batch or Flex processing: both cost less than standard and have no latency target. If inference must stay in the EU data zone or in one geography, priority processing is not offered on those deployment types, so the documented option for consistent latency is Data Zone or Regional provisioned throughput with spillover. Steady, predictable volume with a latency target also points to provisioned throughput; for models before GPT-6, cached input tokens do not consume provisioned capacity. Variable volume with a latency target suits priority processing, enabled per deployment or per request. Everything else starts on Global Standard with separate deployments per workload, because mixing workloads on one endpoint makes short calls wait behind long ones and lowers the cache hit rate. Whatever the choice, keep the model in the same data region as the agent and watch 429 responses, spillover headers and the service tier returned in each response. A likely question: can priority and provisioned capacity be combined? Yes. Official documentation describes provisioned capacity for the steady base and priority processing alongside it."},{"id":"patterns","type":"spectrum","section":"s3","slide":10,"short":"Orchestration patterns","kicker":"03 · AGENTS, TOOLS AND PROTOCOLS","title":"Orchestration patterns and sequential model calls","subtitle":"Each step along the complexity spectrum adds model calls in series and widens the latency spread.","tags":["avoid"],"sources":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Agent Framework orchestrations","url":"https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"}],"beats":6,"cols":[{"t":"Direct model call","calls":"one","cap":"Fastest: ground the prompt directly","dg":"direct","detail":"If one model call with the right context solves the task, a direct Responses API call is the fastest option; no agent is needed."},{"t":"Single agent with tools","calls":"one per tool round","cap":"Often the right default; cap iterations","dg":"single","detail":"A single agent with tools is often the right default for enterprise use cases; set iteration limits to avoid tool-call loops."},{"t":"Sequential","calls":"one or more per stage, in order","cap":"No parallelism; avoid for independent stages","dg":"seq","detail":"Sequential orchestration has no parallelism, so avoid it when stages are independent."},{"t":"Concurrent","calls":"in parallel; slowest agent sets the time","cap":"Limited by model quota","dg":"conc","detail":"Concurrent orchestration reduces overall run time, but the slowest agent sets the pace and model quota can make parallel work inefficient."},{"t":"Hand-off","calls":"one more per hand-off","cap":"Avoid when the route is clear from the input","dg":"hand","detail":"Hand-off adds a model call for every transfer; when the right agent is clear from the first input, a deterministic router or a simple dispatcher is better."},{"t":"Group chat and magentic","calls":"planning, rounds and progress checks","cap":"Slow to converge; avoid for time-sensitive work","dg":"group","detail":"Group chat should stay at three or fewer agents and does not fit real-time requirements. Magentic orchestration focuses on building and debating plans, not on speed, and is slow to converge."}],"arrow":"MORE COORDINATION  ·  MORE MODEL CALLS IN SERIES  ·  LONGER AND MORE VARIABLE LATENCY","band":["FOR EVERY MULTI-AGENT DESIGN","A model per agent matched to its task  ·  only the context the next agent needs  ·  iteration limits  ·  instrumentation of every hand-off"],"notes":"The Azure Architecture Center describes a complexity spectrum: a direct model call, a single agent with tools, and multi-agent orchestration. Each step adds coordination overhead, latency and cost. A single agent with tools is often the right default for enterprise use cases; set iteration limits to avoid tool-call loops. Sequential orchestration has no parallelism, so avoid it when stages are independent. Concurrent orchestration reduces overall run time, but the slowest agent sets the pace and model quota can make parallel work inefficient. Hand-off adds a model call for every transfer; when the right agent is clear from the first input, a deterministic router or a simple dispatcher is better. Group chat should stay at three or fewer agents and does not fit real-time requirements. Magentic orchestration focuses on building and debating plans, not on speed, and is slow to converge, so avoid it for time-sensitive work. Antipatterns include overlooking multi-hop latency, adding agents without real specialization and letting context windows grow. Microsoft Agent Framework implements all five patterns with streaming and checkpointing. A likely question: when is multi-agent worth it? When specialization or security boundaries require it and evaluation shows a quality gain that justifies the extra time."},{"id":"tree-patterns","type":"tree","section":"s3","slide":11,"short":"Orchestration pattern tree","kicker":"03 · AGENTS, TOOLS AND PROTOCOLS","title":"Orchestration pattern decision tree","subtitle":"Five questions lead from the task to the simplest pattern that meets it; the first Yes decides.","tags":["avoid"],"sources":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Agent Framework orchestrations","url":"https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"}],"qs":[{"q":"One model call with the right context solves it?","t":"Direct model call","s":"Responses API with grounding in the prompt","src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Responses API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"}],"detail":"If one model call with the right context solves the task, a direct Responses API call is the fastest option; the orchestration guide says that if prompt engineering can solve the problem, an agent is not needed."},{"q":"One domain, and its tools cover the work?","t":"Single agent with tools","s":"often the right default for enterprise use cases","src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"}],"detail":"If one domain and its tools cover the work, a single agent with tools is the default; set iteration limits on tool rounds."},{"q":"Specialist known from the first message?","t":"Deterministic router to one specialist","s":"code or a classifier, not a chain of hand-offs","src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Decisions API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"}],"detail":"If the specialist is known from the first message, route deterministically, in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models."},{"q":"Independent subtasks?","t":"Concurrent orchestration","s":"subtasks in parallel, results aggregated","src":[{"label":"Agent Framework orchestrations","url":"https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"}],"detail":"Independent subtasks run concurrently and the results are aggregated; the slowest agent sets the pace."},{"q":"Fixed, ordered stages?","t":"Sequential orchestration","s":"each stage gets only the context it needs","src":[{"label":"Agent Framework orchestrations","url":"https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"}],"detail":"Fixed, ordered stages run sequentially, with each stage receiving only the context it needs."}],"other":{"t":"Group chat or magentic orchestration","s":"open-ended work; background run, not a chat turn","src":[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Responses API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"}],"detail":"Open-ended work with no fixed plan is where group chat and magentic orchestration belong. Those runs fit background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that."},"aside":{"h":"GUARDRAILS FOR MULTI-AGENT DESIGNS","items":[["Iteration limits","on tool rounds, hand-offs and review loops"],["Context compaction","only what the next agent needs"],["Model per agent role","smaller models for classification"],["Three or fewer agents","in a group chat"],["Every hand-off traced","one trace per user turn"]]},"next":{"t":"Where the chosen pattern runs","go":"tree-runtime"},"notes":"This tree applies the complexity spectrum, so always start at the top. If one model call with the right context solves the task, a direct Responses API call is the fastest option; the orchestration guide says that if prompt engineering can solve the problem, an agent is not needed. If one domain and its tools cover the work, a single agent with tools is the default. If the specialist is known from the first message, route deterministically, in code or with a classifier such as the Decisions API, instead of chaining hand-offs between large models. Independent subtasks run concurrently; fixed, ordered stages run sequentially, with each stage receiving only the context it needs. Open-ended work with no fixed plan is where group chat and magentic orchestration belong, and those runs fit background execution better than a chat turn: Responses API background mode and long-running hosted agents exist for that. For any multi-agent design, the guide recommends a model per agent matched to task complexity, compaction between agents, iteration limits and instrumentation of every hand-off. A likely question: is hand-off ever right for chat? Yes, when the route truly depends on the conversation, with iteration limits and loop detection in place."},{"id":"tree-runtime","type":"tree","section":"s3","slide":12,"short":"Runtime and framework tree","kicker":"03 · AGENTS, TOOLS AND PROTOCOLS","title":"Agent runtime and framework decision tree","subtitle":"Four questions lead from the chosen pattern to where the agent runs and what builds it.","tags":["reduce"],"sources":[{"label":"Foundry Agent Service overview","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/overview"},{"label":"Hosted agents","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"},{"label":"Microsoft Agent Framework overview","url":"https://learn.microsoft.com/en-us/agent-framework/overview/"}],"preview":true,"qs":[{"q":"Instructions, a model and built-in tools are enough?","t":"Prompt agent in Foundry Agent Service","s":"Foundry runs the tool loop and keeps the state","src":[{"label":"Foundry Agent Service overview","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/overview"}],"detail":"A prompt agent in Foundry Agent Service runs on the Responses API-based runtime: the service handles tool loops and conversation state, and Foundry manages autoscale. There is no client round trip per tool."},{"q":"Multi-step tool, file or command work, run by Foundry?","t":"Prompt agent with the Copilot harness*","s":"Microsoft Copilot harness, chosen at creation","src":[{"label":"Agent harness","url":"https://learn.microsoft.com/en-us/agent-framework/concepts/harness"}],"detail":"The Microsoft Copilot harness, in preview, is a managed runtime for prompt agents that need multi-step tool, file or command work; it is chosen when the agent is created."},{"q":"Agent must run inside existing application compute?","t":"Microsoft Agent Framework in the app","s":"Foundry Models as the model client","src":[{"label":"Microsoft Agent Framework overview","url":"https://learn.microsoft.com/en-us/agent-framework/overview/"},{"label":"Agent Framework releases","url":"https://github.com/microsoft/agent-framework/releases"}],"detail":"When the agent must live inside existing application compute, Microsoft Agent Framework runs in the application with Foundry Models as the model client. Agent Framework streams in every orchestration pattern."},{"q":"Real-time voice over one connection?","t":"Hosted agent over WebSocket","s":"Invocations over WebSocket; frames not buffered","src":[{"label":"Hosted agents","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"}],"detail":"For real-time voice, hosted agents offer Invocations over WebSocket, a full-duplex connection that passes frames through without buffering."}],"other":{"t":"Hosted agent","s":"Agent Framework or other framework in a container","src":[{"label":"Hosted agents","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"},{"label":"Optimize hosted agent latency","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/optimize-hosted-agent-latency"},{"label":"Debug a hosted agent","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/debug-hosted-agent"}],"detail":"Other custom orchestration fits a hosted agent, generally available since July 2026. Hosted agents scale per session with no warm pool to configure; keep start-up and readiness checks lean, and the x-ms-debug-latency-enabled header reports cold, warm or resume starts."},"aside":{"h":"LATENCY NOTES PER RUNTIME","items":[["Prompt agents","server-side tool loop; no client round trip per tool"],["Hosted agents","per-session start; lean start-up and readiness"],["Start type visible","debug header reports cold, warm or resume"],["Agent Framework","streaming in every orchestration pattern"],["Portal workflows*","retire on 1 December 2026"]]},"notes":"This tree decides where the agent runs and what builds it, once the pattern is known. A prompt agent in Foundry Agent Service runs on the Responses API-based runtime: the service handles tool loops and conversation state, and Foundry manages autoscale. The Microsoft Copilot harness, in preview, is a managed runtime for prompt agents that need multi-step tool, file or command work; it is chosen when the agent is created. When the agent must live inside existing application compute, Microsoft Agent Framework runs in the application with Foundry Models as the model client; version 1.0 shipped in April 2026, and Python 1.26.0 and .NET 1.28.0 are current in November 2026. For real-time voice, hosted agents offer Invocations over WebSocket, a full-duplex connection that passes frames through without buffering. Other custom orchestration fits a hosted agent, generally available since July 2026. Hosted agents scale per session with no warm pool to configure, and the x-ms-debug-latency-enabled header reports cold, warm or resume starts. Workflows in the Foundry portal are in preview and retire on 1 December 2026. A likely question: do hosted agents have cold starts? Yes. Keep start-up and readiness checks lean, and consider memory snapshots."},{"id":"tree-tools","type":"tree","section":"s3","slide":13,"short":"Tools, protocols, retrieval tree","kicker":"03 · AGENTS, TOOLS AND PROTOCOLS","title":"Tools, protocols and retrieval decision tree","subtitle":"Five questions lead from what the agent needs to a tool type, with the setting that matters for latency.","tags":["reduce","avoid"],"sources":[{"label":"Model Context Protocol tool","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol"},{"label":"Toolboxes","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/toolbox-overview"},{"label":"Agentic retrieval overview","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview"}],"qs":[{"q":"Grounding on indexed enterprise content?","t":"Foundry IQ knowledge base","s":"minimal retrieval effort; extractive output","src":[{"label":"Agentic retrieval overview","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview"},{"label":"Retrieval reasoning effort","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort"}],"detail":"A Foundry IQ knowledge base uses agentic retrieval. Minimal retrieval reasoning effort skips query planning by a language model and gives the lowest latency; low, the default, adds planning, and medium can add one follow-up iteration. Low, medium and answer synthesis are in preview; extractive output is recommended for agents."},{"q":"Logic lives in the application code?","t":"Function calling","s":"application runs it; independent calls in parallel","src":[{"label":"Tool best practices","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"}],"detail":"Function calling keeps logic in the application, and independent calls can run in parallel."},{"q":"Tool shared by many agents or teams?","t":"MCP server or toolbox","s":"approval only where needed; tool search","src":[{"label":"Model Context Protocol tool","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol"},{"label":"Toolboxes","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/toolbox-overview"}],"detail":"MCP approval defaults to always, and each approval adds a round trip, so set never or a per-tool list for trusted tools. An empty allowed-tools list allows every tool, and tool search, generally available since September 2026, exposes tools on demand to save tokens."},{"q":"Existing REST API with an OpenAPI description?","t":"OpenAPI tool","s":"return only the fields the agent needs","src":[{"label":"Tool best practices","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"}],"detail":"OpenAPI tools call existing REST APIs; returning only the fields the agent needs keeps the prompt small."},{"q":"Another agent owns the whole task?","t":"Agent2Agent (A2A) tool","s":"adds the other agent's own model calls","src":[{"label":"Agent2Agent tool","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/agent-to-agent"}],"detail":"The Agent2Agent tool hands over a whole task; the called agent runs its own model calls, and Foundry agent targets support text only, without streaming."}],"other":{"t":"Built-in tools","s":"web search, file search, code interpreter","src":[{"label":"Foundry Agent Service overview","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/overview"}],"detail":"Otherwise the built-in tools of Foundry Agent Service cover web search, file search and code interpreter."},"aside":{"h":"PROTOCOLS AND TOOL SETTINGS","items":[["Model Context Protocol (MCP)","agent to tool; the calling agent orchestrates"],["Agent2Agent (A2A)","agent to agent; the called agent orchestrates"],["Tool definitions cost tokens","small tool set, or tool search on demand"],["tool_choice","set explicitly where a turn needs no tool"],["Retrieval effort","minimal skips query planning"]]},"notes":"The first Yes decides, and each answer names the setting that matters for latency. For grounding, a Foundry IQ knowledge base uses agentic retrieval. Minimal retrieval reasoning effort skips query planning by a language model and gives the lowest latency; low, the default, adds planning, and medium can add one follow-up iteration. Low, medium and answer synthesis are in preview, and extractive output is recommended for agents. Function calling keeps logic in the application, and independent calls can run in parallel. MCP servers and toolboxes share tools across agents. MCP approval defaults to always, and each approval adds a round trip, so set never or a per-tool list for trusted tools. An empty allowed-tools list allows every tool, and tool search, generally available since September 2026, exposes tools on demand to save tokens. OpenAPI tools call existing REST APIs. The Agent2Agent tool hands over a whole task; the called agent runs its own model calls, and Foundry agent targets support text only, without streaming. A2A version 1.0 is generally available. A likely question: is MCP slower than function calling? MCP adds a call to the server, plus a round trip when approval is on; execute_tool spans show the difference."},{"id":"trace","type":"trace","section":"s4","slide":14,"short":"Observability and budgets","kicker":"04 · OPERATIONS","title":"Latency observability and budgets","subtitle":"One trace per user turn shows where the time goes; budgets turn percentiles into release gates.","tags":["measure"],"sources":[{"label":"Agent tracing in Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/observability/concepts/trace-agent-concept"},{"label":"Agent Framework observability","url":"https://learn.microsoft.com/en-us/agent-framework/agents/observability"}],"beats":2,"spans":[["invoke_agent","agent run",0,1,"agent"],["chat","model call: plan",0.02,0.3,"model"],["execute_tool","tool call A",0.32,0.58,"tool"],["execute_tool","tool call B, in parallel",0.32,0.49,"tool"],["chat","model call: answer",0.6,0.98,"model"]],"ft":0.68,"caption":"OpenTelemetry spans with token usage, stored in Application Insights.","monitor":[["First-token time","p50, p95 and p99 per agent and model"],["Generation time","always next to generated tokens"],["Model calls per turn","chat spans in one trace"],["Tool time","execute_tool span duration"],["Cache hits","cached_tokens in the usage data"],["Throttling","429 responses, spillover, tier downgrades"]],"band":["LATENCY BUDGET","p50, p95 and p99 targets per user journey and pattern  ·  release gates that fail on regressions  ·  evaluations rerun when a model or prompt changes"],"notes":"A trace per user turn is the only way to see where time goes across hops. Microsoft Agent Framework emits OpenTelemetry spans by default, following the generative AI semantic conventions: invoke_agent for the run, chat for each model call and execute_tool for each tool call, with token usage as attributes; trace context also reaches MCP servers. Foundry tracing is generally available for prompt and hosted agents and stores spans in Application Insights. The agent monitoring dashboard, in preview, shows latency, token usage, run success rate and evaluation results; official documentation notes that run latency above ten seconds can point to throttling, complex tool calls or network issues. Insights, also in preview, groups recurring trace behaviour, including latency findings. Monitor first-token percentiles, generation time next to token counts, model calls per turn, tool span durations, cache hits and throttling. Then set a budget: p50, p95 and p99 targets per user journey and pattern, with release gates that fail on regressions and evaluations that rerun when a model or prompt changes. A likely question: is extra tooling needed? No. Connect Application Insights to the Foundry project and enable tracing in the framework."},{"id":"compare","type":"compare","section":"s4","slide":15,"short":"Caching and capacity compared","kicker":"04 · OPERATIONS","title":"Comparison of caching and capacity features","subtitle":"Four features often confused, asked the same six questions.","tags":["avoid","reduce","steady"],"sources":[{"label":"Prompt caching","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"},{"label":"Semantic cache lookup policy","url":"https://learn.microsoft.com/en-us/azure/api-management/llm-semantic-cache-lookup-policy"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"}],"beats":4,"feats":[["Prompt caching","reduce"],["Semantic caching","avoid"],["Priority processing","steady"],["Provisioned throughput","steady"]],"rows":[["What it does","Reuses processing of an identical prompt prefix","Returns a stored answer for a similar prompt","Serves requests in a faster lane","Reserves dedicated model capacity"],["Where it runs","Model service, automatically","API Management with Azure Managed Redis","Deployment setting or per request","Model deployment"],["Latency effect","Shorter first-token time on a hit","No model call on a hit; small overhead on a miss","Latency targets per model","Lowest variance under steady load"],["Effect on the answer","Still generated for every request","May reuse an answer written for another prompt","Same model, different lane","Same model, reserved capacity"],["Cost effect","Lower cost for cached input tokens","Fewer model calls; adds embeddings and a cache","Higher per-token rate","Hourly or reserved capacity"],["Best fit","Long, stable instructions and tool definitions","Repeated questions with stable answers","Interactive traffic with variable volume","Steady, predictable high volume"]],"band":["USED TOGETHER","Prompt caching on every call  ·  semantic caching where answers repeat  ·  one capacity option for the latency target"],"notes":"These four features are often grouped together as ways to go faster, but they work at different layers. Prompt caching reuses the processing of an identical prompt prefix inside the model service; the answer is still generated for every request, and the saving is in first-token time and input cost. Semantic caching in Azure API Management returns a stored answer for a prompt that is similar enough, judged against a score threshold, using an embeddings deployment and Azure Managed Redis. A hit skips the model call entirely, a miss pays for the embedding and lookup on top, and a similarity match can return an answer written for a different question, so it suits stable, repeated questions. Priority processing changes the service lane on a standard deployment, at a higher per-token rate. Provisioned throughput reserves capacity and gives the lowest variance under steady load. They combine well: prompt caching on every call, semantic caching where answers repeat, and one capacity option for the latency target. A likely question: does semantic caching break personalization? It can, so include tenant, user and prompt version in the cache scope, as the Well-Architected guidance for AI workloads advises."},{"id":"phases","type":"phases","section":"s5","slide":16,"short":"Optimization path","kicker":"05 · OPTIMIZATION PATH","title":"Optimization path","subtitle":"Five phases from a measured baseline to governed latency budgets, cheapest changes first.","tags":["measure","hide","reduce","avoid","steady"],"sources":[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Well-Architected: AI application design","url":"https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design"}],"beats":5,"phases":[["Measure","measure",["Baseline per user journey","Timestamps at every hop","Percentiles with token counts","Streaming as in production"]],["Quick wins","hide",["Streaming end to end","Output caps, low verbosity","Lowest sufficient reasoning effort","Stable prompt prefix"]],["Design","avoid",["Simplest orchestration pattern","Model per agent role","Parallel tool calls","Minimal retrieval effort"]],["Capacity","steady",["Priority or provisioned","Separate deployments per workload","Co-located regions","Gateway cache for repeats"]],["Govern","measure",["Latency budgets in release gates","Continuous evaluation","Alerts on percentiles"]]],"prove":["Streaming reaches the client without buffering","Generated tokens explain the slow requests","Fewer model calls in series keep quality","Capacity option meets the percentile target"],"notes":"The path orders changes by cost and risk. Phase one measures: a baseline per user journey with timestamps at every hop, percentiles paired with token counts, and streaming configured as in production. Phase two takes the quick wins that need no redesign: streaming from model to client without buffering, output caps and low verbosity, the lowest reasoning effort that passes evaluation, and a stable prompt prefix for caching. Phase three changes the design: the simplest orchestration pattern, a model per agent role, parallel tool calls and minimal retrieval effort. Phase four covers capacity and platform: priority processing or provisioned throughput, separate deployments per workload, co-located regions, and gateway caching where answers repeat. Phase five governs: latency budgets in release gates, continuous evaluation on sampled traffic, and alerts on percentiles. The four checks at the bottom are what to prove first, because each one decides whether the next phase is needed. Order matters: buying capacity before reducing sequential calls and output tokens pays for time that design changes would remove. A likely question: what gives the fastest visible improvement? End-to-end streaming, because it changes when the user sees the first words."},{"id":"status","type":"status","section":"s6","slide":17,"short":"Status and recent changes","kicker":"06 · STATUS AND REFERENCES","title":"Status and recent changes","subtitle":"Status as published on 14 November 2026; an asterisk marks preview.","tags":[],"sources":[{"label":"Microsoft Foundry developer blog","url":"https://devblogs.microsoft.com/foundry/"},{"label":"Foundry Agent Service overview","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/overview"},{"label":"Model Router","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"}],"beats":0,"preview":true,"rows":[["Priority processing","Global Standard and US Data Zone Standard; latency targets for newer models",false],["Flex processing","Global Standard, selected GPT-5.6 and GPT-6 models; no latency target",true],["Prompt caching","prompt_cache_key and cache breakpoints for GPT-5.6 and later",false],["Predicted outputs","Chat Completions with GPT-4o and GPT-4.1 models",true],["Model Router","Version 2025-11-18, updated in place; session affinity in preview",false],["Decisions API","Generally available since 22 October 2026, with gpt-6-luna",false],["Microsoft-Decision-1","Decision model for classification and routing steps",true],["Hosted agents","Generally available since 9 July 2026; long-running resilience since 28 October 2026",false],["Microsoft Copilot harness","Managed runtime for prompt agents, chosen at creation",true],["Workflows in the Foundry portal","Retire on 1 December 2026; new workflows use Microsoft Agent Framework",true],["Toolboxes and tool search","Toolboxes generally available for hosted agents, preview for prompt agents; tool search since 24 September 2026",false],["Foundry IQ retrieval effort","Minimal effort generally available; low, medium and answer synthesis in preview",false],["Agent monitoring dashboard","Metrics, alerts and Insights in preview; tracing for prompt and hosted agents",true],["Microsoft Agent Framework","Version 1.0 since April 2026; Python 1.26.0 and .NET 1.28.0 in November 2026",false]],"notes":"This is the status as published on 14 November 2026; an asterisk marks a preview feature without a service level agreement. Several pages carry no explicit generally available wording, only the absence of a preview label: priority processing, provisioned throughput, spillover, prompt caching and Model Router among them. They are shown unmarked, following the kit convention. Recent changes worth calling out: the Decisions API became generally available on 22 October 2026; hosted agents on 9 July 2026, with long-running resilience on 28 October 2026; and tool search on 24 September 2026. Workflows in the Foundry portal retire on 1 December 2026, and new workflows should use Microsoft Agent Framework. Stored completions and distillation in Foundry classic retired on 15 October 2026. Foundry IQ is partly generally available: minimal, extractive retrieval is in the generally available REST version, while query planning, answer synthesis and higher effort levels are in preview. A likely question: how to stay current? Use the monthly what's new page for Foundry and the Foundry developer blog."},{"id":"refs","type":"refs","section":"s6","slide":18,"short":"References","kicker":"06 · STATUS AND REFERENCES","title":"References","subtitle":"Microsoft Learn and GitHub pages behind this story, all checked on 14 November 2026.","tags":[],"sources":[{"label":"Microsoft Learn","url":"https://learn.microsoft.com/"}],"beats":0,"groups":[["Models and capacity",[{"label":"Performance and latency","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/latency"},{"label":"Priority processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/priority-processing"},{"label":"Flex processing","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/flex-processing"},{"label":"Provisioned throughput","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/provisioned-throughput"},{"label":"Spillover traffic management","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/spillover-traffic-management"},{"label":"Prompt caching","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/prompt-caching"},{"label":"Predicted outputs","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/predicted-outputs"},{"label":"Reasoning models","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/reasoning"},{"label":"Model Router","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/model-router"},{"label":"Responses API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"},{"label":"Realtime API over WebRTC","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/realtime-audio-webrtc"},{"label":"Decisions API","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/decisions"},{"label":"Content streaming","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-streaming"},{"label":"Monitoring data reference","url":"https://learn.microsoft.com/en-us/azure/foundry/openai/monitor-openai-reference"},{"label":"Deployment types","url":"https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"}]],["Agents, tools and protocols",[{"label":"AI agent orchestration patterns","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/ai-agent-design-patterns"},{"label":"Foundry Agent Service overview","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/overview"},{"label":"Hosted agents","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/hosted-agents"},{"label":"Optimize hosted agent latency","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/optimize-hosted-agent-latency"},{"label":"Debug a hosted agent","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/debug-hosted-agent"},{"label":"Toolboxes","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/toolbox-overview"},{"label":"Model Context Protocol tool","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol"},{"label":"Agent2Agent tool","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/agent-to-agent"},{"label":"Tool best practices","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/tool-best-practice"},{"label":"Agent Framework orchestrations","url":"https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/"},{"label":"Agent harness","url":"https://learn.microsoft.com/en-us/agent-framework/concepts/harness"},{"label":"Agent Framework releases","url":"https://github.com/microsoft/agent-framework/releases"}]],["Retrieval, gateway and operations",[{"label":"Agentic retrieval overview","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-overview"},{"label":"Retrieval reasoning effort","url":"https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-set-retrieval-reasoning-effort"},{"label":"AI gateway capabilities in API Management","url":"https://learn.microsoft.com/en-us/azure/api-management/genai-gateway-capabilities"},{"label":"Semantic cache lookup policy","url":"https://learn.microsoft.com/en-us/azure/api-management/llm-semantic-cache-lookup-policy"},{"label":"Generative AI gateway guide","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/guide/generative-ai-gateway"},{"label":"Baseline Microsoft Foundry chat architecture","url":"https://learn.microsoft.com/en-us/azure/architecture/ai-ml/architecture/baseline-microsoft-foundry-chat"},{"label":"Agent tracing in Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/observability/concepts/trace-agent-concept"},{"label":"Agent monitoring dashboard","url":"https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/how-to-monitor-agents-dashboard"},{"label":"Agent Framework observability","url":"https://learn.microsoft.com/en-us/agent-framework/agents/observability"},{"label":"Well-Architected: AI application design","url":"https://learn.microsoft.com/en-us/azure/well-architected/ai/application-design"}]]],"current":[{"label":"What's new in Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/whats-new-foundry"},{"label":"Microsoft Foundry developer blog","url":"https://devblogs.microsoft.com/foundry/"}],"notes":"These are the pages used to build and check this deck, all fetched on 14 November 2026. The models and capacity group covers the performance and latency guide, priority and flex processing, provisioned throughput and spillover, deployment types, prompt caching, predicted outputs, reasoning models, Model Router, the Responses API, real-time audio, the Decisions API, content streaming and the monitoring reference. The agents group covers the Azure Architecture Center orchestration patterns, Foundry Agent Service, hosted agents including the latency optimization and debugging pages, toolboxes, the MCP and Agent2Agent tools, tool best practices, and Microsoft Agent Framework orchestrations, compaction, harness and observability. The retrieval, gateway and operations group covers agentic retrieval, the AI gateway and semantic caching policies, the baseline Microsoft Foundry chat architecture, Foundry tracing, the agent monitoring dashboard and the Well-Architected guidance for AI workloads. Related decks in this kit go deeper into prompt caching, the AI gateway, hosted agents, Agent2Agent and Voice Live. Model names, per-model targets and preview status change often, so recheck them before each delivery. A likely question: which single page is the best starting point? The performance and latency guide for Azure OpenAI in Foundry."}]}</script>
+<script>
+/* interactive-deck-story engine 1.0.1 — core renderers; topic renderers are injected at the TOPIC RENDERERS marker by build_story.py */
+(function () {
+"use strict";
+var STORY = JSON.parse(document.getElementById("story-data").textContent);
+var META = STORY.meta, SC = STORY.scenes, STRAT = STORY.strategies;
+var W = 1600, H = 900, NS = "http://www.w3.org/2000/svg";
+var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var COLORS = {avoid:"#34D399", hide:"#38BDF8", reduce:"#A78BFA", steady:"#FBBF24", measure:"#C7D2EC",
+  teal:"#00B39F", tealhi:"#2CE5CB", client:"#38BDF8", azure:"#7C8FE0", foundry:"#00B39F"};
+var stage = document.getElementById("stage"), viewport = document.getElementById("viewport");
+var G = null, cur = -1, beat = 0, cameFrom = null, autoplay = null;
+var IDX = {}; SC.forEach(function (s, i) { IDX[s.id] = i; });
+Object.keys(STRAT || {}).forEach(function (k) { if (STRAT[k].color) COLORS[k] = STRAT[k].color; });
+var HUB = (SC.filter(function (s) { return s.type === "map"; })[0] || {}).id;
+function slideLabel(s, pre) { if (!s.slide) return ""; var l = [].concat(s.slide); return pre + (l.length > 1 ? "slides " + l.join(", ") : "slide " + l[0]); }
+function LBL(k, d) { return (META.labels && META.labels[k]) || d; }
+
+/* ------------------------------------------------------------------ helpers */
+function el(tag, a) {
+  var e = document.createElement(tag); a = a || {};
+  Object.keys(a).forEach(function (k) {
+    var v = a[k]; if (v === null || v === undefined || v === false) return;
+    if (k === "class") e.className = v; else if (k === "style") e.style.cssText = v;
+    else if (k === "text") e.textContent = v; else if (k === "html") e.innerHTML = v;
+    else if (k.slice(0, 2) === "on" && typeof v === "function") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  });
+  for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+  return e;
+}
+function add(e) {
+  for (var i = 1; i < arguments.length; i++) {
+    var c = arguments[i];
+    if (c === null || c === undefined || c === false) continue;
+    if (Array.isArray(c)) { c.forEach(function (x) { add(e, x); }); continue; }
+    e.appendChild(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+}
+function sv(tag, a, parent) {
+  var e = document.createElementNS(NS, tag); a = a || {};
+  Object.keys(a).forEach(function (k) {
+    var v = a[k]; if (v === null || v === undefined) return;
+    if (k === "text") e.textContent = v; else if (k === "class") e.setAttribute("class", v);
+    else if (k.slice(0, 2) === "on" && typeof v === "function") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  });
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function px(x, y, w, h) { return "left:" + x + "px;top:" + y + "px;" + (w != null ? "width:" + w + "px;" : "") + (h != null ? "height:" + h + "px;" : ""); }
+function box(x, y, w, h, cls, b, d, extra) {
+  var e = el("div", {class: "box " + (cls || ""), style: px(x, y, w, h) + (d ? "--d:" + d + "s;" : "") + (extra || "")});
+  if (b !== undefined && b !== null) e.setAttribute("data-b", b);
+  return e;
+}
+function chip(k) { return el("span", {class: "chip c-" + k, style: COLORS[k] ? "color:" + COLORS[k] : null, text: (STRAT[k] || {label: k}).label}); }
+function clickable(e, fn, label) {
+  e.classList.add("click"); e.setAttribute("tabindex", "0"); e.setAttribute("role", "button");
+  if (label) e.setAttribute("aria-label", label);
+  e.addEventListener("click", function (ev) { if (ev.target.closest(".dive,.walk,a")) return; fn(ev); });
+  e.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); ev.stopPropagation(); fn(ev); } });
+  return e;
+}
+function wire(svg, d, b, del, cls) {
+  return sv("path", {d: d, class: "wire " + (cls || ""), pathLength: "1", "data-b": b === null ? null : String(b), style: del ? "--d:" + del + "s" : null}, svg);
+}
+function curve(x1, y1, x2, y2) { var mx = (x1 + x2) / 2; return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2; }
+function later(fn, ms) { var t = setTimeout(fn, ms); G && G.timers.push(t); return t; }
+function every(fn, ms) { var t = setInterval(fn, ms); G && G.intervals.push(t); return t; }
+function links(list) { var f = document.createDocumentFragment(); (list || []).forEach(function (s, i) { if (i) f.appendChild(document.createTextNode("  ·  ")); f.appendChild(el("a", {href: s.url, target: "_blank", rel: "noopener", text: s.label})); }); return f; }
+
+/* ------------------------------------------------------------------ particles */
+function flow(path, o) {
+  o = o || {}; var f = {path: path, layer: o.layer || G.pt, color: o.color || COLORS.tealhi, every: o.every || 900, speed: o.speed || 260, r: o.r || 4, when: o.when, acc: Math.random() * (o.every || 900), burst: o.burst || 1};
+  G.flows.push(f); return f;
+}
+function spawn(path, layer, color, speed, r, done) {
+  if (RM || !G) return;
+  var L = path.getTotalLength(); if (!L) return;
+  var c = sv("circle", {r: r || 4, fill: color || COLORS.tealhi, filter: "url(#glow)"}, layer || G.pt);
+  G.parts.push({c: c, path: path, L: L, s: 0, v: speed || 260, done: done});
+}
+var last = performance.now();
+function tick(now) {
+  var dt = Math.min(60, now - last); last = now;
+  if (G && !RM) {
+    G.flows.forEach(function (f) {
+      if (f.when && !f.when()) return;
+      f.acc += dt;
+      if (f.acc >= f.every) { f.acc = 0; for (var b = 0; b < f.burst; b++) (function (k) { setTimeout(function () { if (G && G.flows.indexOf(f) >= 0) spawn(f.path, f.layer, f.color, f.speed, f.r); }, k * 110); })(b); }
+    });
+    for (var i = G.parts.length - 1; i >= 0; i--) {
+      var p = G.parts[i]; p.s += p.v * dt / 1000;
+      if (p.s >= p.L) { p.c.remove(); G.parts.splice(i, 1); if (p.done) p.done(); continue; }
+      var pt = p.path.getPointAtLength(p.s);
+      p.c.setAttribute("cx", pt.x.toFixed(1)); p.c.setAttribute("cy", pt.y.toFixed(1));
+      p.c.setAttribute("opacity", Math.max(0, Math.min(1, p.s / 24, (p.L - p.s) / 24)).toFixed(2));
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ------------------------------------------------------------------ drawer, notes, toast */
+var drawer = document.getElementById("drawer"), notesEl = document.getElementById("notes"), railEl = document.getElementById("rail");
+function openDrawer(o) {
+  var body = drawer.querySelector(".body"); body.innerHTML = "";
+  add(body, el("div", {class: "dk", text: o.kicker || ""}));
+  var h = el("h2", {text: o.title || ""}); add(body, h);
+  if (o.preview) add(h, el("span", {class: "badge", style: "margin-inline-start:10px;vertical-align:4px", text: "PREVIEW"}));
+  if (o.tag) add(body, chip(o.tag));
+  if (o.body) add(body, el("p", {text: o.body}));
+  if (o.list) add(body, el("ul", {}, o.list.map(function (t) { return el("li", {text: t}); })));
+  if (o.src && o.src.length) add(body, el("div", {class: "srcs"}, el("div", {class: "h-sm", text: "Sources"}), o.src.map(function (s) { return el("a", {href: s.url, target: "_blank", rel: "noopener", text: s.label + " ↗"}); })));
+  if (o.go && IDX[o.go] !== undefined) {
+    add(body, el("div", {class: "act"}, el("button", {class: "tb primary", text: "Open " + SC[IDX[o.go]].short + "  ›", onclick: function () { closeDrawer(); go(o.go, {from: o.from, focus: o.focus}); }})));
+  }
+  drawer.classList.add("open"); drawer.setAttribute("aria-hidden", "false");
+  setTimeout(function () { drawer.querySelector(".x").focus({preventScroll: true}); }, 50);
+}
+function closeDrawer() { drawer.classList.remove("open"); drawer.setAttribute("aria-hidden", "true"); }
+drawer.querySelector(".x").addEventListener("click", closeDrawer);
+function setNotes() {
+  var s = SC[cur]; var p = notesEl.querySelector("p"); p.innerHTML = "";
+  var txt = s.notes || "";
+  var parts = txt.split("A likely question:");
+  add(p, parts[0]);
+  if (parts[1]) { add(p, el("br")); add(p, el("br")); add(p, el("b", {text: "Likely question: "})); add(p, parts[1].trim()); }
+}
+function toggle(elm, btn, force) {
+  var on = force !== undefined ? force : !elm.classList.contains("open");
+  elm.classList.toggle("open", on); if (btn) btn.setAttribute("aria-pressed", on ? "true" : "false");
+}
+var toastT;
+function toast(t, ms) { var e = document.getElementById("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { e.classList.remove("on"); }, ms || 1600); }
+
+/* ------------------------------------------------------------------ scene chrome */
+function chrome(s, root) {
+  add(root, el("div", {class: "kicker", text: s.kicker}));
+  add(root, el("h1", {class: "title", text: s.title}));
+  add(root, el("p", {class: "subtitle", text: s.subtitle}));
+  if (s.tags && s.tags.length) add(root, el("div", {class: "tags"}, s.tags.map(chip)));
+  var src = el("span", {class: "src"}, (s.sources && s.sources.length ? "Sources: " : ""), links(s.sources));
+  add(root, el("div", {class: "foot"}, src, el("span", {text: META.footer + slideLabel(s, " · deck ")})));
+  if (s.preview) add(root, el("div", {class: "pnote", text: META.previewNote}));
+}
+
+/* ------------------------------------------------------------------ renderers */
+var R = {};
+
+R.title = function (s, root, svg) {
+  add(root, el("div", {class: "hero-k", text: META.kicker}));
+  add(root, el("div", {class: "hero-bar"}));
+  add(root, el("h1", {class: "hero-t", text: META.title}));
+  add(root, el("p", {class: "hero-s", text: META.subtitle}));
+  add(root, el("div", {class: "hero-go"},
+    el("button", {class: "tb primary", text: "Start the story  ›", onclick: function () { next(); }}),
+    (HUB ? el("button", {class: "tb", text: LBL("jumpHub", "Jump to the main decision tree"), onclick: function () { go(HUB); }}) : null)));
+  add(root, el("div", {class: "hero-keys", html: "<kbd>→</kbd> or <kbd>Space</kbd> next step &nbsp; <kbd>←</kbd> back &nbsp; <kbd>M</kbd> main tree &nbsp; <kbd>C</kbd> chapters &nbsp; <kbd>N</kbd> presenter notes &nbsp; <kbd>W</kbd> walk a tree &nbsp; <kbd>F</kbd> full screen"}));
+  var toc = el("div", {class: "toc"}, el("div", {class: "h-sm", text: "In this story"}));
+  s.chapters.forEach(function (c) { add(toc, el("button", {onclick: function () { go(c[2]); }}, el("b", {text: c[0]}), el("span", {text: c[1]}))); });
+  add(root, toc);
+  add(root, el("div", {class: "hero-meta"}, el("span", {text: "Paired deck: " + META.deck}), el("span", {text: "Facts checked " + META.checked})));
+  // decorative token stream
+  var p = sv("path", {d: "M70,792 C500,760 900,820 1530,780", fill: "none", stroke: "rgba(0,179,159,.25)", "stroke-width": 1.5}, svg);
+  flow(p, {every: 260, speed: 420, r: 3});
+  var p2 = sv("path", {d: "M70,804 C600,840 1000,770 1530,806", fill: "none", stroke: "rgba(56,189,248,.18)", "stroke-width": 1.2}, svg);
+  flow(p2, {every: 520, speed: 300, r: 2.5, color: COLORS.hide});
+};
+
+R.turn = function (s, root, svg) {
+  add(root, el("div", {class: "barlab", style: px(70, 196), text: s.barLabel || "ONE USER TURN — ILLUSTRATIVE PROPORTIONS"}));
+  var mk = s.marker;
+  var bar = el("div", {class: "box turnbar", style: px(70, 224, 1460, 58), "data-b": "0"});
+  var x = 0, ftx = 0;
+  s.bar.forEach(function (b, i) {
+    var w = b[1] * 1460;
+    add(bar, el("div", {class: "seg " + b[2], style: px(x + 2, 0, w - 4, 58) + "--d:" + (i * .55) + "s" + (b[3] ? ";background:" + b[3] : ""), text: b[0]}));
+    if (mk && (b[2] === mk.after || i === mk.after)) ftx = x + w;
+    x += w;
+  });
+  add(root, bar);
+  if (mk) add(root, el("div", {class: "ftmark", style: px(70 + ftx - 6, 290) + "--d:2.6s", "data-b": "0", text: "▲ " + mk.text}));
+  s.cards.forEach(function (c, i) {
+    var col = i % 3, row = Math.floor(i / 3);
+    var b = box(70 + col * 495, 340 + row * 186, 470, 168, "card src-card", 1, (i * .08).toFixed(2));
+    add(b, el("div", {class: "n", text: "0" + (i + 1)}), el("h3", {text: c.t}), el("p", {text: c.d}),
+      el("div", {class: "lev"}, el("span", {text: s.leverLabel || "MAIN LEVER"}), c.lever), chip(c.tag));
+    clickable(b, function () { openDrawer({kicker: s.cardKicker || "Cause", title: c.t, body: c.detail, tag: c.tag, src: c.src, go: c.go}); }, c.t);
+    add(root, b);
+  });
+  var band = s.principle && el("div", {class: "band", style: "top:722px", "data-b": "2"}, el("span", {class: "h-sm", text: s.principleLabel || "DESIGN PRINCIPLE"}), el("span", {text: s.principle}));
+  add(root, band);
+  s.beats = 2;
+};
+
+R.map = function (s, root, svg) {
+  var Q = s.questions, nQ = Q.length, qx = 400, qw = 420, qh = nQ >= 5 ? 84 : 104, LAST = nQ + 1;
+  var pQ = nQ > 1 ? Math.min(120, (456 - qh) / (nQ - 1)) : 0, tQ = (nQ - 1) * pQ + qh, yQ = 268 + (456 - tQ) / 2;
+  var ys = Q.map(function (q, i) { return yQ + i * pQ; });
+  var rx = 70, ry = 404, rw = 260, rh = 140;
+  // measure + govern bands
+  if (s.measure) {
+    var mb = el("div", {class: "mband", style: "top:196px", "data-b": "0"}, el("b", {text: s.measure.t}), el("span", {text: s.measure.d}), el("span", {class: "go", text: "Open ›"}));
+    clickable(mb, function () { go(s.measure.go, {from: mb}); }, s.measure.t); add(root, mb);
+  }
+  if (s.govern) {
+    var gb = el("div", {class: "mband", style: "top:752px", "data-b": String(LAST)}, el("b", {text: s.govern.t}), el("span", {text: s.govern.d}), el("span", {class: "go", text: "Open ›"}));
+    clickable(gb, function () { go(s.govern.go, {from: gb}); }, s.govern.t); add(root, gb);
+  }
+  // root
+  var rn = box(rx, ry, rw, rh, "node-root", 0);
+  add(rn, el("h3", {text: s.root.t}), el("p", {text: s.root.d}));
+  add(root, rn);
+  var orderEl = s.order ? el("div", {class: "order", "data-b": String(LAST)}, el("b", {text: s.orderLabel || "WHY THIS ORDER"}), s.order) : null;
+  if (orderEl) add(root, orderEl);
+  if (s.measure) wire(svg, "M398,217 L" + (rx + rw / 2) + ",217 L" + (rx + rw / 2) + "," + ry, 0, .2);
+  if (s.govern) wire(svg, "M" + (rx + rw / 2) + "," + (ry + rh) + " L" + (rx + rw / 2) + ",772 L398,772", LAST, 0);
+  var qEls = [], qWires = [], leafEls = [], leafWires = [];
+  Q.forEach(function (q, i) {
+    var k = q.k, col = COLORS[k];
+    var w = wire(svg, curve(rx + rw, ry + rh / 2, qx, ys[i] + qh / 2), 0, .3 + i * .15);
+    qWires.push(w);
+    var n = box(qx, ys[i], qw, qh, "card qnode", 0, (.35 + i * .15).toFixed(2), "--k:" + col + ";");
+    add(n, el("div", {class: "lab", text: (i + 1) + " · " + STRAT[k].label.toUpperCase()}), el("h3", {text: q.q}), el("p", {text: q.d}), el("span", {class: "cnt", text: q.leaves.length + " " + (s.leafWord || "levers")}));
+    clickable(n, function () { G.manual = i; if (beat < 1) beat = 1; applyBeat(); }, q.q);
+    qEls.push(n); add(root, n);
+    var n2 = q.leaves.length, pitch = 88, lh = 76, top = 496 - (n2 * pitch - (pitch - lh)) / 2;
+    leafEls[i] = []; leafWires[i] = [];
+    q.leaves.forEach(function (lf, j) {
+      var ly = top + j * pitch;
+      var lw = wire(svg, curve(qx + qw, ys[i] + qh / 2, 930, ly + lh / 2), null, j * .07);
+      lw.style.stroke = col; lw.style.opacity = 0; leafWires[i].push(lw);
+      var tgt = SC[IDX[lf.go]];
+      var L = box(930, ly, 600, lh, "card leaf", null, (j * .07).toFixed(2), "--k:" + col + ";");
+      add(L, el("h4", {text: lf.t}), el("div", {class: "to", text: "Deep dive: " + (tgt ? tgt.short : lf.go)}));
+      var dv = el("button", {class: "dive", "aria-label": "Open " + (tgt ? tgt.short : ""), text: "›", onclick: function (ev) { ev.stopPropagation(); go(lf.go, {from: L, focus: lf.focus}); }});
+      add(L, dv);
+      clickable(L, function () { openDrawer({kicker: STRAT[k].label + " · " + q.q, title: lf.t, body: lf.detail, tag: k, src: lf.src, go: lf.go, focus: lf.focus, from: L}); }, lf.t);
+      leafEls[i].push(L); add(root, L);
+      var fl = flow(lw, {color: col, every: 1300 + j * 140, speed: 320, r: 3.5, when: function () { return G.active === i; }});
+    });
+    flow(w, {color: col, every: 1500, speed: 260, r: 3.5, when: function () { return G.active === i || (G.active === null && beat >= 0); }});
+  });
+  var hint = el("div", {class: "map-hint", style: "top:470px", text: "Press → to unfold each question, or select one"});
+  add(root, hint);
+  add(root, el("div", {class: "edit-note", text: META.editorial}));
+  G.active = null;
+  function setActive(i, user) {
+    G.active = i;
+    qEls.forEach(function (e, j) { e.classList.toggle("act", j === i); e.classList.toggle("mute", i !== null && j !== i); });
+    qWires.forEach(function (w, j) { w.classList.toggle("dim", i !== null && j !== i); });
+    leafEls.forEach(function (arr, j) { arr.forEach(function (L) { L.classList.toggle("show", j === i); }); });
+    leafWires.forEach(function (arr, j) { arr.forEach(function (w) { w.style.opacity = j === i ? 1 : 0; w.classList.toggle("on", j === i); }); });
+    hint.style.opacity = (i === null && beat < LAST) ? 1 : 0;
+    if (orderEl) orderEl.style.visibility = i === null ? "visible" : "hidden";
+  }
+  G.onBeat = function (b) {
+    var a = (G.manual !== null && G.manual !== undefined) ? G.manual : ((b >= 1 && b <= nQ) ? b - 1 : null);
+    G.manual = null; setActive(a);
+    if (b === LAST) hint.textContent = "Select any question to unfold it again";
+  };
+  G.setActive = setActive;
+  s.beats = LAST;
+};
+
+R.path = function (s, root, svg) {
+  var nH = s.hops.length, chain = s.chain || nH, cx = [], CY = 292, w = 150, hgt = 76, d = 36, LASTB = Math.floor((nH - 1) / 2) + 2;
+  s.hops.forEach(function (h, i) { cx.push(70 + (1460 / nH) * (i + .5)); });
+  // wires first (behind cubes)
+  var ws = [];
+  for (var i = 0; i < chain - 1; i++) ws.push(wire(svg, "M" + cx[i] + "," + CY + " L" + cx[i + 1] + "," + CY, 0, .3 + i * .2, "on"));
+  ws.forEach(function (p, i) { flow(p, {every: 900, speed: 240, r: 4, color: COLORS.tealhi}); });
+  if (s.loop) {
+    var lp = s.loop, el5 = wire(svg, "M" + cx[lp[0]] + "," + (CY - 30) + " L" + cx[lp[0]] + ",206 L" + cx[lp[1]] + ",206 L" + cx[lp[1]] + "," + (CY - 30), 0, 1.2);
+    flow(el5, {every: 1100, speed: 300, r: 4, color: COLORS.azure});
+  }
+  var cubes = sv("g", {}, svg);
+  s.hops.forEach(function (h, i) {
+    var col = COLORS[h.kind], x = cx[i], y = CY;
+    var g = sv("g", {class: "cube float", style: "animation-delay:" + (-i * .8) + "s;pointer-events:auto", tabindex: "0", role: "button", "aria-label": h.t}, cubes);
+    var top = [[x, y - hgt / 2], [x + w / 2, y], [x, y + hgt / 2], [x - w / 2, y]];
+    var left = [[x - w / 2, y], [x, y + hgt / 2], [x, y + hgt / 2 + d], [x - w / 2, y + d]];
+    var right = [[x, y + hgt / 2], [x + w / 2, y], [x + w / 2, y + d], [x, y + hgt / 2 + d]];
+    var P = function (a) { return a.map(function (p) { return p.join(","); }).join(" "); };
+    sv("polygon", {points: P(left), fill: col, opacity: .55}, g);
+    sv("polygon", {points: P(right), fill: col, opacity: .32}, g);
+    sv("polygon", {class: "top", points: P(top), fill: col, opacity: h.optional ? .55 : .9, stroke: "#fff", "stroke-opacity": h.optional ? .9 : .5, "stroke-width": h.optional ? 2 : 1, "stroke-dasharray": h.optional ? "9 6" : null}, g);
+    var inner = [[x, y - hgt / 2 + 14], [x + w / 2 - 28, y], [x, y + hgt / 2 - 14], [x - w / 2 + 28, y]];
+    sv("polygon", {points: P(inner), fill: "none", stroke: "#fff", "stroke-opacity": .35}, g);
+    var open = function () { openDrawer({kicker: (s.hopWord || "Hop") + " " + (i + 1) + " · " + (s.pathName || "request path"), title: h.t, body: h.detail, list: h.lev, src: s.sources}); };
+    g.addEventListener("click", open);
+    g.addEventListener("keydown", function (ev) { if (ev.key === "Enter") open(); });
+    add(root, el("div", {class: "hoplab", style: px(x - 112, 372), "data-b": "0"}, el("h4", {text: h.t}), el("p", {text: h.d})));
+    h.lev.forEach(function (t, j) {
+      var bb = Math.floor(i / 2) + 1;
+      add(root, el("div", {class: "lchip", style: px(x - 112, 446 + j * 57) + "--d:" + (j * .08 + (i % 2) * .25) + "s", "data-b": String(bb), text: t}));
+    });
+  });
+  // step badges
+  for (var bi = 0; bi < chain - 1; bi++) {
+    var mx = (cx[bi] + cx[bi + 1]) / 2;
+    sv("circle", {cx: mx, cy: CY, r: 13, fill: COLORS.tealhi}, svg); sv("text", {x: mx, y: CY + 4.5, "text-anchor": "middle", class: "stepb", text: String(bi + 1)}, svg);
+  }
+  if (s.loop) {
+    var lx = (cx[s.loop[0]] + cx[s.loop[1]]) / 2;
+    sv("circle", {cx: lx, cy: 206, r: 13, fill: COLORS.azure}, svg); sv("text", {x: lx, y: 210.5, "text-anchor": "middle", class: "stepb", text: String(chain)}, svg);
+  }
+  if (s.obs) add(root, el("div", {class: "band", style: "top:704px", "data-b": String(LASTB)}, el("span", {class: "h-sm", text: s.obsLabel || "OBSERVABILITY ACROSS EVERY HOP"}), el("span", {text: s.obs})));
+  var lg = s.legend || [["Client", "client"], ["Azure resource", "azure"], ["Foundry service", "foundry"]];
+  add(root, el("div", {class: "legend"},
+    lg.map(function (l) { return el("span", {}, el("i", {style: "background:" + (COLORS[l[1]] || l[1])}), l[0]); }),
+    el("span", {}, el("i", {style: "background:transparent;border:1.5px dashed #fff"}), "Optional"),
+    el("span", {text: "Select a block for details"})));
+  s.beats = LASTB;
+};
+
+R.table = function (s, root, svg) {
+  var t = el("table", {class: "tbl big", style: px(70, 192, 1460), "data-b": "0"});
+  var cg = el("colgroup"); s.widths.forEach(function (w) { add(cg, el("col", {style: "width:" + w + "px"})); }); add(t, cg);
+  add(t, el("thead", {}, el("tr", {}, s.cols.map(function (c) { return el("th", {text: c}); }))));
+  var tb = el("tbody"), jit = [];
+  s.rows.forEach(function (r, ri) {
+    var tr = el("tr", {style: "height:82px"});
+    r.forEach(function (c) {
+      if (typeof c === "object") {
+        var td = el("td");
+        if (c.text) { add(td, el("span", {style: "font-size:13px;color:var(--dim)", text: c.text})); }
+        else {
+          var js = sv("svg", {width: 170, height: 46, viewBox: "0 0 170 46"});
+          sv("line", {x1: 0, y1: 23, x2: 170, y2: 23, stroke: "rgba(185,194,214,.2)", "stroke-dasharray": "3 4"}, js);
+          var pl = sv("polyline", {fill: "none", stroke: ri === 2 ? COLORS.teal : (ri === 1 ? COLORS.hide : COLORS.steady), "stroke-width": 2}, js);
+          jit.push({pl: pl, a: c.jitter, drop: c.drop, gaps: c.gaps, seed: ri * 7.3});
+          add(td, js);
+        }
+        add(tr, td);
+      } else add(tr, el("td", {text: c}));
+    });
+    tr.addEventListener("click", function () { tb.querySelectorAll("tr").forEach(function (x) { x.classList.toggle("sel", x === tr && !tr.classList.contains("sel")); }); });
+    add(tb, tr);
+  });
+  add(t, tb); add(root, t);
+  var ph = 0;
+  function upd() {
+    ph += 1;
+    jit.forEach(function (j) {
+      var pts = [];
+      for (var x = 0; x <= 170; x += 5) {
+        var k = x / 5 + ph;
+        var n = Math.sin(k * 1.7 + j.seed) * .5 + Math.sin(k * .63 + j.seed * 2) * .35 + Math.sin(k * 3.1 + j.seed) * .15;
+        var y = 23 - n * j.a * 20;
+        if (j.drop && ((k + Math.floor(j.seed)) % 23) > 19) y = 23 - 16;
+        if (j.gaps && ((k + 3) % 17) > 13) { pts.push(null); continue; }
+        pts.push(x + "," + y.toFixed(1));
+      }
+      j.pl.setAttribute("points", pts.filter(Boolean).join(" "));
+      if (j.gaps) j.pl.setAttribute("stroke-dasharray", "14 6");
+    });
+  }
+  upd(); if (!RM) every(upd, 140);
+  add(root, el("div", {class: "band", style: "top:716px", "data-b": "1"}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  s.beats = 1;
+};
+
+R.tree = function (s, root, svg) {
+  var Q = s.qs, n = Q.length, rows = n + 1, top = 196, avail = 580, pitch = Math.min(112, avail / rows), ch = pitch - 30;
+  var qx = 96, qw = 494, rx = 660, rw = 470;
+  var rowsEls = [], yesW = [], noW = [], walking = false, wIdx = 0;
+  Q.forEach(function (q, i) {
+    var y = top + i * pitch, b = String(i);
+    var qe = box(qx, y, qw, ch, "q row", b);
+    add(qe, el("span", {text: q.q}));
+    clickable(qe, function () { openDrawer({kicker: s.title, title: q.q, body: q.detail, src: q.src}); }, q.q);
+    add(root, qe);
+    add(root, el("div", {class: "num", style: px(qx - 20, y + ch / 2 - 20), "data-b": b, text: String(i + 1)}));
+    var yw = wire(svg, "M" + (qx + qw) + "," + (y + ch / 2) + " L" + (rx - 4) + "," + (y + ch / 2), i, .25, "");
+    yw.setAttribute("marker-end", "url(#arr)"); yesW.push(yw);
+    add(root, el("div", {class: "yn", style: px(qx + qw + 18, y + ch / 2 - 22) + "--d:.3s", "data-b": b, text: "Yes"}));
+    var pv = /\*$/.test(q.t);
+    var re = box(rx, y, rw, ch, "rec row", b, .35);
+    add(re, el("b", {text: q.t}), el("span", {text: q.s}));
+    clickable(re, function () { openDrawer({kicker: "Recommended option · question " + (i + 1), title: q.t.replace(/\*$/, ""), preview: pv, body: q.detail, src: q.src}); }, q.t);
+    add(root, re);
+    var nw = wire(svg, "M" + (qx + 54) + "," + (y + ch) + " L" + (qx + 54) + "," + (y + pitch - 4), i + 1, 0, "");
+    nw.setAttribute("marker-end", "url(#arr)"); noW.push(nw);
+    add(root, el("div", {class: "yn no", style: px(qx + 64, y + ch + 4), "data-b": String(i + 1), text: "No"}));
+    rowsEls.push([qe, re]);
+    flow(yw, {every: 1400, speed: 160, r: 3.5, when: function () { return yw.classList.contains("on") && (!walking || G.win === i); }});
+  });
+  var oy = top + n * pitch;
+  var oe = box(qx, oy, qw, ch, "qo row", String(n)); add(oe, el("span", {text: "Otherwise"})); add(root, oe);
+  var ow = wire(svg, "M" + (qx + qw) + "," + (oy + ch / 2) + " L" + (rx - 4) + "," + (oy + ch / 2), n, .25, "");
+  ow.setAttribute("marker-end", "url(#arr)");
+  var fe = box(rx, oy, rw, ch, "fb row", String(n), .35);
+  add(fe, el("b", {text: s.other.t}), el("span", {text: s.other.s}));
+  clickable(fe, function () { openDrawer({kicker: "Fallback option", title: s.other.t, body: s.other.detail, src: s.other.src}); }, s.other.t);
+  add(root, fe);
+  rowsEls.push([oe, fe]);
+  flow(ow, {every: 1400, speed: 160, r: 3.5, color: COLORS.measure, when: function () { return ow.classList.contains("on") && (!walking || G.win === n); }});
+  var asH = oy + ch - top;
+  var as = box(1170, top, 360, asH, "card aside", String(n + 1));
+  add(as, el("div", {class: "h-sm", text: s.aside.h}));
+  s.aside.items.forEach(function (it) { add(as, el("div", {class: "it"}, el("b", {text: it[0]}), el("span", {text: it[1]}))); });
+  add(root, as);
+  add(root, el("div", {class: "legend"},
+    el("span", {}, el("i", {style: "background:rgba(235,239,247,.16);border:1px solid rgba(185,194,214,.4)"}), "Question"),
+    el("span", {}, el("i", {style: "background:rgba(0,179,159,.35);border:1.5px solid #00B39F"}), "Recommended option"),
+    el("span", {}, el("i", {style: "border:1.5px dashed rgba(185,194,214,.6)"}), "Fallback option"),
+    el("span", {text: "Select any box for details"})));
+  if (s.next) add(root, el("button", {class: "nextlink", text: s.next.t + "  ›", onclick: function () { go(s.next.go); }}));
+  // walk mode
+  var wb = el("div", {class: "walkbar"}, el("button", {class: "tb", "aria-pressed": "false", html: "Walk the tree <kbd>W</kbd>"}));
+  add(root, wb);
+  var wbtn = wb.querySelector("button");
+  var ctrl = el("div", {class: "walk", style: "display:none"},
+    el("button", {class: "y", text: "Yes", onclick: function (ev) { ev.stopPropagation(); answer(true); }}),
+    el("button", {class: "n", text: "No", onclick: function (ev) { ev.stopPropagation(); answer(false); }}));
+  add(root, ctrl);
+  var restart = el("button", {class: "tb", style: "display:none", text: "Restart", onclick: function () { startWalk(); }});
+  add(wb, restart);
+  function paint() {
+    rowsEls.forEach(function (r, i) {
+      var vis = walking ? (i <= wIdx) : true;
+      r.forEach(function (e) { e.classList.remove("win", "dim", "pending"); });
+      if (walking) {
+        if (G.win !== null) { r.forEach(function (e) { if (i !== G.win) e.classList.add("dim"); }); if (i === G.win) r[1].classList.add("win"); }
+        else if (i !== wIdx) r.forEach(function (e) { e.classList.add("dim"); });
+        else { r[1].classList.add("dim"); if (G.win === null) r[1].classList.add("pending"); }
+      }
+    });
+    yesW.concat([ow]).forEach(function (w, i) { w.classList.toggle("hot", walking && G.win === i); });
+    noW.forEach(function (w, i) { w.classList.toggle("hot", walking && i < wIdx); });
+    if (walking && G.win === null && wIdx < n) {
+      var y = top + wIdx * pitch; ctrl.style.cssText = px(rx + rw / 2 - 72, y + ch / 2 - 17); ctrl.style.display = "flex";
+    } else ctrl.style.display = "none";
+  }
+  function startWalk() { walking = true; wIdx = 0; G.win = null; beat = s.beats; applyBeat(true); wbtn.setAttribute("aria-pressed", "true"); restart.style.display = ""; paint(); }
+  function stopWalk() { walking = false; G.win = null; wbtn.setAttribute("aria-pressed", "false"); restart.style.display = "none"; paint(); }
+  function answer(yes) {
+    if (yes) { G.win = wIdx; paint(); var q = Q[wIdx]; later(function () { openDrawer({kicker: "Result of the walk", title: q.t.replace(/\*$/, ""), preview: /\*$/.test(q.t), body: q.detail, src: q.src}); }, 500); }
+    else { wIdx++; if (wIdx >= n) { G.win = n; paint(); later(function () { openDrawer({kicker: "Result of the walk", title: s.other.t, body: s.other.detail, src: s.other.src}); }, 500); } else paint(); }
+  }
+  wbtn.addEventListener("click", function () { walking ? stopWalk() : startWalk(); });
+  G.walk = function () { walking ? stopWalk() : startWalk(); };
+  G.win = null;
+  G.focus = function (i) {
+    later(function () {
+      var r = rowsEls[Math.min(i, rowsEls.length - 1)];
+      r.forEach(function (e) { e.classList.add("focus"); });
+      later(function () { r.forEach(function (e) { e.classList.remove("focus"); }); }, 5200);
+    }, 700);
+  };
+  s.beats = n + 1;
+};
+
+var DG = {
+  direct: {n: [[40, 85, "App", "app"], [188, 85, "Model", "mt"]], e: [[0, 1, -26], [1, 0, -26]], seq: [[0], [1]]},
+  single: {n: [[40, 85, "Agent", "ag"], [188, 38, "Model", "mt"], [188, 136, "Tool", "mt"]], e: [[0, 1, 0], [1, 0, 0], [0, 2, 0], [2, 0, 0]], seq: [[0], [1], [2], [3], [0], [1]]},
+  seq: {n: [[34, 85, "A", "ag"], [114, 85, "B", "ag"], [194, 85, "C", "ag"]], e: [[0, 1, 0], [1, 2, 0]], seq: [[0], [1]]},
+  conc: {n: [[34, 85, "Start", "app"], [180, 30, "A", "ag"], [180, 85, "B", "ag"], [180, 140, "C", "ag"]], e: [[0, 1, 0], [0, 2, 0], [0, 3, 0]], seq: [[0, 1, 2]]},
+  hand: {n: [[40, 132, "A", "ag"], [114, 40, "B", "ag"], [188, 132, "C", "ag"]], e: [[0, 1, 0], [1, 2, 0]], seq: [[0], [1]]},
+  group: {n: [[114, 34, "Manager", "ag"], [40, 138, "A", "ag"], [114, 138, "B", "ag"], [188, 138, "C", "ag"]], e: [[0, 1, 0], [1, 0, 0], [0, 2, 0], [2, 0, 0], [0, 3, 0], [3, 0, 0]], seq: [[0], [1], [2], [3], [4], [5]]}
+};
+R.spectrum = function (s, root, svg) {
+  var nC = s.cols.length, w = 228, gap = nC > 1 ? Math.min(60, (1460 - nC * w) / (nC - 1)) : 0, x0 = 70 + (1460 - (nC * w + (nC - 1) * gap)) / 2;
+  s.cols.forEach(function (c, i) {
+    var x = x0 + i * (w + gap);
+    var b = box(x, 190, w, 420, "card pcol", String(i));
+    add(b, el("h3", {text: c.t}), el("div", {class: "lab", text: s.callsLabel || "CALLS IN SERIES"}), el("div", {class: "calls", text: c.calls}));
+    var ds = sv("svg", {width: w, height: 180, viewBox: "0 0 " + w + " 180"}); add(b, ds);
+    var D = typeof c.dg === "string" ? DG[c.dg] : c.dg, paths = [];
+    D.e.forEach(function (e) {
+      var a = D.n[e[0]], z = D.n[e[1]], bend = e[2] || 0;
+      var dx = z[0] - a[0], dy = z[1] - a[1], L = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / L, uy = dy / L;
+      var x1 = a[0] + ux * 17, y1 = a[1] + uy * 17, x2 = z[0] - ux * 17, y2 = z[1] - uy * 17;
+      var off = bend || ((e[0] > e[1]) ? 10 : -10) * (D.e.some(function (o) { return o[0] === e[1] && o[1] === e[0]; }) ? 1 : 0);
+      var mx = (x1 + x2) / 2 - uy * off, my = (y1 + y2) / 2 + ux * off;
+      paths.push(sv("path", {d: "M" + x1 + "," + y1 + " Q" + mx + "," + my + " " + x2 + "," + y2, fill: "none", stroke: "rgba(185,194,214,.32)", "stroke-width": 1.6}, ds));
+    });
+    D.n.forEach(function (nn) {
+      var col = nn[3] === "app" ? COLORS.client : nn[3] === "ag" ? COLORS.teal : COLORS.azure;
+      sv("circle", {cx: nn[0], cy: nn[1], r: 16, fill: col, opacity: .9}, ds);
+      var ly = nn[2].length > 1 ? (nn[1] < 60 ? nn[1] - 24 : nn[1] + 34) : nn[1] + 5;
+      var t = sv("text", {x: nn[0], y: ly, "text-anchor": "middle", class: "svgt " + (nn[2].length > 1 ? "" : "b"), text: nn[2]}, ds);
+      t.style.fontSize = nn[2].length > 1 ? "12px" : "13px";
+    });
+    var k = 0;
+    every(function () {
+      if (!b.classList.contains("on")) return;
+      D.seq[k % D.seq.length].forEach(function (ei) { spawn(paths[ei], ds, COLORS.tealhi, 150, 4); });
+      k++;
+    }, 900);
+    add(b, el("div", {class: "cap", text: c.cap}));
+    clickable(b, function () { openDrawer({kicker: "Orchestration pattern", title: c.t, body: c.detail, src: s.sources}); }, c.t);
+    add(root, b);
+  });
+  if (s.arrow) add(root, el("div", {class: "arrowband", style: "top:636px", "data-b": String(nC), text: s.arrow}));
+  if (s.band) add(root, el("div", {class: "band", style: "top:700px;padding:12px 22px", "data-b": String(nC)}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend", style: "top:792px"},
+    el("span", {}, el("i", {style: "background:" + COLORS.client}), "Application"), el("span", {}, el("i", {style: "background:" + COLORS.teal}), "Agent"),
+    el("span", {}, el("i", {style: "background:" + COLORS.azure}), "Model or tool"), el("span", {}, el("i", {style: "background:" + COLORS.tealhi}), "Call")));
+  s.beats = nC;
+};
+
+R.trace = function (s, root, svg) {
+  var bx = 360, bw = 680, y0 = 214, pitch = 62;
+  var spanCol = {agent: COLORS.teal, model: COLORS.reduce, tool: COLORS.hide}, hasFt = s.ft !== undefined && s.ft !== null;
+  var bars = [];
+  s.spans.forEach(function (sp, i) {
+    var y = y0 + i * pitch, indent = i === 0 ? 0 : 18;
+    add(root, el("div", {class: "span-l", style: px(70 + indent, y + 2) + "--d:" + (i * .1) + "s", "data-b": "0"}, el("code", {text: sp[0]}), sp[1]));
+    sv("rect", {x: bx, y: y + 6, width: bw, height: 34, rx: 5, fill: "rgba(185,194,214,.06)"}, svg);
+    var r = sv("rect", {x: bx + sp[2] * bw, y: y + 6, width: Math.max(4, (sp[3] - sp[2]) * bw), height: 34, rx: 5, fill: spanCol[sp[4]] || COLORS[sp[4]] || COLORS.teal, class: "grow", style: "transform:scaleX(0)"}, svg);
+    bars.push({r: r, a: sp[2], b: sp[3]});
+  });
+  var yb = y0 + s.spans.length * pitch;
+  var fx = bx + (hasFt ? s.ft : 0) * bw;
+  var fl = sv("line", {x1: fx, y1: y0 - 6, x2: fx, y2: yb, stroke: COLORS.steady, "stroke-width": 2, "stroke-dasharray": "5 5", opacity: 0}, svg);
+  var ftl = sv("text", {x: fx + 8, y: yb + 2, class: "svgt", text: s.ftLabel || "first token reaches the client", opacity: 0}, svg); ftl.setAttribute("fill", COLORS.steady); ftl.style.fontWeight = "700"; ftl.style.fontSize = "14px";
+  var ph = sv("line", {x1: bx, y1: y0 - 10, x2: bx, y2: yb, stroke: "#fff", "stroke-width": 1.5, opacity: .7}, svg);
+  add(root, el("div", {style: "position:absolute;" + px(70, yb + 22, 980) + "font-size:14px;color:var(--muted)", "data-b": "0", text: s.caption}));
+  var timers = [];
+  function play() {
+    timers.forEach(clearTimeout); timers = [];
+    bars.forEach(function (b) { b.r.style.transition = "none"; b.r.style.transform = "scaleX(0)"; });
+    fl.setAttribute("opacity", 0); ftl.setAttribute("opacity", 0);
+    void svg.getBoundingClientRect();
+    var T = RM ? 0 : 4200, start = performance.now();
+    bars.forEach(function (b) {
+      timers.push(setTimeout(function () { b.r.style.transition = "transform " + ((b.b - b.a) * T / 1000) + "s linear"; b.r.style.transform = "scaleX(1)"; }, b.a * T));
+    });
+    if (hasFt) timers.push(setTimeout(function () { fl.setAttribute("opacity", 1); ftl.setAttribute("opacity", 1); }, s.ft * T));
+    function mv() { var k = Math.min(1, (performance.now() - start) / (T || 1)); ph.setAttribute("x1", bx + k * bw); ph.setAttribute("x2", bx + k * bw); if (k < 1 && G) requestAnimationFrame(mv); }
+    requestAnimationFrame(mv);
+  }
+  G.cleanups.push(function () { timers.forEach(clearTimeout); });
+  later(play, 300); every(play, 7000);
+  var mon = box(1100, 196, 430, 420, "card mon", 1);
+  add(mon, el("div", {class: "h-sm", style: "margin-bottom:8px", text: s.monitorLabel || "What to monitor"}));
+  s.monitor.forEach(function (m) { add(mon, el("div", {class: "it"}, el("b", {text: m[0]}), el("span", {text: m[1]}))); });
+  add(root, mon);
+  add(root, el("div", {class: "band", style: "top:704px", "data-b": "2"}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend"},
+    el("span", {}, el("i", {style: "background:" + COLORS.teal}), "Agent span"), el("span", {}, el("i", {style: "background:" + COLORS.reduce}), "Model call span"),
+    el("span", {}, el("i", {style: "background:" + COLORS.hide}), "Tool span"), el("span", {text: "Illustrative trace"})));
+  s.beats = 2;
+};
+
+R.compare = function (s, root, svg) {
+  var nF = s.feats.length, qw = 250, cx0 = 340, gap = 12, cw = (1530 - cx0 - (nF - 1) * gap) / nF, hy = 192, hh = 70, ry0 = hy + hh + 10, rh = 66, rg = 7;
+  var cells = [], sel = null;
+  s.feats.forEach(function (f, j) {
+    var x = cx0 + j * (cw + gap);
+    var h = box(x, hy, cw, hh, "card cmp-h", String(j));
+    add(h, el("b", {text: f[0]}), chip(f[1]));
+    clickable(h, function () { spot(sel === j ? null : j); }, f[0]);
+    add(root, h);
+  });
+  s.rows.forEach(function (r, i) {
+    var y = ry0 + i * (rh + rg);
+    add(root, box(70, y, qw, rh, "cmp-q", "0", (i * .04).toFixed(2)));
+    root.lastChild.textContent = r[0];
+    cells[i] = [];
+    for (var j = 0; j < nF; j++) {
+      var c = box(cx0 + j * (cw + gap), y, cw, rh, "cmp-c", String(j), (i * .05).toFixed(2));
+      c.textContent = r[j + 1]; cells[i].push(c); add(root, c);
+    }
+  });
+  function spot(j) {
+    sel = j;
+    cells.forEach(function (row) { row.forEach(function (c, k) { c.classList.toggle("hl", j !== null && k === j); c.classList.toggle("lo", j !== null && k !== j); }); });
+  }
+  G.focus = function (j) { beat = s.beats; applyBeat(true); later(function () { spot(j); }, 500); };
+  if (s.band) add(root, el("div", {class: "band", style: "top:" + (ry0 + s.rows.length * (rh + rg) + 8) + "px", "data-b": String(nF)}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend", style: "top:806px"}, el("span", {text: "Select a feature heading to compare its column"})));
+  s.beats = nF;
+};
+
+R.phases = function (s, root, svg) {
+  var nP = s.phases.length, w = 300, step = nP > 1 ? (1460 - w) / (nP - 1) : 0;
+  var hold = el("div", {style: px(0, 0, 1600, 900) + "pointer-events:none"});
+  s.phases.forEach(function (p, i) {
+    var x = 70 + i * step, col = COLORS[p[1]];
+    var c = el("div", {class: "chev", style: px(x, 196, w) + "background:linear-gradient(90deg," + col + "55," + col + "22);--d:0s", "data-b": String(i)}, el("span", {class: "pn", text: String(i + 1)}), el("span", {text: p[0]}));
+    if (i === 0) c.style.clipPath = "polygon(0 0,90% 0,100% 50%,90% 100%,0 100%)";
+    add(root, c);
+    var b = box(x + 6, 300, step - 18 + (i === nP - 1 ? w - step : 0), 260, "card pbul", String(i), .15);
+    p[2].forEach(function (t) { add(b, el("div", {text: t})); });
+    add(root, b);
+  });
+  var pr = box(70, 590, 1460, 196, "card prove", String(nP));
+  add(pr, el("div", {class: "h-sm", text: s.proveLabel || "Prove first"}));
+  var grid = el("div", {style: "display:grid;grid-template-columns:1fr 1fr;column-gap:40px"});
+  s.prove.forEach(function (t, i) { add(grid, el("div", {class: "pv"}, el("i", {text: "✓"}), el("span", {text: t}))); });
+  add(pr, grid); add(root, pr);
+  var line = sv("path", {d: "M70,238 L1530,238", fill: "none", stroke: "none"}, svg);
+  flow(line, {every: 2400, speed: 420, r: 5, color: "#fff", when: function () { return beat >= nP - 1; }});
+  s.beats = nP;
+};
+
+R.status = function (s, root, svg) {
+  var t = el("table", {class: "tbl", style: px(70, 192, 1460)});
+  add(t, el("colgroup", {}, el("col", {style: "width:380px"}), el("col"), el("col", {style: "width:130px"})));
+  var sc = s.cols || ["Capability", "Note or recent change", "Status"];
+  add(t, el("thead", {}, el("tr", {}, el("th", {text: sc[0]}), el("th", {text: sc[1]}), el("th", {text: sc[2]}))));
+  var tb = el("tbody");
+  s.rows.forEach(function (r) {
+    var tr = el("tr", {"data-p": r[2] ? "1" : "0"}, el("td", {text: r[0] + (r[2] ? "*" : "")}), el("td", {text: r[1]}), el("td", {}, r[2] ? el("span", {class: "badge", text: "PREVIEW"}) : ""));
+    tr.style.height = "38px"; add(tb, tr);
+  });
+  add(t, tb); add(root, t);
+  var fb = el("div", {class: "filters"});
+  [["All", "all"], ["Preview only", "p"], ["Without preview label", "g"]].forEach(function (f, i) {
+    add(fb, el("button", {class: "tb", "aria-pressed": i === 0 ? "true" : "false", text: f[0], onclick: function (ev) {
+      fb.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", b === ev.currentTarget ? "true" : "false"); });
+      tb.querySelectorAll("tr").forEach(function (tr) { var p = tr.getAttribute("data-p") === "1"; tr.style.display = (f[1] === "all" || (f[1] === "p" && p) || (f[1] === "g" && !p)) ? "" : "none"; });
+    }}));
+  });
+  add(root, fb);
+  s.beats = 0;
+};
+
+R.refs = function (s, root, svg) {
+  var nG = s.groups.length, w = (1460 - (nG - 1) * 20) / nG;
+  s.groups.forEach(function (g, i) {
+    var b = box(70 + i * (w + 20), 190, w, 560, "card refcol", null);
+    add(b, el("h3", {text: g[0]}));
+    g[1].forEach(function (l) { add(b, el("a", {href: l.url, target: "_blank", rel: "noopener", title: l.url, text: l.label + " ↗"})); });
+    add(root, b);
+  });
+  if (s.current) add(root, el("div", {class: "band", style: "top:770px;padding:10px 22px"}, el("span", {class: "h-sm", text: s.currentLabel || "STAYING CURRENT"}), links(s.current)));
+  s.beats = 0;
+};
+
+/* ------------------------------------------------------------------ TOPIC RENDERERS (injected by build_story.py --extra-js) */
+/* Topic renderers for the latency story: the anatomy of a model call (scene type "anatomy")
+ * and the four model-call feature panels (scene type "features", animations in ANIM).
+ * Injected into the engine closure by build_story.py --extra-js; every core helper is in scope. */
+R.anatomy = function (s, root, svg) {
+  var x0 = 150, xf = 450, AX = 300, n = 30, streaming = true;
+  var g = sv("g", {}, svg);
+  var ctl = el("div", {class: "ctl", style: px(820, 192)},
+    el("span", {text: "Streaming"}),
+    el("span", {class: "seg2"}, el("button", {class: "sel", text: "On", "data-v": "1"}), el("button", {text: "Off", "data-v": "0"})),
+    el("span", {text: "Generated tokens"}),
+    el("input", {type: "range", min: "8", max: "46", value: String(n), "aria-label": "Generated tokens, fewer to more"}),
+    el("button", {class: "tb", text: "Replay"}));
+  add(root, ctl);
+  var rng = ctl.querySelector("input"), segBtns = ctl.querySelectorAll(".seg2 button");
+  segBtns.forEach(function (b) { b.addEventListener("click", function () { streaming = b.getAttribute("data-v") === "1"; segBtns.forEach(function (o) { o.classList.toggle("sel", o === b); }); draw(true); }); });
+  rng.addEventListener("input", function () { n = +rng.value; draw(false); });
+  ctl.querySelector(".tb").addEventListener("click", function () { draw(true); });
+  function T(x, y, t, cls, anchor) { return sv("text", {x: x, y: y, class: "svgt " + (cls || ""), "text-anchor": anchor || "middle", text: t}, g); }
+  function bracket(xa, xb, y, label, up, col) {
+    var t = up ? -8 : 8;
+    sv("path", {d: "M" + xa + "," + (y - t) + " L" + xa + "," + y + " L" + xb + "," + y + " L" + xb + "," + (y - t), fill: "none", stroke: col, "stroke-width": 1.5}, g);
+    var tt = T((xa + xb) / 2, up ? y - 10 : y + 22, label, "", "middle"); tt.setAttribute("fill", col); tt.style.fontSize = "14px"; tt.style.fontWeight = "600";
+  }
+  var timers = [];
+  function draw(animate) {
+    timers.forEach(clearTimeout); timers = []; g.innerHTML = "";
+    var xl = xf + 10 + n * 22;
+    sv("line", {x1: x0 - 20, y1: AX, x2: 1530, y2: AX, stroke: "rgba(185,194,214,.35)", "stroke-width": 1.5}, g);
+    sv("rect", {x: x0 + 4, y: AX - 32, width: xf - x0 - 10, height: 26, rx: 4, fill: "rgba(124,143,224,.35)"}, g);
+    T((x0 + xf) / 2, AX - 14, "Queueing and prompt processing", "", "middle");
+    var toks = [];
+    for (var i = 0; i < n; i++) {
+      var r = sv("rect", {x: xf + 10 + i * 22, y: AX - 30, width: 15, height: 22, rx: 3, fill: COLORS.teal, opacity: animate && !RM ? 0 : 1}, g);
+      toks.push(r);
+    }
+    [[x0, "Request received"], [xf, "First token"], [xl, "Last token"]].forEach(function (m) {
+      sv("circle", {cx: m[0], cy: AX, r: 7, fill: "#fff"}, g); T(m[0], AX + 26, m[1], "b");
+    });
+    bracket(x0, xf - 4, AX - 52, "Time to first token (TTFT)", true, COLORS.hide);
+    bracket(xf + 4, xl, AX - 52, "Generation: time between tokens (TBT) × generated tokens", true, COLORS.teal);
+    bracket(x0, xl, AX + 50, "Time to last token (TTLT): the whole model call", false, COLORS.reduce);
+    var sx = streaming ? xf : xl;
+    var eye = sv("g", {opacity: animate && !RM ? 0 : 1, style: "transition:opacity .4s"}, g);
+    sv("path", {d: "M" + sx + "," + (AX + 88) + " l-9,16 h18 z", fill: COLORS.steady}, eye);
+    var et = sv("text", {x: sx, y: AX + 124, "text-anchor": sx > 1300 ? "end" : "middle", class: "svgt", text: streaming ? "User starts reading at the first token" : "User sees nothing until the last token"}, eye);
+    et.setAttribute("fill", COLORS.steady); et.style.fontWeight = "700"; et.style.fontSize = "14px";
+    if (animate && !RM) {
+      toks.forEach(function (r, i) { timers.push(setTimeout(function () { r.setAttribute("opacity", 1); }, 700 + i * 70)); });
+      timers.push(setTimeout(function () { eye.setAttribute("opacity", 1); }, streaming ? 760 : 760 + n * 70));
+    }
+  }
+  G.cleanups.push(function () { timers.forEach(clearTimeout); });
+  draw(true);
+  var fm = el("div", {class: "formula", "data-b": "1"}, el("code", {text: s.formula}), el("span", {text: s.formulaNote}));
+  add(root, fm);
+  var t = el("table", {class: "tbl", style: px(70, 548, 1000), "data-b": "2"});
+  add(t, el("thead", {}, el("tr", {}, el("th", {text: "Metric"}), el("th", {text: "Azure Monitor name"}), el("th", {text: "Use"}))));
+  var tb = el("tbody"); s.metrics.forEach(function (m) { add(tb, el("tr", {}, el("td", {text: m[0]}), el("td", {}, el("code", {text: m[1]})), el("td", {text: m[2]}))); }); add(t, tb);
+  add(root, t);
+  var as = box(1110, 548, 420, 236, "card aside", 3);
+  add(as, el("div", {class: "h-sm", text: "Reading the numbers"}));
+  s.reading.forEach(function (r) { add(as, el("div", {class: "it"}, el("b", {text: r[0]}), el("span", {text: r[1]}))); });
+  add(root, as);
+  s.beats = 3;
+};
+
+R.features = function (s, root, svg) {
+  var P = s.panels, xs = [70, 440, 810, 1180];
+  P.forEach(function (p, i) {
+    var b = box(xs[i], 190, 350, 610, "card fpanel", i < 2 ? 0 : (i < 3 ? 1 : 2), (i % 2 * .1).toFixed(2));
+    b.setAttribute("data-panel", i);
+    add(b, el("h3", {text: p.t}), chip(p.tag));
+    var asv = sv("svg", {width: 350, height: 250, viewBox: "0 0 350 250"}); add(b, asv);
+    ANIM[p.anim](asv, b, p);
+    add(b, el("ul", {}, p.b.map(function (t) { return el("li", {text: t}); })));
+    clickable(b, function () { openDrawer({kicker: "Model-call feature", title: p.t, body: p.detail, list: p.b, tag: p.tag, src: p.src}); }, p.t);
+    add(root, b);
+  });
+  G.focus = function (i) { later(function () { var p = root.querySelector('[data-panel="' + i + '"]'); if (!p) return; p.classList.add("focus"); later(function () { p.classList.remove("focus"); }, 5000); }, 600); };
+  s.beats = 2;
+};
+var ANIM = {
+  cache: function (svg) {
+    function T(x, y, t, c) { var e = sv("text", {x: x, y: y, class: "svgt " + (c || ""), text: t}, svg); return e; }
+    T(20, 22, "Request 1", "b"); T(20, 112, "Request 2 · same prefix", "b");
+    var rows = [36, 126], prefix = [], dyn = [];
+    rows.forEach(function (y, r) {
+      sv("rect", {x: 20, y: y, width: 200, height: 34, rx: 5, fill: "rgba(167,139,250,.18)", stroke: "rgba(167,139,250,.5)"}, svg);
+      prefix.push(sv("rect", {x: 20, y: y, width: 200, height: 34, rx: 5, fill: r ? COLORS.teal : COLORS.reduce, class: "grow", style: "transform:scaleX(0)"}, svg));
+      sv("rect", {x: 226, y: y, width: 104, height: 34, rx: 5, fill: "rgba(56,189,248,.15)", stroke: "rgba(56,189,248,.45)"}, svg);
+      dyn.push(sv("rect", {x: 226, y: y, width: 104, height: 34, rx: 5, fill: COLORS.hide, class: "grow", style: "transform:scaleX(0)"}, svg));
+      var t1 = T(30, y + 22, "Stable prefix", "b"); t1.style.fontSize = "12.5px";
+      var t2 = T(236, y + 22, "User turn", "b"); t2.style.fontSize = "12.5px";
+    });
+    var tag = T(20, 192, "", "t"); tag.style.fontSize = "13px"; tag.style.fontWeight = "700";
+    var note = T(20, 214, "Instructions, tool definitions and schemas first;"); note.style.fontSize = "12px"; var note2 = T(20, 232, "identical, 1,024 tokens or more; dynamic content last"); note2.style.fontSize = "12px";
+    function run() {
+      prefix.concat(dyn).forEach(function (r) { r.style.transition = "none"; r.style.transform = "scaleX(0)"; });
+      tag.textContent = "";
+      void svg.getBoundingClientRect();
+      later(function () { prefix[0].style.transition = "transform 1.6s linear"; prefix[0].style.transform = "scaleX(1)"; }, 100);
+      later(function () { dyn[0].style.transition = "transform .8s linear"; dyn[0].style.transform = "scaleX(1)"; }, 1750);
+      later(function () { prefix[1].style.transition = "transform .25s ease-out"; prefix[1].style.transform = "scaleX(1)"; tag.textContent = "Reused on repeat → cached_tokens in usage"; }, 2900);
+      later(function () { dyn[1].style.transition = "transform .8s linear"; dyn[1].style.transform = "scaleX(1)"; }, 3200);
+    }
+    run(); every(run, 6200);
+  },
+  stream: function (svg) {
+    function T(x, y, t, c) { return sv("text", {x: x, y: y, class: "svgt " + (c || ""), text: t}, svg); }
+    function node(x, y, label, col) { sv("circle", {cx: x, cy: y, r: 15, fill: col}, svg); var t = T(x, y + 32, label); t.setAttribute("text-anchor", "middle"); t.style.fontSize = "12px"; }
+    T(20, 24, "Default", "b"); T(20, 150, "Asynchronous", "b");
+    var p1 = sv("path", {d: "M40,64 L160,64", stroke: "rgba(185,194,214,.3)", fill: "none"}, svg);
+    var p2 = sv("path", {d: "M200,64 L310,64", stroke: "rgba(185,194,214,.3)", fill: "none"}, svg);
+    sv("rect", {x: 155, y: 48, width: 50, height: 32, rx: 6, fill: "rgba(251,191,36,.25)", stroke: COLORS.steady}, svg);
+    var bt = T(180, 100, "Filter buffer"); bt.setAttribute("text-anchor", "middle"); bt.style.fontSize = "12px";
+    node(30, 64, "", COLORS.reduce); node(320, 64, "", COLORS.hide);
+    var p3 = sv("path", {d: "M40,186 L310,186", stroke: "rgba(185,194,214,.3)", fill: "none"}, svg);
+    var p4 = sv("path", {d: "M90,186 C120,222 230,222 260,200", stroke: "rgba(251,191,36,.6)", fill: "none", "stroke-dasharray": "4 4"}, svg);
+    node(30, 186, "Model", COLORS.reduce); node(320, 186, "Client", COLORS.hide);
+    var ft = T(20, 244, "Filters in parallel; flagged text removed afterwards"); ft.style.fontSize = "11.5px";
+    var c1 = T(170, 124, "text in chunks, after filtering"); c1.setAttribute("text-anchor", "middle"); c1.style.fontSize = "11.5px";
+    flow(p1, {layer: svg, every: 260, speed: 160, r: 3.5, color: COLORS.tealhi});
+    flow(p2, {layer: svg, every: 1500, speed: 220, r: 3.5, color: COLORS.tealhi, burst: 5});
+    flow(p3, {layer: svg, every: 260, speed: 160, r: 3.5, color: COLORS.tealhi});
+    flow(p4, {layer: svg, every: 1800, speed: 120, r: 3, color: COLORS.steady});
+  },
+  caps: function (svg) {
+    function T(x, y, t, c) { return sv("text", {x: x, y: y, class: "svgt " + (c || ""), text: t}, svg); }
+    T(20, 26, "Uncapped", "b"); T(20, 116, "Capped, concise", "b");
+    var rows = [[40, 30], [130, 13]], cells = [];
+    rows.forEach(function (r, ri) {
+      for (var i = 0; i < r[1]; i++) cells.push({e: sv("rect", {x: 20 + i * 10.4, y: r[0], width: 8, height: 30, rx: 2, fill: ri ? COLORS.teal : COLORS.reduce, opacity: .15}, svg), i: i});
+      sv("line", {x1: 20 + r[1] * 10.4 + 2, y1: r[0] - 6, x2: 20 + r[1] * 10.4 + 2, y2: r[0] + 38, stroke: COLORS.steady, "stroke-width": 2}, svg);
+      var lt = T(20 + r[1] * 10.4 - 2, r[0] + 54, "last token", "", "end"); lt.setAttribute("text-anchor", ri ? "start" : "end"); lt.style.fontSize = "12px"; lt.setAttribute("fill", COLORS.steady);
+    });
+    var tt = T(20, 214, "fewer tokens, earlier last token", "t"); tt.style.fontWeight = "700";
+    function run() {
+      cells.forEach(function (c) { c.e.setAttribute("opacity", .15); });
+      cells.forEach(function (c) { later(function () { c.e.setAttribute("opacity", 1); }, 200 + c.i * 90); });
+    }
+    run(); every(run, 4200);
+  },
+  effort: function (svg, panel) {
+    var levels = ["none", "minimal", "low", "medium", "high", "xhigh", "max"], lv = 0, auto = true;
+    var bar = el("div", {class: "eff"}, levels.map(function (l, i) { return el("button", {text: l, "data-i": i, onclick: function (ev) { ev.stopPropagation(); auto = false; set(i); }}); }));
+    add(panel, bar);
+    function T(x, y, t, c) { return sv("text", {x: x, y: y, class: "svgt " + (c || ""), text: t}, svg); }
+    T(20, 92, "Reasoning tokens", "b"); T(20, 158, "Visible answer", "b");
+    sv("rect", {x: 20, y: 100, width: 310, height: 28, rx: 5, fill: "rgba(167,139,250,.12)"}, svg);
+    var rb = sv("rect", {x: 20, y: 100, width: 310, height: 28, rx: 5, fill: COLORS.reduce, class: "grow", style: "transition:transform .6s cubic-bezier(.2,.7,.2,1);transform:scaleX(0)"}, svg);
+    sv("rect", {x: 20, y: 166, width: 90, height: 28, rx: 5, fill: COLORS.teal}, svg);
+    var lab = T(20, 222, "", "t"); lab.style.fontSize = "12.5px"; lab.style.fontWeight = "700";
+    function set(i) {
+      lv = i; bar.querySelectorAll("button").forEach(function (b, j) { b.classList.toggle("sel", j === i); });
+      rb.style.transform = "scaleX(" + (i === 0 ? 0.015 : (0.1 + i * 0.15)) + ")";
+      lab.textContent = i === 0 ? "none: answer starts almost at once" : "more reasoning tokens, longer call";
+    }
+    set(0); every(function () { if (auto) set((lv + 1) % levels.length); }, 1700);
+    var cap = T(20, 244, "Illustrative; supported values vary by model"); cap.style.fontSize = "11.5px";
+  }
+};
+
+
+
+/* ------------------------------------------------------------------ build and navigate */
+function build(i) {
+  var s = SC[i];
+  var root = el("div", {class: "scene", "data-id": s.id, role: "region", "aria-label": s.title || META.title});
+  var svg = sv("svg", {class: "wires", viewBox: "0 0 1600 900", "aria-hidden": "true"});
+  sv("defs", {}, svg).innerHTML = '<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="rgba(185,194,214,.7)"/></marker>';
+  add(root, svg);
+  G = {root: root, svg: svg, pt: null, flows: [], parts: [], timers: [], intervals: [], cleanups: [], onBeat: null, focus: null, walk: null, active: null};
+  G.pt = sv("g", {}, svg);
+  if (s.type !== "title") chrome(s, root);
+  if (!R[s.type]) throw new Error("No renderer for scene type " + s.type + " (scene " + s.id + ")");
+  R[s.type](s, root, svg);
+  svg.appendChild(G.pt);
+  return G;
+}
+function teardown(g) {
+  if (!g) return;
+  g.timers.forEach(clearTimeout); g.intervals.forEach(clearInterval); g.cleanups.forEach(function (f) { f(); });
+  g.flows = []; g.parts = [];
+}
+function applyBeat(instant) {
+  if (!G) return;
+  G.root.querySelectorAll("[data-b]").forEach(function (e) { e.classList.toggle("on", +e.getAttribute("data-b") <= beat); });
+  if (G.onBeat) G.onBeat(beat);
+  updateBars();
+}
+function go(target, opt) {
+  opt = opt || {};
+  var i = typeof target === "number" ? target : IDX[target];
+  if (i === undefined || i < 0 || i >= SC.length) return;
+  closeDrawer();
+  var oldG = G, oldEl = G && G.root, dir = i >= cur ? 1 : -1;
+  if (oldEl) {
+    if (opt.from && !RM) {
+      var r = opt.from.getBoundingClientRect(), sr = stage.getBoundingClientRect(), k = sr.width / W;
+      oldEl.style.transformOrigin = ((r.left + r.width / 2 - sr.left) / k) + "px " + ((r.top + r.height / 2 - sr.top) / k) + "px";
+      oldEl.classList.add("dive");
+    } else oldEl.classList.add("leave");
+    teardown(oldG);
+    setTimeout(function () { oldEl.remove(); }, RM ? 0 : 560);
+  }
+  if (SC[cur] && SC[cur].type === "map" && i !== cur) cameFrom = "map";
+  else if (SC[i].type === "map") cameFrom = null;
+  cur = i;
+  var g = build(i);
+  g.root.classList.add(opt.from && SC[i].type !== "map" ? "rise" : "enter");
+  stage.appendChild(g.root);
+  beat = opt.full ? (SC[i].beats || 0) : 0;
+  if (opt.focus !== undefined && opt.focus !== null) beat = SC[i].beats || 0;
+  applyBeat(true);
+  requestAnimationFrame(function () { requestAnimationFrame(function () { g.root.classList.remove("enter", "rise"); }); });
+  if (opt.focus !== undefined && opt.focus !== null && g.focus) g.focus(opt.focus);
+  if (location.hash.slice(1) !== SC[i].id) history.replaceState(null, "", "#" + SC[i].id);
+  setNotes(); updateRail(); updateCrumb();
+  document.getElementById("walkBtn").classList.toggle("hidden", SC[i].type !== "tree");
+}
+function next() {
+  var s = SC[cur];
+  if (beat < (s.beats || 0)) { beat++; applyBeat(); return true; }
+  if (cur < SC.length - 1) { go(cur + 1); return true; }
+  return false;
+}
+function prev() {
+  if (beat > 0) { beat--; applyBeat(); return; }
+  if (cur > 0) go(cur - 1, {full: true});
+}
+
+/* ------------------------------------------------------------------ chrome: progress, rail, crumb */
+var progress = document.getElementById("progress"), beatsEl = document.getElementById("beats"), counter = document.getElementById("counter");
+SC.forEach(function (s, i) {
+  add(progress, el("button", {class: s.type === "map" ? "hub" : "", title: s.short, "aria-label": s.short, onclick: function () { go(i); }}));
+});
+function updateBars() {
+  progress.querySelectorAll("button").forEach(function (b, i) { b.classList.toggle("cur", i === cur); b.classList.toggle("done", i < cur); });
+  beatsEl.innerHTML = "";
+  for (var k = 0; k <= (SC[cur].beats || 0); k++) add(beatsEl, el("i", {class: k <= beat ? "on" : ""}));
+  counter.textContent = (cur + 1) + " / " + SC.length;
+}
+function buildRail() {
+  var body = railEl.querySelector(".body"); body.innerHTML = "";
+  STORY.sections.forEach(function (sec) {
+    add(body, el("h3", {text: (sec.num === "00" ? "" : sec.num + " · ") + sec.name}));
+    SC.forEach(function (s, i) {
+      if (s.section !== sec.id) return;
+      var dots = el("span", {class: "dots"}, (s.tags || []).map(function (t) { return el("i", {style: "background:" + COLORS[t]}); }));
+      add(body, el("button", {"data-i": i, onclick: function () { go(i); toggle(railEl, document.getElementById("railBtn"), false); }}, el("span", {text: s.short}), dots, el("small", {text: slideLabel(s, "")})));
+    });
+  });
+}
+function updateRail() { railEl.querySelectorAll("button[data-i]").forEach(function (b) { b.classList.toggle("cur", +b.getAttribute("data-i") === cur); }); }
+function updateCrumb() {
+  var c = document.getElementById("crumb"); c.innerHTML = "";
+  var s = SC[cur], sec = STORY.sections.filter(function (x) { return x.id === s.section; })[0];
+  if (s.type !== "map" && s.type !== "title") {
+    if (HUB) add(c, el("button", {text: LBL("hub", "Main decision tree"), onclick: function () { go(HUB, {full: true}); }}), "  ›  ");
+  }
+  add(c, el("span", {text: (sec && sec.num !== "00" ? sec.num + " " + sec.name + "  ›  " : "")}), el("b", {text: s.short}));
+}
+
+/* ------------------------------------------------------------------ fit, background, events */
+function fit() {
+  var r = viewport.getBoundingClientRect(), k = Math.min(r.width / W, r.height / H);
+  var x = (r.width - W * k) / 2, y = (r.height - H * k) / 2;
+  stage.style.transform = "translate(" + x + "px," + y + "px) scale(" + k + ")";
+}
+window.addEventListener("resize", fit);
+
+(function bg() {
+  var cv = document.getElementById("bg"), ctx = cv.getContext("2d"), pts = [], DPR = Math.min(2, window.devicePixelRatio || 1);
+  function size() { cv.width = innerWidth * DPR; cv.height = innerHeight * DPR; }
+  size(); window.addEventListener("resize", size);
+  for (var i = 0; i < 70; i++) pts.push({x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .00012, vy: (Math.random() - .5) * .00012});
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    var Wd = cv.width, Hd = cv.height;
+    pts.forEach(function (p) { if (!RM) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > 1) p.vx *= -1; if (p.y < 0 || p.y > 1) p.vy *= -1; } });
+    for (var a = 0; a < pts.length; a++) for (var b = a + 1; b < pts.length; b++) {
+      var dx = (pts[a].x - pts[b].x) * Wd, dy = (pts[a].y - pts[b].y) * Hd, d = Math.sqrt(dx * dx + dy * dy), lim = 170 * DPR;
+      if (d < lim) { ctx.strokeStyle = "rgba(0,179,159," + (0.09 * (1 - d / lim)).toFixed(3) + ")"; ctx.lineWidth = DPR; ctx.beginPath(); ctx.moveTo(pts[a].x * Wd, pts[a].y * Hd); ctx.lineTo(pts[b].x * Wd, pts[b].y * Hd); ctx.stroke(); }
+    }
+    pts.forEach(function (p) { ctx.fillStyle = "rgba(44,229,203,.35)"; ctx.beginPath(); ctx.arc(p.x * Wd, p.y * Hd, 1.6 * DPR, 0, 6.3); ctx.fill(); });
+    if (!RM) requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+document.getElementById("nextBtn").addEventListener("click", function () { next(); });
+document.getElementById("prevBtn").addEventListener("click", prev);
+document.getElementById("railBtn").addEventListener("click", function (e) { toggle(railEl, e.currentTarget); });
+document.getElementById("notesBtn").addEventListener("click", function (e) { toggle(notesEl, e.currentTarget); });
+document.getElementById("mapBtn").addEventListener("click", function () { if (HUB) go(HUB, {full: true}); });
+if (!HUB) document.getElementById("mapBtn").classList.add("hidden");
+document.getElementById("walkBtn").addEventListener("click", function () { if (G && G.walk) G.walk(); });
+document.getElementById("fsBtn").addEventListener("click", fullscreen);
+document.getElementById("playBtn").addEventListener("click", function (e) { setAuto(!autoplay); });
+var uiT, viewOnly = false;
+/* Full screen: standard API, webkit-prefixed fallback (older Safari), and a toolbar-free view when the
+   browser or the hosting page blocks the API (an embedded preview, a sandboxed frame or a browser policy). */
+function fsEl() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+function pres() {
+  var on = !!fsEl() || viewOnly;
+  document.body.classList.toggle("pres", on); fit();
+  document.getElementById("fsBtn").setAttribute("aria-pressed", on ? "true" : "false");
+  if (on) { poke(); }
+}
+function poke() { document.body.classList.add("ui"); clearTimeout(uiT); uiT = setTimeout(function () { document.body.classList.remove("ui"); }, 2600); }
+function setViewOnly(on) { viewOnly = on; if (!on) { clearTimeout(toastT); document.getElementById("toast").classList.remove("on"); } pres(); }
+function fsBlocked() {
+  if (fsEl() || viewOnly) return;
+  setViewOnly(true);
+  toast("Full screen is blocked in this view, so the toolbars are hidden instead. F11 gives browser full screen; F or Esc restores the toolbars.", 6000);
+}
+document.addEventListener("fullscreenchange", pres);
+document.addEventListener("webkitfullscreenchange", pres);
+document.addEventListener("fullscreenerror", fsBlocked);
+document.addEventListener("webkitfullscreenerror", fsBlocked);
+document.addEventListener("mousemove", function () { if (document.body.classList.contains("pres")) poke(); });
+function fullscreen() {
+  if (fsEl()) { var x = document.exitFullscreen || document.webkitExitFullscreen; if (x) x.call(document); return; }
+  if (viewOnly) { setViewOnly(false); return; }
+  var d = document.documentElement, req = d.requestFullscreen || d.webkitRequestFullscreen;
+  var enabled = document.fullscreenEnabled !== undefined ? document.fullscreenEnabled : document.webkitFullscreenEnabled;
+  if (!req || enabled === false) { fsBlocked(); return; }
+  try { var r = req.call(d); if (r && typeof r.then === "function") r.then(null, fsBlocked); }
+  catch (e) { fsBlocked(); }
+}
+function setAuto(on) {
+  var b = document.getElementById("playBtn");
+  if (autoplay) { clearInterval(autoplay); autoplay = null; }
+  if (on) { autoplay = setInterval(function () { if (!next()) setAuto(false); }, 4500); toast("Autoplay on"); }
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.querySelector("span").textContent = on ? "Pause" : "Play";
+}
+document.addEventListener("keydown", function (e) {
+  if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var k = e.key;
+  if (k === "ArrowRight" || k === "PageDown" || (k === " " && !(e.target && e.target.closest && e.target.closest("button,[role=button]")))) { e.preventDefault(); next(); }
+  else if (k === "ArrowLeft" || k === "PageUp") { e.preventDefault(); prev(); }
+  else if (k === "Home") go(0);
+  else if (k === "End") go(SC.length - 1, {full: true});
+  else if (k === "Escape") { if (viewOnly) setViewOnly(false); closeDrawer(); toggle(railEl, document.getElementById("railBtn"), false); toggle(notesEl, document.getElementById("notesBtn"), false); }
+  else if (k === "n" || k === "N") toggle(notesEl, document.getElementById("notesBtn"));
+  else if (k === "c" || k === "C") toggle(railEl, document.getElementById("railBtn"));
+  else if ((k === "m" || k === "M") && HUB) go(HUB, {full: true});
+  else if (k === "f" || k === "F") fullscreen();
+  else if (k === "p" || k === "P") setAuto(!autoplay);
+  else if ((k === "w" || k === "W") && G && G.walk) G.walk();
+});
+window.addEventListener("hashchange", function () { var id = location.hash.slice(1); if (IDX[id] !== undefined && IDX[id] !== cur) go(id); });
+
+window.__story = {count: SC.length, go: function (id, full) { go(id, {full: !!full}); }, state: function () { return {i: cur, id: SC[cur].id, beat: beat, beats: SC[cur].beats || 0}; }};
+buildRail(); fit();
+var start = IDX[location.hash.slice(1)];
+go(start !== undefined ? start : 0);
+requestAnimationFrame(tick);
+})();
+
+</script>
+</body>
+</html>
