@@ -2,7 +2,47 @@
 
 One entry per dated edition, newest first. Each entry lists what changed since the previous edition, the source consulted for each change, the run date, and any items still to verify before presenting. Maintained by the `foundry-whats-new-deck` skill; entries are appended, never rewritten.
 
-Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 27 slides from edition 2026-10-26 (26 from 2026-10-22, 25 before) · 16:9 · speaker notes on every slide.
+Location: `decks/` (path in `kit.yaml` → `paths.deck_changelog`). Deck file pattern: `Microsoft-Foundry-Whats-New-<yyyy>-<mm>[-<dd>].pptx` · 27 slides from edition 2026-10-26 (26 from 2026-10-22, 25 before; edition 2026-11 keeps 27 with a changed structure) · 16:9 · speaker notes on every slide.
+
+---
+
+## Edition 2026-11
+
+**File:** `Microsoft-Foundry-Whats-New-2026-11.pptx`
+**Run date:** 2026-11-18 · **Baseline:** 2026-10-26 · **Last sweep:** 2026-09-16 · **Next detect run due:** 2026-12-02
+**Structure:** CHANGED on the user's request — still 27 slides. Removed: 8 Deployment types, 9 Priority and Flex processing (both covered by the Latency Optimization deep-dive deck), 18 Publishing a hosted agent to Teams (key line moved to the notes of slide 14), and 15 Microsoft IQ (merged into 13). Added: 8 Training in Foundry, 15 Microsoft Copilot harness, 24 Continuous improvement loop, 25 Cost control and budgets. The user directed three new slides (Copilot harness, continuous improvement, cost control); Training was added to keep 27 slides and can be dropped (26 slides). Sections 04 and 05 now hold six slides each. Agenda ranges: 3–6 · 7–10 · 11–13 · 14–19 · 20–25 · 26–27.
+**Slide mapping from 2026-10-26:** 1–7 → 1–7 · 10 → 9 · 11 → 10 · 12 → 11 · 13 → 12 · 14 + 15 → 13 · 16 → 14 · 17 → 16 · 19 → 17 · 20 → 18 · 21 → 19 · 22 → 20 · 23 → 21 · 24 → 22 · 25 → 23 · 26 → 26 · 27 → 27.
+
+### Changes since edition 2026-10-26
+| Slide | Change | Status | Source (fetched this run) |
+|---|---|---|---|
+| 1, 2 | Session list, agenda ranges and section contents rewritten; title-slide and agenda notes rewritten | — | — |
+| 3 | azd extension unmarked; Training row (Managed · Programmed*); Copilot harness* in Agent Runtime; voice agents unmarked; Web IQ added, Work IQ unmarked; Insights unmarked; cost controls* | GA / preview | Ignite 2026 Book of News; Learn Work IQ tool page |
+| 5 | Second-person wording removed ("Client code", "existing SDKs") | — | — |
+| 6 | azd card: `microsoft.foundry` 1.0 GA (5 Nov), azd 1.37.0+, `azure.ai.agents` beta.22; notes: Toolkit 1.6.18 harness support, Foundry Local 2.2.1 / CLI 0.12.1 | GA | devblogs.microsoft.com/foundry (azd extension GA); Learn Copilot harness how-to |
+| 7 | Lower table rebuilt by model type (general purpose · coding and computer use · decisions · image generation · video generation), two or three newest per type: GPT-6.2 Astra and Sol (GA 17 Nov), GPT-6.1 Terra, MAI-Code-2-Flash (private preview), Fara1.5 (open weights), Microsoft-Decision-1.1, gpt-6-luna Decisions API, MAI-Image-2.7 and 2.7-Flash*, Kling v3 Pro, LTX-2.5 Fast and Pro, MiniMax H3 Max and Max Turbo* (fal, 5 Nov); 11,000+ models; notes rewritten | GA / preview | techcommunity.microsoft.com Foundry blog (GPT-6.2, 17 Nov; fal, 5 Nov) · ai.azure.com/catalog gpt-6.2-astra, gpt-6.2-sol · learn…/how-to/fal-ai-models/enable-fal-models · github.com/microsoft/fara · Book of News |
+| 8 | NEW Training in Foundry — Managed Training (SFT, DPO, RFT; Standard, Data zone US, Global) vs Programmed Training* (Python driver, LoRA, serverless GPUs) | preview | Learn fine-tuning overview; Learn Programmed Training; Book of News |
+| 9 | Routing pool: 43 models from six providers; "New at Ignite" card: model auto*, Messages API* (Claude), AI gateway selection*; notes: preview versions retire 27 Jan 2027 | preview | learn.microsoft.com/azure/foundry/openai/concepts/model-router (updated 17 Nov) |
+| 10 | Microsoft-Decision-1 → Microsoft-Decision-1.1 (GA; Gemma 4 26B-A4B; up to 8 images; 32K context); preview footnote removed | GA | Learn Microsoft-Decision model page; model catalog |
+| 11 | "Fabric data agent*" removed from direct integration (deprecated 6 Nov, replaced by the Fabric IQ tool*) | — | Learn Fabric IQ tool page (kit note 2026-11-05) |
+| 13 | NEW merged slide Foundry IQ and Microsoft IQ — four sources (Work IQ, Fabric IQ*, Foundry IQ, Web IQ); knowledge-base flow; Ignite items: knowledge graphs*, Microsoft-Retriever-1*, Foundry IQ per project*, indexed SharePoint GA, native permissions (REST 2026-10-01), Work IQ MCP endpoint GA, Web IQ GA | GA / preview | Book of News; Learn Foundry IQ (Azure AI Search) overview (updated 17 Nov); Learn Work IQ tool page |
+| 14 | Prompt agent: voice unmarked, "default runtime or Copilot harness*"; hosted-agent idle timeout 2–240 min; source footer reworded; notes: Teams publishing line, hosted-agent concurrency GA, faster start*, Foundry on AKS*, Microsoft 365 accounts for agents* | GA / preview | Book of News; Learn hosted agents |
+| 15 | NEW Microsoft Copilot harness — request path, comparison with prompt and hosted agents, preview facts (22 regions) | preview | learn.microsoft.com/azure/foundry/agents/how-to/use-tools-skills-copilot-harness (updated 4 Nov); concepts/limits-quotas-regions |
+| 16 | "Your application" → "Client application" | — | — |
+| 17 | Agent Framework python-1.26.0 and dotnet-1.28.0; notes: Python 3.11+ from python-1.25 | — | github.com/microsoft/agent-framework releases |
+| 18 | Notes: portal workflows retire 1 Dec 2026 (to confirm) | — | kit note 2026-11-14 |
+| 19 | Long-running agents unmarked (resilience GA 28 Oct); "own container"; "What the runtime provides"; footnote rewritten | GA | Foundry blog, Copilot harness announcement (28 Oct) |
+| 20 | Insights unmarked; external agents in Tracing; Govern card: budgets* and cost views*; slide links 23 / 22 and 24 / 21 / 25 | GA / preview | Book of News; Azure Observability blog (17 Nov) |
+| 21 | Second-person wording removed | — | — |
+| 22 | Second person removed; Agent Optimizer unmarked; fonts raised to 7.5 pt | GA (to confirm) | Book of News |
+| 23 | Second person removed; notes: cross-agent debugging* and Trace Analytics* | preview | Azure Observability blog (17 Nov) |
+| 24 | NEW Continuous improvement loop — establish, identify, optimize, validate; GA: Insights, agent optimizer, multi-turn evaluation, external agents; preview: rubric evaluators incl. safety, trace annotations, datasets, insights to optimizer, skill and cost optimization | GA / preview | azure.microsoft.com/blog continuous improvement (17 Nov); Learn agent-insights; Book of News |
+| 25 | NEW Cost control and budgets — cost views*, budgets and cost controls* (HTTP 429, `x-ms-budget-cause`), gateway policies, Model Router cost mode, agent.name tag, Agent Prepurchase Plan | preview | Learn cost controls; Learn plan and manage costs; Learn optimize costs |
+| 26 | Timeline re-cut to 2 Jun … 17 Nov (Ignite); dot 7 adds fal video models, dot 8 adds GPT-6.2 Astra and Sol; preview band rewritten; notes rewritten | — | Foundry blogs; Book of News |
+| 27 | Learn and blog references rewritten for the new slides; notes rewritten | — | — |
+
+Open verify items: Microsoft-Decision-1.1 release date and MAI-Image-2.7-Flash availability in Foundry · Insights and agent optimizer status (Book of News: GA; Learn pages: preview) · Copilot harness billing start 1 Dec 2026 and hourly rates · Foundry on AKS and hosted agents on AKS timing · portal workflows retirement date (1 Dec 2026) · exact December date of Foundry IQ serverless GA · Microsoft-Decision-1.1 release date · Microsoft Agent Prepurchase Plan terms and agent.name tag rollout · agent controls in Foundry Safety scope · statistical comparison of agent versions status.
+**Notebook 1:** slide references are stale again (see the mapping above) — run deck-companion-notebook DECK REFRESH MODE.
 
 ---
 

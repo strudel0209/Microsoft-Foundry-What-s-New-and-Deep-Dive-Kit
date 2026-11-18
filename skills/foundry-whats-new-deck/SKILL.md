@@ -18,7 +18,7 @@ metadata:
 
 # Foundry "What's New" Deck — maintain and refresh
 
-> Version 1.3.0 · 2026-11-15 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.4.0 · 2026-11-18 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview
@@ -90,6 +90,12 @@ GitHub. Points specific to this skill:
   edition than your baseline has appeared (another contributor ran the skill), stop and re-base on
   it — never fork the edition line. One edition per month; a second run in the same month appends
   `-<dd>`.
+- **One what's-new edition in `decks/`.** The kit's `decks/` folder holds only the newest
+  what's-new edition. Once the new edition has landed there (Step 3, item 9), every older
+  `Microsoft-Foundry-Whats-New-*.pptx` in `decks/` is retired: Cowork cannot delete files in
+  OneDrive, so the run ends with a removal step for the contributor — delete those files from
+  `decks/` (`git rm` in the same pull request). Git history and the deck changelog are the
+  rollback. Deep-dive decks are never removed by this rule.
 - **Presenter line on slide 1** follows "Presenter line" in the kit setup of
   `azure-ai-deep-dive-deck`: the edition in `output/` carries the running user's name
   (`kit.local.yaml` → `presenter`, else `GetMyDetails`); the copy uploaded to `decks/` has the
@@ -554,6 +560,10 @@ scripts/office/pack.py` for raw XML when a shape needs surgery):
    the new edition and the updated `CHANGELOG.md` into that folder with
    `UploadFileContent` (drive id and parent id from `GetTaskFolders`). If the upload
    fails, keep the `output/` copy and tell the user it did not land in the attached folder.
+   After the upload is confirmed, re-read `decks/` and list every older
+   `Microsoft-Foundry-Whats-New-*.pptx` there for removal ("One what's-new edition in
+   `decks/`" in the kit setup above); never remove anything before the new edition is
+   confirmed in `decks/`, and never touch deep-dive decks.
 10. **Render every changed slide** to an image (LibreOffice via
     `python scripts/office/soffice.py` or `python scripts/thumbnail.py`) and inspect
     for text overflow, wrong font size (<7.5pt), a fifth colour, or any slide-wording breach — a title that is a sentence, clause or dash-joined pair of ideas, a subtitle with jargon, an unexplained term or an unexpanded acronym, "you"/"your" anywhere in slide text, a "Learn says/lists" attribution (slides or notes), an ambiguous actor label, or a table row of a different type from its siblings (`scripts/deck_qa.py` flags most of these);
@@ -638,15 +648,17 @@ Open verify items: <list or none>
 ```
 
 **Final chat report** (≤15 lines): edition produced, slides changed, items applied /
-dropped, open verify items, and the next detect date (run date + 14 days).
+dropped, open verify items, the next detect date (run date + 14 days), and the older
+what's-new editions to delete from `decks/` (file names), or "none".
 
 ## Guardrails
 
 - **Never patch without approval** — DETECT and PROPOSE are read-only; APPLY runs only on
   items the user approved in this conversation, or under a direct update request (Step 2),
   which always produces a new dated edition.
-- **Never overwrite the previous edition** — always save a new dated file; the prior
-  edition is the rollback. Never expose internal iteration numbers (v1, v2 …) in file
+- **Never overwrite the previous edition** — always save a new dated file; once the new
+  edition is confirmed in `decks/`, the previous edition is retired from `decks/` and git
+  history is the rollback. Never expose internal iteration numbers (v1, v2 …) in file
   names, slides, notes or the changelog — the audience sees editions, not builds.
 - **Never APPLY a structural change without explicit approval** — new slides, new cards,
   new table rows and any slide-map change are proposed, or applied only under a direct update

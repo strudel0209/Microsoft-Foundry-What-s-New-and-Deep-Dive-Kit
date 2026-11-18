@@ -34,20 +34,22 @@ naming:
   rule: >-
     New files use these patterns. A deep-dive deck keeps one file name across editions: a new
     edition replaces the file in a pull request and gets a new register entry (git history is
-    the rollback). The what's-new deck gets a new dated file per edition. Never rename or
-    renumber another contributor's file.
+    the rollback). The what's-new deck gets a new dated file per edition, and decks/ keeps
+    only the newest edition: older Microsoft-Foundry-Whats-New-*.pptx files are deleted in the
+    same pull request once the new edition is in decks/ (git history and decks/CHANGELOG.md are
+    the rollback). Never rename or renumber another contributor's file.
 
 next_notebook_number: 11
 
 decks:
-  - file: Microsoft-Foundry-Whats-New-2026-10-26.pptx
+  - file: Microsoft-Foundry-Whats-New-2026-11.pptx
     kind: whats-new
-    edition: 2026-10-26
+    edition: 2026-11
     slides: 27
     maintained_by: foundry-whats-new-deck
     pairs_with: [1]
-    previous_edition: Microsoft-Foundry-Whats-New-2026-10.pptx   # edition 2026-10-22 (26 slides); removed from decks/ on 2026-10-30 — the rollback is git history
-    note: slide 11 "Decision models" added in 2026-10-26 and slide 12 "Browser automation tool" in 2026-10-22; edition 2026-10 slide 11 is now 12 and slides 12-25 are now 14-27
+    previous_edition: Microsoft-Foundry-Whats-New-2026-10-26.pptx   # edition 2026-10-26 (27 slides); delete from decks/ in the same pull request — the rollback is git history
+    note: Ignite 2026 edition, same 27 slides with a changed structure — new 8 Training in Foundry, 13 Foundry IQ and Microsoft IQ (old 14 + 15), 15 Microsoft Copilot harness, 24 Continuous improvement loop, 25 Cost control and budgets; removed old 8 Deployment types, 9 Priority and Flex, 18 Teams publishing; mapping in decks/CHANGELOG.md
   - file: "Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx"
     kind: deep-dive
     source_build: guardrails-tuning-deep-dive-2026-10 (refactored with azure-ai-deep-dive-deck; replaces the V4 build)
@@ -114,7 +116,7 @@ interactive_stories:
 notebooks:
   - n: 1
     file: foundry-demo-1-what-is-new.ipynb
-    deck: Microsoft-Foundry-Whats-New-2026-10-26.pptx   # slide references still follow edition 2026-10, except step 2b (slide 11 of 2026-10-26) — see known_issues
+    deck: Microsoft-Foundry-Whats-New-2026-11.pptx   # slide references refreshed to edition 2026-11 on 2026-11-18
     env_block: core + FOUNDRY_DECISIONS_NAME (optional, step 2b)
   - n: 2
     file: foundry-demo-2-hosted-agents.ipynb
@@ -214,11 +216,9 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "azure-ai-projects used with preview surfaces (.beta., *PreviewTool) without a minor cap"
   - "azure-search-documents floors at 11.6.0 with no upper bound while 12.0.0 is out"
   - "README has no Notebook 4 section (notebook 4 appears only in the tables and the Repository Guide)"
-  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-10-22 whose files are no longer in decks/ (only edition 2026-10-26 is); history kept on purpose"
-  - "NB1 slide references were written against what's-new edition 2026-10 (25 slides); references to slide 11 are one lower and to slides 12-25 two lower than in edition 2026-10-26 (slides 1-10 unchanged) — run deck-companion-notebook DECK REFRESH MODE"
+  - "decks/CHANGELOG.md lists editions 2026-09 to 2026-10-26 whose files are no longer in decks/ (only the newest edition is kept there); history kept on purpose"
   - "Microsoft Foundry Copilot Harness Prompt Agents.pptx carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
   - "Microsoft Foundry Latency Optimization for Models and Agents.pptx (added 2026-11-14) carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
-  - "What's-new edition 2026-10-26: second-person wording remains on slides 5, 8, 15, 17, 21, 23, 24 and 25, text at 6.5-7.0pt on slides 24 and 25, and the notes of slides 1 and 5 still use the retired label style"
   - "samples/games-operations: the Fabric notebooks and KQL script have not yet been run in a Fabric workspace; ontology generation is a portal action (no public API), so the ontology is finished with agent prompts and checked by notebook 03; export TMDL with getDefinition once built"
   - "samples/games-operations: evaluation questions say 'NOC' in both themes; the neutral theme labels the entity 'National Committee'"
   - "NB9 (2026-11-09): written against azure-search-documents 12.1.0b2 and REST API 2026-08-01-preview, not yet executed against Azure; Fabric MCP token scopes and Content Understanding with the OneLake indexer are open verify items"

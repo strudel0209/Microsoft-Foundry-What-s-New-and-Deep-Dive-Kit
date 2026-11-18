@@ -8,6 +8,16 @@ appended, never rewritten. Deck editions are logged in `decks/CHANGELOG.md`, not
 
 ---
 
+## 2026-11-18 · foundry-demo-1-what-is-new.ipynb — updated (deck refresh to edition 2026-11)
+
+**Paired deck:** Microsoft-Foundry-Whats-New-2026-11.pptx · edition 2026-11 · slide map: step 0 → slide 5; step 1 → slides 5, 7, 9; step 2 → no slide (Priority and Flex processing moved to the Latency Optimization deep-dive deck); step 2b → slide 10; step 3 → slides 11, 14; steps 4–5 → slide 14; step 6 → slide 23; step 7 → slides 22, 24; step 8 → slide 21; closing cell → slides 20, 25
+**Change:** slide references updated in the title cell and every step heading. The old references followed edition 2026-09 for steps 0–8 and edition 2026-10-26 for step 2b. Step 2 kept as an optional latency demo, with a note that the deck no longer has a service-tier slide. Step 2b's "Not shown" note now names Microsoft-Decision-1.1 (generally available, text and up to eight images) instead of the preview Microsoft-Decision-1. Title no longer names September 2026. No code cells changed; no new steps for the new slides 8 (Training), 15 (Copilot harness), 24 (continuous improvement) or 25 (cost control).
+**Dependency changes:** none.
+**Env changes:** none.
+**Regression:** markdown-only change; notebook JSON validated; code cells unchanged · resolver: not run · not executed against Azure.
+**Open verify items:** none new.
+**Last dependency audit:** none yet
+
 ## 2026-11-14 · foundry-demo-10-latency-optimization-for-models-and-agents.ipynb — added
 
 **Paired deck:** Microsoft Foundry Latency Optimization for Models and Agents.pptx · edition 2026-11 · slide map: step 1 → slides 3, 5; step 2 → slide 6; steps 3 and 4 → slide 8; step 5 → slides 7, 9; step 6 → slides 10, 14; steps 7–9 → slides 10, 11; step 10 → slides 10, 11, 14; step 11 → slide 12; step 12 → slide 13; step 13 → slides 14, 16; step 14 (explain-only) → slides 10, 11, 15

@@ -19,7 +19,7 @@ metadata:
 
 # Azure AI Deep-Dive Deck
 
-> Version 1.3.0 · 2026-11-15 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
+> Version 1.4.0 · 2026-11-18 · part of the Microsoft Foundry What's New and Deep-Dive Kit — history in
 > `skills/CHANGELOG.md` of the kit repository.
 
 ## Overview

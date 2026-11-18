@@ -6,6 +6,21 @@ existing decks, notebooks or `kit.yaml`; MINOR = new rule, mode or script; PATCH
 A change to the shared visual system or to the Slide wording rules updates **both** deck skills
 (and `scripts/deck_lib.py`) in the same release.
 
+## 1.4.0 · 2026-11-18 — one what's-new edition in decks/
+
+**foundry-whats-new-deck** (`SKILL.md`)
+- New kit rule "One what's-new edition in `decks/`": once a new edition is confirmed in
+  `decks/`, every older `Microsoft-Foundry-Whats-New-*.pptx` there is retired. Cowork cannot
+  delete OneDrive files, so Step 3 item 9 re-reads `decks/` after the upload and the final
+  chat report names the files for the contributor to delete (`git rm` in the same pull
+  request). Git history and `decks/CHANGELOG.md` are the rollback; deep-dive decks are not
+  affected. Guardrail "Never overwrite the previous edition" reworded to match.
+- `kit.yaml` → `naming.rule` and the `decks:` entry's `previous_edition` comment state the
+  same rule.
+
+**azure-ai-deep-dive-deck, deck-companion-notebook, interactive-deck-story**
+- Version line only (shared kit version); no content change.
+
 ## 1.3.0 · 2026-11-15 — interactive-deck-story added
 
 **interactive-deck-story** (new: `SKILL.md`, `assets/engine.css`, `assets/engine.js`,
