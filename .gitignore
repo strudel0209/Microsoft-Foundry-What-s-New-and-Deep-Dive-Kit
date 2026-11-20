@@ -17,3 +17,4 @@ render/
 working/
 ~$*.pptx
 .azure
+.venv*

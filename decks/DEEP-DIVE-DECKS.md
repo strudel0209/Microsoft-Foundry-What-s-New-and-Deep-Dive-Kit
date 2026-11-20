@@ -8,6 +8,22 @@ rollback. `Conformance` states whether the deck meets the skill version named.
 
 ---
 
+## Microsoft Foundry Microsoft IQ · edition 2026-11
+
+**Kit file:** `Microsoft Foundry Microsoft IQ.pptx` · **Sources verified:** 2026-11-18 · **Slides:** 18
+**Pairs with:** none yet (related: notebook 9 Foundry IQ knowledge base and Fabric IQ ontology, notebook 10 step 12 knowledge base retrieval)
+**Sources:** learn.microsoft.com/microsoft-iq · azure/search/whats-new · search/agentic-retrieval-overview · search/agentic-retrieval-how-to-retrieve · search/agentic-knowledge-source-overview · azure/foundry/agents/how-to/foundry-iq-connect · microsoft-365/copilot/extensibility/work-iq · fabric/iq/overview · fabric/iq/connectors/fabric-iq-mcp · web-iq/resources/faq · web-iq/reference/auto · news.microsoft.com/events/ignite/2026/book-of-news · Microsoft Azure and Microsoft 365 blogs and Tech Community posts of November 2026 · github.com/microsoft/iq-series
+**Conformance:** skill 1.4.0 — `deck_qa.py` 0 FAIL on the build (remaining warnings are notes-length and "Presenter note" checks tuned for the what's-new deck; deep-dive notes are 183–200 words with "Presenter note: verify …" lines by rule); one fix pass, every slide inspected as a rendered image. Covers Microsoft IQ (generally available at Ignite 2026) and its layered architecture; Foundry IQ in depth (Azure AI Search renamed Foundry IQ with the same resource provider, endpoints, APIs, roles and meters; knowledge sources; agentic retrieval and reasoning effort; Foundry Agent Service integration over the knowledge base MCP endpoint; permissions and network boundaries; November updates); Work IQ and Fabric IQ architectures; Web IQ APIs, crawling and index engine, data security and Zero Query Logging; a comparison of the four, Microsoft IQ in one Foundry agent and selection guidance. Named with "Microsoft IQ" in full so it is not mistaken for a Foundry IQ deck. Kit copy built without a presenter line. The kit copy carries a Microsoft sensitivity label with encryption applied in OneDrive (see `kit.yaml` → `known_issues`)
+**Open verify items:**
+- Foundry IQ Serverless tier status: the what's-new page says generally available, two November blogs say December 2026.
+- Behaviour when the user token (`x-ms-query-source-authorization`) is missing: the connect page and the retrieve page describe it differently.
+- Rollout date of the managed Foundry IQ option in every new Foundry project.
+- Work IQ memory and content creation status: the Book of News says generally available, the Azure blog says preview.
+- Name and status of the Foundry tool for Fabric IQ, as the Fabric data agent tool is being replaced.
+- Current name of the Foundry web search tool, which some pages still call Grounding with Bing.
+- Harrier retrieval model and DiskANN naming come from blogs only; check Learn before presenting.
+- Preview items on the status slide (18), several of which are expected to change in December 2026.
+
 ## Microsoft Foundry Latency Optimization for Models and Agents · edition 2026-11
 
 **Kit file:** `Microsoft Foundry Latency Optimization for Models and Agents.pptx` · **Sources verified:** 2026-11-14 · **Slides:** 18

@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head><meta charset="utf-8"><meta name="MSRAI_Label_dbd012e0-e600-4c3e-83b7-7d3141c15efc_AI_Disclosure" content="Made with AI">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="What to compare and what to combine across Microsoft 365 Copilot, in-product Copilots, Copilot Studio, Microsoft Foundry, Microsoft Fabric and Microsoft IQ.">
+<meta name="generator" content="interactive-deck-story engine 1.0.1">
+<title>Microsoft AI Platform Decision Guide · interactive story</title>
+<style>
+:root{
+  --bg0:#060B1C; --bg1:#0B1229; --navy:#101A3C; --panel:rgba(24,36,78,.62); --panel2:rgba(16,26,60,.86);
+  --line:rgba(150,170,220,.22); --line2:rgba(150,170,220,.38);
+  --ink:#FFFFFF; --muted:#B9C2D6; --dim:#8590AD;
+  --teal:#00B39F; --teal-hi:#2CE5CB; --teal-dk:#008173;
+  --avoid:#34D399; --hide:#38BDF8; --reduce:#A78BFA; --steady:#FBBF24; --measure:#C7D2EC;
+  --client:#38BDF8; --azure:#7C8FE0; --foundry:#00B39F;
+  --font:"Segoe UI","Segoe UI Variable",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Code","Cascadia Mono",Consolas,"SFMono-Regular",Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg0);color:var(--ink);font-family:var(--font);overflow:hidden}
+button{font-family:inherit}
+a{color:var(--teal-hi)}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.glow-a,.glow-b{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none}
+.glow-a{width:46vw;height:46vw;left:-12vw;top:-16vw;background:radial-gradient(circle,#0E4F6B 0%,transparent 70%)}
+.glow-b{width:50vw;height:50vw;right:-16vw;bottom:-22vw;background:radial-gradient(circle,#123A63 0%,transparent 70%)}
+
+/* ---------- top and bottom bars ---------- */
+#top,#bottom{position:fixed;left:0;right:0;z-index:20;display:flex;align-items:center;gap:12px;padding:0 18px}
+#top{top:0;height:54px;background:linear-gradient(180deg,rgba(6,11,28,.92),rgba(6,11,28,.55));border-bottom:1px solid var(--line)}
+#bottom{bottom:0;height:58px;background:linear-gradient(0deg,rgba(6,11,28,.94),rgba(6,11,28,.6));border-top:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14px;white-space:nowrap;color:var(--ink)}
+.brand i{width:14px;height:14px;background:var(--teal);display:inline-block;box-shadow:0 0 14px var(--teal)}
+.crumb{flex:1;min-width:0;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb b{color:var(--ink);font-weight:600}
+.crumb button{background:none;border:0;color:var(--teal-hi);font-size:13px;cursor:pointer;padding:0}
+.tb{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--line2);background:rgba(20,30,66,.7);color:var(--ink);font-size:13px;cursor:pointer;white-space:nowrap}
+.tb:hover{border-color:var(--teal);background:rgba(0,179,159,.14)}
+.tb[aria-pressed="true"]{border-color:var(--teal);background:rgba(0,179,159,.22)}
+.tb kbd{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.tb.hidden{display:none}
+.tb.primary{background:var(--teal);border-color:var(--teal);color:#04231F;font-weight:700}
+.tb.primary:hover{background:var(--teal-hi)}
+#progress{flex:1;display:flex;gap:4px;align-items:center;min-width:0}
+#progress button{flex:1;height:6px;border:0;border-radius:3px;background:rgba(185,194,214,.18);cursor:pointer;padding:0;position:relative}
+#progress button.done{background:rgba(0,179,159,.55)}
+#progress button.cur{background:var(--teal-hi);box-shadow:0 0 10px var(--teal)}
+#progress button.hub{background:rgba(251,191,36,.45)}
+#progress button.hub.cur{background:var(--steady);box-shadow:0 0 10px var(--steady)}
+.beats{display:flex;gap:5px;min-width:60px;justify-content:center}
+.beats i{width:7px;height:7px;border-radius:50%;background:rgba(185,194,214,.25)}
+.beats i.on{background:var(--teal-hi)}
+.counter{font-size:12px;color:var(--dim);min-width:58px;text-align:end;font-variant-numeric:tabular-nums}
+
+/* ---------- stage ---------- */
+#viewport{position:fixed;left:0;right:0;top:54px;bottom:58px;z-index:5}
+#stage{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0}
+.scene{position:absolute;inset:0;transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+.scene.enter{opacity:0;transform:scale(1.035)}
+.scene.leave{opacity:0;transform:scale(.97)}
+.scene.dive{opacity:0;transform:scale(2.1);transition:opacity .5s ease,transform .6s cubic-bezier(.5,0,.8,.4)}
+.scene.rise{opacity:0;transform:scale(.55)}
+.wires{position:absolute;inset:0;width:1600px;height:900px;overflow:visible;pointer-events:none}
+.wires .hit{pointer-events:auto;cursor:pointer}
+.kicker{position:absolute;left:70px;top:40px;font-size:14px;font-weight:700;letter-spacing:.2em;color:var(--teal)}
+.title{position:absolute;left:70px;top:62px;margin:0;font-size:44px;line-height:1.15;font-weight:700;letter-spacing:-.01em}
+.subtitle{position:absolute;left:70px;top:122px;margin:0;font-size:20px;color:var(--muted);max-width:1180px}
+.tags{position:absolute;right:70px;top:30px;display:flex;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:999px;border:1px solid currentColor;background:rgba(6,11,28,.5);white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+.c-avoid{color:var(--avoid)} .c-hide{color:var(--hide)} .c-reduce{color:var(--reduce)} .c-steady{color:var(--steady)} .c-measure{color:var(--measure)}
+.foot{position:absolute;left:70px;right:70px;top:846px;display:flex;justify-content:space-between;gap:24px;font-size:14px;color:var(--dim)}
+.foot .src{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot a{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--dim)}
+.foot a:hover{color:var(--teal-hi)}
+.pnote{position:absolute;right:70px;top:820px;font-size:13px;color:var(--dim)}
+.edit-note{position:absolute;left:70px;top:818px;font-size:13px;color:var(--dim);font-style:italic}
+
+/* beat reveal */
+.scene [data-b]{opacity:0;transform:translateY(16px);transition:opacity .6s ease var(--d,0s),transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.scene [data-b].on{opacity:1;transform:none}
+.scene svg [data-b]{transform:none}
+.wire{fill:none;stroke:var(--line2);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s ease var(--d,0s),stroke .3s,opacity .4s}
+.wire.on{stroke-dashoffset:0}
+.wire.hot{stroke:var(--teal);stroke-width:2.5}
+.wire.dim{opacity:.25}
+
+/* generic boxes */
+.box{position:absolute;border-radius:12px}
+.card{background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(4px)}
+.click{cursor:pointer;transition:border-color .25s,box-shadow .25s,background .25s,opacity .3s,transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.click:hover{border-color:var(--teal);box-shadow:0 0 0 1px rgba(0,179,159,.35),0 0 26px rgba(0,179,159,.18)}
+.click:focus-visible,.tb:focus-visible,button:focus-visible{outline:2px solid var(--teal-hi);outline-offset:2px}
+.h-sm{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+.band{position:absolute;left:70px;width:1460px;border-radius:12px;background:linear-gradient(90deg,rgba(0,179,159,.16),rgba(16,26,60,.7));border:1px solid rgba(0,179,159,.35);padding:14px 22px;font-size:17px;display:flex;align-items:center;gap:18px}
+.band .h-sm{white-space:nowrap}
+.legend{position:absolute;left:70px;top:792px;display:flex;gap:22px;font-size:13px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:16px;height:12px;border-radius:3px;margin-inline-end:7px;vertical-align:-1px}
+
+/* ---------- title scene ---------- */
+.hero-k{position:absolute;left:70px;top:150px;font-size:15px;font-weight:700;letter-spacing:.22em;color:var(--teal)}
+.hero-bar{position:absolute;left:70px;top:186px;width:90px;height:4px;background:var(--teal);box-shadow:0 0 16px var(--teal)}
+.hero-t{position:absolute;left:70px;top:214px;margin:0;font-size:72px;line-height:1.08;font-weight:800;letter-spacing:-.02em;max-width:900px}
+.hero-s{position:absolute;left:70px;top:420px;margin:0;font-size:23px;line-height:1.5;color:var(--muted);max-width:820px}
+.hero-go{position:absolute;left:70px;top:540px;display:flex;gap:14px;align-items:center}
+.hero-go .tb{height:46px;font-size:16px;padding:0 20px}
+.hero-keys{position:absolute;left:70px;top:620px;font-size:14px;color:var(--dim);line-height:1.9}
+.hero-keys kbd{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:1px 6px;margin:0 2px}
+.toc{position:absolute;left:1060px;top:190px;width:470px}
+.toc .h-sm{margin-bottom:18px}
+.toc button{display:flex;gap:18px;width:100%;text-align:start;background:none;border:0;border-top:1px solid var(--line);color:var(--muted);padding:16px 4px;font-size:17px;cursor:pointer;line-height:1.35}
+.toc button b{color:var(--teal);font-size:18px;min-width:30px}
+.toc button:hover{color:var(--ink);background:rgba(0,179,159,.08)}
+.hero-meta{position:absolute;left:70px;top:846px;right:70px;display:flex;justify-content:space-between;font-size:14px;color:var(--dim)}
+
+/* ---------- turn scene ---------- */
+.barlab{position:absolute;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal)}
+.seg{position:absolute;height:58px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;text-align:center;line-height:1.15;padding:0 8px;overflow:hidden;color:#fff;transform-origin:left center}
+.seg.hop{background:#33416B}.seg.model{background:#6A57C9}.seg.tool{background:#2F7FB8}.seg.ttft{background:#0B8F80}.seg.gen{background:linear-gradient(90deg,#00A08E,#0E6E7A)}
+.turnbar .seg{transform:scaleX(0);transition:transform .7s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.turnbar.on .seg{transform:none}
+.ftmark{position:absolute;font-size:13px;color:var(--teal-hi);white-space:nowrap}
+.src-card{padding:18px 20px}
+.src-card .n{font-size:13px;font-weight:700;color:var(--dim);letter-spacing:.1em}
+.src-card h3{margin:4px 0 8px;font-size:21px}
+.src-card p{margin:0;font-size:15.5px;line-height:1.45;color:var(--muted)}
+.src-card .lev{position:absolute;left:20px;right:20px;bottom:16px;font-size:15px;color:var(--ink)}
+.src-card .lev span{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--teal);margin-inline-end:8px}
+.src-card .chip{position:absolute;right:16px;top:16px}
+
+/* ---------- map scene ---------- */
+.node-root{padding:18px 20px;background:linear-gradient(135deg,rgba(0,179,159,.25),rgba(16,26,60,.9));border:1.5px solid var(--teal);box-shadow:0 0 34px rgba(0,179,159,.25)}
+.node-root h3{margin:0 0 6px;font-size:22px}
+.node-root p{margin:0;font-size:15px;color:var(--muted);line-height:1.4}
+.mband{position:absolute;left:400px;width:1130px;height:42px;border-radius:10px;display:flex;align-items:center;gap:16px;padding:0 18px;font-size:15px;color:var(--muted);border:1px dashed var(--line2);background:rgba(16,26,60,.55)}
+.mband b{color:var(--ink);font-size:15px;white-space:nowrap}
+.mband .go{margin-inline-start:auto;color:var(--teal-hi);font-size:13px;white-space:nowrap}
+.qnode{padding:10px 18px 10px 22px;display:flex;flex-direction:column;justify-content:center;border-left:5px solid var(--k);overflow:hidden}
+.qnode .lab{font-size:12px;font-weight:800;letter-spacing:.18em;color:var(--k)}
+.qnode h3{margin:3px 0 2px;font-size:19px;line-height:1.25}
+.qnode p{margin:0;font-size:14px;color:var(--muted)}
+.qnode .cnt{position:absolute;right:14px;top:12px;font-size:12px;color:var(--dim)}
+.qnode.act{background:rgba(24,36,78,.95);box-shadow:0 0 0 1.5px var(--k),0 0 34px color-mix(in srgb,var(--k) 35%,transparent)}
+.qnode.mute{opacity:.45}
+.leaf{padding:12px 54px 12px 18px;display:flex;flex-direction:column;justify-content:center;opacity:0;transform:translateX(40px);pointer-events:none;border-left:3px solid var(--k);transition:opacity .45s ease var(--d,0s),transform .5s cubic-bezier(.2,.7,.2,1) var(--d,0s),border-color .25s,box-shadow .25s}
+.leaf.show{opacity:1;transform:none;pointer-events:auto}
+.leaf h4{margin:0;font-size:16.5px;line-height:1.3}
+.leaf .to{font-size:13px;color:var(--teal-hi);margin-top:4px}
+.leaf .dive{position:absolute;right:10px;top:50%;margin-top:-17px;width:34px;height:34px;border-radius:50%;border:1px solid var(--teal);background:rgba(0,179,159,.15);color:var(--teal-hi);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.leaf .dive:hover{background:var(--teal);color:#04231F}
+.map-hint{position:absolute;left:930px;font-size:14px;color:var(--dim);width:600px;text-align:center;transition:opacity .4s}
+.order{position:absolute;left:930px;top:400px;width:600px;padding:22px 26px;border-radius:12px;border:1px solid rgba(251,191,36,.45);background:rgba(251,191,36,.07);font-size:18px;line-height:1.5;color:var(--ink)}
+.order b{display:block;color:var(--steady);font-size:12px;letter-spacing:.16em;margin-bottom:8px}
+
+/* ---------- path scene ---------- */
+.hoplab{position:absolute;width:224px;text-align:center}
+.hoplab h4{margin:0;font-size:17px}
+.hoplab p{margin:3px 0 0;font-size:14px;color:var(--muted)}
+.lchip{position:absolute;width:224px;min-height:42px;padding:8px 12px;border-radius:9px;background:rgba(24,36,78,.75);border:1px solid var(--line);font-size:14px;line-height:1.3;display:flex;align-items:center}
+.cube{cursor:pointer}
+.cube .top{transition:filter .25s}
+.cube:hover .top{filter:brightness(1.35)}
+.float{animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.stepb{font-size:13px;font-weight:700;fill:#04231F}
+
+/* ---------- anatomy ---------- */
+.ctl{position:absolute;display:flex;gap:12px;align-items:center;font-size:14px;color:var(--muted)}
+.ctl input[type=range]{width:180px;accent-color:var(--teal)}
+.seg2{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden}
+.seg2 button{background:transparent;border:0;color:var(--muted);padding:6px 12px;font-size:13px;cursor:pointer}
+.seg2 button.sel{background:var(--teal);color:#04231F;font-weight:700}
+.formula{position:absolute;left:70px;width:1460px;top:470px;height:60px;border-radius:12px;display:flex;align-items:center;gap:26px;padding:0 24px;background:rgba(16,26,60,.8);border:1px solid var(--line)}
+.formula code{font-family:var(--mono);font-size:21px;color:var(--teal-hi);white-space:nowrap}
+.formula span{font-size:16px;color:var(--muted)}
+table.tbl{position:absolute;border-collapse:separate;border-spacing:0;font-size:15px}
+.tbl th{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);text-align:start;font-weight:700;padding:10px 14px;border-bottom:1px solid var(--line2)}
+.tbl td{padding:8px 14px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:middle;line-height:1.35}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+.tbl td code{font-family:var(--mono);font-size:13.5px;color:#CFE9FF}
+.tbl tr{transition:background .2s,opacity .3s}
+.tbl tbody tr:hover{background:rgba(0,179,159,.08)}
+.aside{padding:22px 24px;border-top:4px solid var(--teal)}
+.aside .it{margin-top:16px}
+.aside .it b{display:block;font-size:16px}
+.aside .it span{font-size:14px;color:var(--muted)}
+
+/* ---------- features ---------- */
+.fpanel{padding:18px 20px}
+.fpanel h3{margin:0;font-size:21px;line-height:1.2}
+.fpanel .chip{position:absolute;left:20px;bottom:16px}
+.fpanel svg{position:absolute;left:0;top:84px}
+.fpanel ul{position:absolute;left:20px;right:18px;top:344px;margin:0;padding:0;list-style:none}
+.fpanel li{font-size:15px;line-height:1.4;color:var(--muted);padding:7px 0 7px 18px;position:relative;border-top:1px solid var(--line)}
+.fpanel li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.fpanel.focus{box-shadow:0 0 0 2px var(--teal-hi),0 0 40px rgba(44,229,203,.3)}
+.svgt{font-family:var(--font);fill:#B9C2D6;font-size:13px}
+.svgt.b{fill:#fff;font-weight:700}
+.svgt.t{fill:var(--teal-hi)}
+.grow{transform-box:fill-box;transform-origin:left center}
+.eff{display:flex;gap:3px;position:absolute;left:14px;right:14px;top:96px}
+.eff button{flex:1 1 0;min-width:0;padding:6px 0;border-radius:7px;border:1px solid var(--line2);background:rgba(16,26,60,.8);color:var(--muted);font-size:11px;cursor:pointer}
+.eff button.sel{background:var(--reduce);border-color:var(--reduce);color:#160F33;font-weight:700}
+
+/* ---------- table scene ---------- */
+.tbl.big td{font-size:15px}
+.tbl tbody tr.sel{background:rgba(0,179,159,.12)}
+
+/* ---------- trees ---------- */
+.q{display:flex;align-items:center;padding:0 22px 0 46px;font-size:17px;font-weight:600;line-height:1.3;background:rgba(235,239,247,.07);border:1px solid var(--line)}
+.num{position:absolute;width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;border:3px solid #DDF7F3;box-shadow:0 0 18px rgba(0,179,159,.6)}
+.rec{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 18px;background:linear-gradient(135deg,rgba(0,179,159,.2),rgba(16,26,60,.92));border:1.5px solid rgba(0,179,159,.75)}
+.rec b{font-size:17.5px}
+.rec span{font-size:14px;color:var(--muted);margin-top:3px}
+.fb{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 18px;border:1.5px dashed var(--line2);background:rgba(6,11,28,.35)}
+.fb b{font-size:17px}.fb span{font-size:14px;color:var(--muted);margin-top:3px}
+.qo{display:flex;align-items:center;padding:0 22px 0 46px;font-size:17px;font-weight:600;color:var(--muted);border:1.5px dashed var(--line2);background:transparent}
+.yn{position:absolute;font-size:13px;font-weight:700;color:var(--teal-hi)}
+.yn.no{color:var(--muted)}
+.row.dim{opacity:.22!important}
+.row.win{box-shadow:0 0 0 2px var(--teal-hi),0 0 44px rgba(44,229,203,.45)}
+.row.focus{animation:pulse 1.6s ease-in-out 3}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(44,229,203,0)}50%{box-shadow:0 0 0 3px var(--teal-hi),0 0 46px rgba(44,229,203,.5)}}
+.walk{position:absolute;display:flex;gap:8px}
+.walk button{height:34px;padding:0 16px;border-radius:8px;border:1px solid var(--teal);background:rgba(0,179,159,.18);color:#fff;font-weight:700;cursor:pointer;font-size:14px}
+.walk button.n{border-color:var(--line2);background:rgba(16,26,60,.9)}
+.walk button:hover{background:var(--teal);color:#04231F}
+.walkbar{position:absolute;right:70px;top:136px;display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.nextlink{position:absolute;right:70px;top:792px;font-size:14px;background:none;border:0;color:var(--teal-hi);cursor:pointer}
+
+/* ---------- spectrum ---------- */
+.pcol{padding:16px 16px}
+.pcol h3{margin:0;font-size:18px;min-height:46px;line-height:1.25}
+.pcol .lab{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--teal);margin-top:6px}
+.pcol .calls{font-size:14.5px;color:var(--ink);min-height:40px;line-height:1.35;margin-top:3px}
+.pcol svg{position:absolute;left:0;top:150px}
+.pcol .cap{position:absolute;left:16px;right:14px;top:338px;font-size:14px;color:var(--muted);line-height:1.4;border-top:1px solid var(--line);padding-top:10px}
+.arrowband{position:absolute;left:70px;width:1460px;height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;letter-spacing:.16em;color:#fff;background:linear-gradient(90deg,rgba(52,211,153,.35),rgba(56,189,248,.35),rgba(167,139,250,.45),rgba(251,191,36,.55));clip-path:polygon(0 0,97.5% 0,100% 50%,97.5% 100%,0 100%)}
+
+/* ---------- trace ---------- */
+.span-l{position:absolute;width:270px;font-size:14px;color:var(--muted)}
+.span-l code{display:block;font-family:var(--mono);font-size:15px;color:var(--ink)}
+.mon{padding:20px 22px}
+.mon .it{display:flex;flex-direction:column;padding:9px 0;border-top:1px solid var(--line)}
+.mon .it b{font-size:16px}.mon .it span{font-size:14px;color:var(--muted)}
+
+/* ---------- compare ---------- */
+.cmp-h{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:0 16px;text-align:start}
+.cmp-h b{font-size:18px}
+.cmp-h .chip{align-self:flex-start}
+.cmp-q{display:flex;align-items:center;padding:0 16px;font-size:16px;font-weight:600}
+.cmp-c{display:flex;align-items:center;padding:0 16px;font-size:15px;line-height:1.35;color:var(--muted);background:rgba(24,36,78,.45);border:1px solid var(--line);transition:opacity .3s,background .3s,border-color .3s,transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s)}
+.cmp-c.hl{background:rgba(0,179,159,.16);border-color:rgba(0,179,159,.6);color:#fff}
+.cmp-c.lo{opacity:.3}
+
+/* ---------- phases ---------- */
+.chev{position:absolute;height:84px;display:flex;align-items:center;gap:14px;padding:0 34px 0 40px;font-size:20px;font-weight:700;clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%,9% 50%)}
+.chev:first-child{clip-path:polygon(0 0,90% 0,100% 50%,90% 100%,0 100%)}
+.chev .pn{font-size:28px;font-weight:800;opacity:.9}
+.pbul{padding:16px 18px}
+.pbul div{font-size:15px;line-height:1.4;color:var(--muted);padding:8px 0;border-top:1px solid var(--line)}
+.pbul div:first-child{border-top:0}
+.prove{padding:20px 24px}
+.prove .h-sm{margin-bottom:14px}
+.pv{display:flex;align-items:center;gap:14px;font-size:17px;padding:10px 0}
+.pv i{width:28px;height:28px;border-radius:50%;border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;color:var(--teal-hi);font-style:normal;font-weight:800;flex:none}
+
+/* ---------- status and refs ---------- */
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.12em;padding:3px 8px;border-radius:999px;color:#1B1300;background:var(--steady)}
+.filters{position:absolute;right:70px;top:136px;display:flex;gap:8px}
+.refcol{padding:18px 20px}
+.refcol h3{margin:0 0 6px;font-size:18px}
+.refcol a{display:block;font-size:14.5px;line-height:1.3;padding:6px 0;border-top:1px solid var(--line);color:var(--muted);text-decoration:none}
+.refcol a:hover{color:var(--teal-hi)}
+.refcol a small{display:block;font-size:12px;color:var(--dim);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ---------- drawer, notes, rail ---------- */
+#drawer{position:fixed;top:54px;bottom:58px;right:0;width:min(440px,92vw);z-index:30;background:rgba(9,15,36,.97);border-left:1px solid var(--line2);box-shadow:-20px 0 60px rgba(0,0,0,.45);transform:translateX(105%);transition:transform .35s cubic-bezier(.2,.7,.2,1);padding:24px 26px;overflow:auto}
+#drawer.open{transform:none}
+#drawer .x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:8px;border:1px solid var(--line2);background:none;color:var(--muted);font-size:18px;cursor:pointer}
+#drawer .dk{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-top:6px;padding-inline-end:40px}
+#drawer h2{margin:10px 0 12px;font-size:25px;line-height:1.25}
+#drawer p{font-size:16px;line-height:1.6;color:var(--muted)}
+#drawer ul{padding-inline-start:18px;color:var(--muted);font-size:15px;line-height:1.6}
+#drawer .srcs{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+#drawer .srcs a{display:block;font-size:14px;padding:5px 0;text-decoration:none}
+#drawer .srcs a:hover{text-decoration:underline}
+#drawer .act{margin-top:22px}
+#notes{position:fixed;left:0;right:0;bottom:58px;z-index:15;max-height:38vh;overflow:auto;background:rgba(9,15,36,.97);border-top:1px solid var(--line2);padding:18px 28px 22px;transform:translateY(calc(100% + 64px));transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+#notes.open{transform:none}
+#notes h2{margin:0 0 8px;font-size:12px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+#notes p{margin:0;font-size:16px;line-height:1.65;color:var(--muted);max-width:1200px}
+#notes p b{color:var(--ink)}
+#rail{position:fixed;top:54px;bottom:58px;left:0;width:min(360px,90vw);z-index:30;background:rgba(9,15,36,.97);border-right:1px solid var(--line2);transform:translateX(-105%);transition:transform .35s cubic-bezier(.2,.7,.2,1);overflow:auto;padding:16px 0}
+#rail.open{transform:none}
+#rail h3{margin:16px 22px 6px;font-size:12px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase}
+#rail button{display:flex;gap:10px;align-items:center;width:100%;background:none;border:0;color:var(--muted);text-align:start;padding:8px 22px;font-size:14.5px;cursor:pointer}
+#rail button:hover{background:rgba(0,179,159,.1);color:#fff}
+#rail button.cur{color:#fff;background:rgba(0,179,159,.18);box-shadow:inset 3px 0 0 var(--teal)}
+#rail button small{margin-inline-start:auto;color:var(--dim);font-size:12px}
+#rail .dots{display:flex;gap:3px}
+#rail .dots i{width:6px;height:6px;border-radius:50%}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:40;background:rgba(9,15,36,.95);border:1px solid var(--teal);padding:8px 16px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.on{opacity:1}
+
+@media (max-width:900px){.brand span,.tb kbd,.counter{display:none}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+@media print{#top,#bottom,#bg,#drawer,#notes,#rail{display:none}}
+
+.scene .click[data-b]{transition:opacity .6s ease var(--d,0s),transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s),border-color .25s,box-shadow .25s,background .25s}
+.scene .qnode.mute.on{opacity:.45}
+.scene .cmp-c.lo.on{opacity:.3}
+
+.rec.pending>*{opacity:0}
+.scene .row.pending.on{opacity:1!important}
+#rail button small{white-space:nowrap}
+body.pres #viewport{top:0;bottom:0}
+body.pres #top,body.pres #bottom{opacity:0;transition:opacity .4s;pointer-events:none}
+body.pres.ui #top,body.pres.ui #bottom{opacity:1;pointer-events:auto}
+
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="glow-a" aria-hidden="true"></div><div class="glow-b" aria-hidden="true"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs><filter id="glow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="2.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+</svg>
+<header id="top">
+  <div class="brand"><i></i><span>AI platform decision guide · Microsoft</span></div>
+  <nav class="crumb" id="crumb" aria-label="Location"></nav>
+  <button class="tb" id="mapBtn" type="button">Overview <kbd>M</kbd></button>
+  <button class="tb" id="railBtn" type="button" aria-pressed="false" aria-controls="rail">Chapters <kbd>C</kbd></button>
+  <button class="tb hidden" id="walkBtn" type="button">Walk <kbd>W</kbd></button>
+  <button class="tb" id="notesBtn" type="button" aria-pressed="false" aria-controls="notes">Notes <kbd>N</kbd></button>
+  <button class="tb" id="playBtn" type="button" aria-pressed="false"><span>Play</span> <kbd>P</kbd></button>
+  <button class="tb" id="fsBtn" type="button" aria-pressed="false">Full screen <kbd>F</kbd></button>
+</header>
+<main id="viewport"><div id="stage" aria-live="polite"></div></main>
+<footer id="bottom">
+  <button class="tb" id="prevBtn" type="button" aria-label="Previous step">‹ Back</button>
+  <div id="progress" role="navigation" aria-label="Scenes"></div>
+  <div class="beats" id="beats" aria-hidden="true"></div>
+  <div class="counter" id="counter"></div>
+  <button class="tb primary" id="nextBtn" type="button" aria-label="Next step">Next ›</button>
+</footer>
+<nav id="rail" aria-label="Chapters"><div class="body"></div></nav>
+<aside id="drawer" aria-hidden="true" aria-label="Details"><button class="x" type="button" aria-label="Close details">✕</button><div class="body"></div></aside>
+<section id="notes" aria-label="Presenter notes"><h2>Presenter notes</h2><p></p></section>
+<div class="toast" id="toast" role="status"></div>
+<script type="application/json" id="story-data">{"$schema_note":"interactive-deck-story content, format 1.0 — see references/story-format.md","meta":{"lang":"en","brand":"AI platform decision guide · Microsoft","title":"Microsoft AI Platform Decision Guide","kicker":"MICROSOFT AI PLATFORM  ·  INTERACTIVE DECISION GUIDE","subtitle":"What to compare and what to combine across Microsoft 365 Copilot, in-product Copilots, Copilot Studio, Microsoft Foundry, Microsoft Fabric and Microsoft IQ.","footer":"AI platform decision guide · November 2026","edition":"November 2026","checked":"20 November 2026","deck":"Microsoft AI Platform Decision Guide v3.pptx","previewNote":"* preview — no service level agreement.","editorial":"Grouping into use, build, ground and run is an editorial aid of this page; every option comes from the paired deck and its sources.","labels":{}},"strategies":{"use":{"label":"Use","line":"Where people use AI","color":"#38BDF8"},"build":{"label":"Build","line":"Who builds the agent and with how much control","color":"#34D399"},"ground":{"label":"Ground","line":"What context the agent needs: Microsoft IQ","color":"#00B39F"},"run":{"label":"Run","line":"Where it runs, whose permissions apply, how it is charged","color":"#FBBF24"},"measure":{"label":"Govern","line":"Governance across every layer","color":"#C7D2EC"}},"sections":[{"id":"start","num":"00","name":"Title"},{"id":"s1","num":"01","name":"Compare or combine"},{"id":"s2","num":"02","name":"Choose"},{"id":"s3","num":"03","name":"Combine"},{"id":"s4","num":"04","name":"References"}],"scenes":[{"id":"intro","type":"title","section":"start","short":"Title","slide":1,"chapters":[["01","Compare or combine","layers"],["02","Decision path by role","path"],["03","Options side by side","options"],["04","End-to-end integration","arch"]],"notes":"This deck answers a practical question: across Fabric, Foundry, Microsoft 365 Copilot, Copilot Studio and the Copilots built into individual products, which one fits which need, and how is each one licensed. The most useful answer starts with a correction of the question itself. These products are not five alternatives. They sit in different layers: some are where people use AI, some are where agents are built, Microsoft IQ supplies the context agents reason over, and a governance layer covers all of them. Options inside the same layer can be compared. Products in different layers are combined. The deck follows that logic: first the layers, then the real comparisons, then how the pieces connect and how each is charged. Microsoft IQ, announced at Ignite in November 2026, groups Work IQ, Fabric IQ, Foundry IQ and Web IQ into one context layer. In-product Copilots is a grouping used in this deck, not a Microsoft offering. Every fact was checked against official pages on 20 November 2026; prices are left off on purpose. Likely question: is this a licensing review? No. It frames the choice; the account team confirms terms."},{"id":"layers","type":"layers","section":"s1","slide":2,"short":"Compare or combine","kicker":"01 · COMPARE OR COMBINE","title":"Compare or combine","subtitle":"Options in the same layer do the same job and can be compared; the layers are designed to work together","tags":["use","build","ground","run"],"preview":true,"sources":[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"}],"hint":"Select a block to see what it connects to; the tags on the right say what can be compared","relLabel":"It connects directly to the highlighted blocks, listed below; governance applies to all of them.","govLine":"It applies to every layer: Use, Build, Ground and Data.","notes":"Read the map row by row. The top row is where people use AI: Microsoft 365 Copilot across the Microsoft 365 apps, and the Copilots built into individual products. The build row holds the four ways to create a custom agent. The ground row is Microsoft IQ, the context layer Microsoft announced at Ignite in November 2026. It brings together four complementary IQs: Work IQ for how people work, Fabric IQ for the state of the business, Foundry IQ for curated knowledge such as policies and documents, and Web IQ for fresh public web context. The data row shows where that information already lives; each IQ reads from its own sources. Fabric therefore appears as the data platform, through Fabric IQ, and through its data agent. Ontologies are still in preview, while the Fabric IQ workload itself is generally available. The bottom row governs everything. Options in the top two rows can be compared; the lower rows are combined with whatever is chosen above them. Likely question: does a solution need all four IQs? No. Most agents start with one or two and add others as needs grow.","rows":[{"k":"use","name":"Use","who":"Every employee, in the apps they already use","tag":["Compare","by where the work happens"],"blocks":[{"id":"m365","t":"Microsoft 365 Copilot","d":"AI assistant in Word, Excel, PowerPoint, Outlook and Teams, grounded in the user's work","detail":"The AI assistant across the Microsoft 365 apps. Work IQ grounding is built in, so answers draw on the documents, mail, meetings and chats the signed-in user can already access. Agent Builder agents, Copilot Studio agents, Foundry agents and Fabric data agents* can all be published into it.","src":[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"}],"rel":["agb","cs","fdy","fda","workiq"],"go":"options"},{"id":"inprod","t":"In-product Copilots","d":"Not one offering: the Copilot inside Dynamics 365, Fabric and Power BI, GitHub, Security or Azure","detail":"A grouping used on this page, not a Microsoft offering: each product has its own Copilot, licence and admin settings, and helps inside that product's own screens. Examples are Copilot in Dynamics 365, Copilot in Fabric and Power BI, GitHub Copilot, Microsoft Security Copilot and Azure Copilot.","src":[{"label":"Azure Copilot overview","url":"https://learn.microsoft.com/en-us/azure/copilot/overview"},{"label":"Dynamics 365 Sales pricing","url":"https://www.microsoft.com/en-us/dynamics-365/products/sales/pricing"}],"rel":["dfab"],"go":"options"}]},{"k":"build","name":"Build","who":"Business users, makers, developers and data teams","tag":["Compare","by builder and control"],"blocks":[{"id":"agb","t":"Agent Builder","d":"Simple agents in Microsoft 365 Copilot, configured in plain language","detail":"Part of Microsoft 365 Copilot. Business users describe an agent in plain language over approved content such as files and sites. An Agent Builder agent can later be copied to Copilot Studio when it needs more.","src":[{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"}],"rel":["m365","cs","workiq"],"go":"options"},{"id":"cs","t":"Copilot Studio","d":"Low-code agents and agent flows with connectors","detail":"Makers build agents with tools, connectors, agent flows with approvals and external channels, within IT guardrails. Work IQ and Fabric data agents can be added as tools, and a Foundry agent can be added as a connected agent*.","src":[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"}],"rel":["m365","workiq","fda","fdy"],"go":"options"},{"id":"fdy","t":"Microsoft Foundry","d":"Pro-code agents with model choice and evaluation","detail":"Developers choose models and orchestration, evaluate and trace agents, and publish them to applications, Microsoft 365 and other agents. A Foundry agent can use all four IQs: Foundry IQ knowledge bases, the Fabric IQ tool*, Work IQ and Web IQ.","src":[{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"},{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"}],"rel":["workiq","fabiq","foundryiq","webiq","m365","cs"],"go":"options"},{"id":"fda","t":"Fabric data agent","d":"Plain-language questions over governed Fabric data","detail":"Built in Fabric by the people who own the data. It turns each question into a SQL, DAX or KQL query, respects row-level and column-level security, and can be published to Microsoft 365 Copilot* or used as a tool by Copilot Studio and Foundry agents.","src":[{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Fabric data agent in Microsoft 365 Copilot","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-365-copilot"}],"rel":["dfab","m365","cs","fdy"],"go":"options"}]},{"k":"ground","name":"Ground","who":"Microsoft IQ: the context agents and Copilot reason over","tag":["Combine","by type of context"],"blocks":[{"id":"workiq","t":"Work IQ","d":"How people work: mail, meetings, chats, files and decisions","detail":"Context on how people work. Requests run as the signed-in user and honour Microsoft 365 permissions. Built into Microsoft 365 Copilot, and available to Copilot Studio and Foundry agents as a tool.","src":[{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["dm365","m365","agb","cs","fdy"],"go":"arch"},{"id":"fabiq","t":"Fabric IQ","d":"State of the business: entities, relationships, metrics and rules","detail":"The state of the business through governed data, business entities, relationships and rules in Microsoft Fabric. Foundry agents reach it through the Fabric IQ tool*; queries run as the signed-in user.","src":[{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["dfab","fdy"],"go":"arch"},{"id":"foundryiq","t":"Foundry IQ","d":"Curated knowledge: policies and authoritative documents","detail":"Curated knowledge such as policies and authoritative documents, served to agents through knowledge bases on Azure AI Search. Sources include documents and indexes, and an ontology as a knowledge source*.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"}],"rel":["ddocs","dfab","fdy"],"go":"arch"},{"id":"webiq","t":"Web IQ","d":"Fresh context from the public web","detail":"Timely context from the public web, including news, images and videos. Web IQ is an Azure resource and powers the Web Search tool in Foundry; scopes include or exclude specific sites.","src":[{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"},{"label":"Web IQ is now broadly available","url":"https://blogs.bing.com/webiq/2026/11/web-iq-is-now-broadly-available-build-better-agents-that-keep-up-with-the-world/"}],"rel":["dweb","fdy"],"go":"arch"}]},{"k":"azure","name":"Data","who":"Where the information already lives","tag":["Connect","read where it lives"],"blocks":[{"id":"dm365","t":"Microsoft 365","d":"Mail, files, meetings, chats, CRM and ERP records","detail":"Work data stays in Microsoft 365. Work IQ reads it with the permissions of the signed-in user.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["workiq"]},{"id":"dfab","t":"Microsoft Fabric","d":"OneLake, semantic models, ontologies*","detail":"The data platform: OneLake, semantic models and ontologies*. Fabric appears three times on this page: as the data platform, through Fabric IQ, and through its data agent. Ontologies are in preview, while the Fabric IQ workload itself is generally available.","src":[{"label":"Fabric licences and capacity","url":"https://learn.microsoft.com/en-us/fabric/enterprise/licenses"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"}],"rel":["fabiq","fda","foundryiq","inprod"]},{"id":"ddocs","t":"Documents and indexes","d":"SharePoint, OneLake, Blob storage, Azure AI Search","detail":"Documents stay where they are. Foundry IQ knowledge bases index and retrieve them for agents.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["foundryiq"]},{"id":"dweb","t":"Public web","d":"Pages, news, images, videos, places, weather","detail":"Public web content reached through Web IQ, with scopes that include or exclude specific sites.","src":[{"label":"Web IQ is now broadly available","url":"https://blogs.bing.com/webiq/2026/11/web-iq-is-now-broadly-available-build-better-agents-that-keep-up-with-the-world/"}],"rel":["webiq"]}]},{"k":"measure","name":"Govern","who":"IT, security and compliance admins","tag":["Applies","to every layer"],"blocks":[{"id":"a365","t":"Agent 365","d":"Agent inventory, identity and policies","detail":"Inventory, identity, policies and security for Microsoft and partner agents, licensed per user; agents need no licence of their own.","src":[{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"}],"rel":["*"]},{"id":"entra","t":"Microsoft Entra","d":"Identities for people and agents","detail":"Identities for people and for agents, including Microsoft Entra agent identities for Foundry agents.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["*"]},{"id":"purview","t":"Microsoft Purview","d":"Labels, data loss prevention, audit","detail":"Sensitivity labels, data loss prevention and audit across the data agents and Copilot use.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["*"]},{"id":"defender","t":"Microsoft Defender","d":"Threat protection for AI workloads","detail":"Threat protection for AI workloads and agents.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"rel":["*"]}]}]},{"id":"path","type":"rolepath","section":"s2","slide":9,"short":"Decision path by role","kicker":"02 · CHOOSE","title":"Decision path by role","subtitle":"Pick a role, then a need: only the matching options remain, down to one starting point","tags":["use","build","ground","run"],"preview":true,"sources":[{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Choosing the right Microsoft agent architecture","url":"https://www.microsoft.com/insidetrack/blog/start-light-scale-intentionally-choosing-the-right-microsoft-agent-architecture/"},{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"},{"label":"Create an agent with Foundry Toolkit for Visual Studio Code","url":"https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/create-agent-visual-studio-code"}],"heads":["ROLE","NEED","DETAIL","STARTING POINT"],"placeholder":["Select a role","The options narrow to what that role can choose, then to one starting point."],"resKicker":"STARTING POINT","openLabel":"Open in guide","detailLabel":"Details and sources","backLabel":"Back","resetLabel":"Start over","pathLabel":"PATH","rule":{"h":"RULE OF THUMB","t":"Choose the lightest option that fits, and move later: Agent Builder agents can be copied to Copilot Studio, and Copilot Studio agents can call Foundry agents.","src":[{"label":"Choosing the right Microsoft agent architecture","url":"https://www.microsoft.com/insidetrack/blog/start-light-scale-intentionally-choosing-the-right-microsoft-agent-architecture/"},{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"}]},"demo":["dev","ground","bizdata"],"notes":"This is the decision path by role. Each step removes the options that do not apply, so the audience sees only what fits one role and one need. Start with the role. Business users mostly end with ready-made assistance: the Copilot in a product, Microsoft 365 Copilot or an Agent Builder agent. Makers land on Copilot Studio or a declarative agent for Microsoft 365 Copilot. Developers choose between a Foundry prompt agent and a hosted agent, then pick the context, from Foundry IQ, Fabric IQ, Work IQ or Web IQ, and the channels: Microsoft 365, applications or other agents through A2A. Data owners build Fabric data agents and ontologies that other agents reuse. Admins see where each kind of agent is governed. Every starting point lists its tools, context, channels, governance and cost model, and links to the chapter that explains it. Microsoft's guidance is to choose the lightest option that fits and move later. A likely question: does one role exclude the others? No. A real solution usually combines paths, for example a data owner's data agent used as a tool by a developer's Foundry agent.","root":{"q":"Who is starting the work?","opts":[{"id":"biz","t":"Business user","d":"For personal work or a small team, without code","next":{"q":"What kind of help is needed?","opts":[{"id":"prod","t":"Help inside one product's screens","d":"A CRM record, a Power BI report, a pull request","res":{"t":"Copilot built into that product","why":"When the need sits inside one product, start with that product's Copilot; nothing needs to be built.","rows":[["Start with","Copilot in Dynamics 365, Copilot in Fabric and Power BI, GitHub Copilot, Microsoft Security Copilot or Azure Copilot"],["Set up by","The product admin; some products add prebuilt agents"],["Runs in","Inside that product, with its own licence and admin settings"],["Charged by","Each product's own model, for example included in Dynamics 365 Enterprise app licences"],["When it grows","Help across documents, mail, meetings and chats: Microsoft 365 Copilot"]],"src":[{"label":"Azure Copilot overview","url":"https://learn.microsoft.com/en-us/azure/copilot/overview"},{"label":"Dynamics 365 Sales pricing","url":"https://www.microsoft.com/en-us/dynamics-365/products/sales/pricing"},{"label":"Security Copilot pricing","url":"https://www.microsoft.com/en-us/security/pricing/microsoft-security-copilot"}],"go":"options","focus":1}},{"id":"m365","t":"Everyday work in documents, mail, meetings and chats","d":"Word, Excel, PowerPoint, Outlook and Teams","res":{"t":"Microsoft 365 Copilot","why":"The AI assistant across the Microsoft 365 apps, grounded in the work the signed-in user can already access.","rows":[["Context","Work IQ grounding built in: documents, mail, meetings and chats the user can access"],["Reaches people in","Word, Excel, PowerPoint, Outlook and Teams"],["Governed in","Microsoft 365 admin center, with Microsoft Purview labels, data loss prevention and audit"],["Charged by","Per user: add-on licence, or included in Microsoft 365 E7"],["When it grows","Agent Builder agents for focused tasks over approved content"]],"src":[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"License options for Microsoft Copilot","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-license-options"}],"go":"options","focus":0}},{"id":"agb","t":"A focused helper over approved content","d":"Instructions, files and sites for one task or team","res":{"t":"Agent Builder agent","why":"Part of Microsoft 365 Copilot: a business user describes the agent in plain language over approved content.","rows":[["Build with","Agent Builder in Microsoft 365 Copilot: instructions, files and sites"],["Limits","Does not author actions against external services"],["Reaches people in","Microsoft 365 Copilot, shared with a team"],["Charged by","Part of Microsoft 365 Copilot; use in Copilot Chat by people without that licence draws Copilot Credits"],["When it grows","Copy the agent to Copilot Studio to add actions, workflows and channels"]],"src":[{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Copilot Studio licensing","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing"}],"go":"options","focus":0}},{"id":"bizdata","t":"Answers from business data in Fabric","d":"Plain-language questions over governed data","res":{"t":"Fabric data agent shared by the data owners","why":"Data owners build and share the data agent; business users ask it questions in plain language.","rows":[["Reaches people in","Microsoft 365 Copilot*, or a Copilot Studio agent that uses it as a tool"],["Permissions","Queries run as the signed-in user, so row-level and column-level security still apply"],["Charged by","Fabric capacity, drawn for each question and for the queries it runs"],["Built by","Data analysts and data owners, in Fabric"]],"src":[{"label":"Fabric data agent in Microsoft 365 Copilot","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-365-copilot"},{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Fabric data agent consumption","url":"https://learn.microsoft.com/en-us/fabric/fundamentals/data-agent-consumption"}],"go":"options","focus":4}}]},"c":"#38BDF8"},{"id":"maker","t":"Maker or business technologist","d":"Low code, within IT guardrails","next":{"q":"What should the agent do?","opts":[{"id":"act","t":"Take actions and run workflows with approvals","d":"Requests, approvals and updates in business systems","res":{"t":"Copilot Studio agent","why":"Copilot Studio suits makers who need tools, connectors, workflows with approvals and managed environments.","rows":[["Build with","Topics, tools, connectors and agent flows; features depend on the harness chosen when the agent is created"],["Reaches people in","Teams, Microsoft 365 Copilot, websites and other channels"],["Governed in","Power Platform admin center: environment and connector policies"],["Charged by","Copilot Credits; none for Microsoft 365 Copilot licensed users in employee-facing agents under their own identity"],["When it grows","Hand work to a Foundry agent as a connected agent*"]],"src":[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Copilot Studio licensing","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"}],"go":"options","focus":2}},{"id":"web","t":"Serve customers or partners on a website","d":"An external channel, with escalation to people","res":{"t":"Copilot Studio agent on a website","why":"Copilot Studio publishes the same kind of agent to websites and other external channels.","rows":[["Build with","Knowledge sources, connectors, MCP servers and agent flows"],["Permissions","Authentication set by the maker"],["Governed in","Power Platform admin center"],["Charged by","Copilot Credits: billed per use, in prepaid packs or through a prepurchase plan"],["Typical use","Customer support with escalation"]],"src":[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Copilot Studio licensing","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing"},{"label":"Copilot pay-as-you-go overview","url":"https://learn.microsoft.com/en-us/copilot/plan/pay-as-you-go-overview"}],"go":"options","focus":2}},{"id":"decl","t":"Extend Microsoft 365 Copilot","d":"Company knowledge and actions inside Copilot","res":{"t":"Declarative agent","why":"A declarative agent extends Microsoft 365 Copilot: it reuses Copilot's own orchestrator and models, and adds instructions, knowledge and actions.","rows":[["Build with","Copilot Studio (low code), or Microsoft 365 Agents Toolkit in Visual Studio Code (pro code)"],["Context","Work IQ over Microsoft 365 data, Copilot connectors, actions and MCP-based tools"],["Reaches people in","Microsoft 365 Copilot and Microsoft 365 apps such as Teams, Word and Outlook"],["Runs in","Microsoft 365 service boundary; no extra hosting"],["When it grows","A custom engine agent, only when Copilot's orchestrator or models cannot meet the need"]],"src":[{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"},{"label":"Microsoft 365 Agents Toolkit","url":"https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/overview-agents-toolkit"},{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"}],"go":"options","focus":0}},{"id":"combo","t":"Combine work context, Fabric data and code-built agents","d":"One maker-built agent over several sources","res":{"t":"Copilot Studio agent with tools","why":"A Copilot Studio agent can add Work IQ and Fabric data agents as tools and hand work to a Foundry agent.","rows":[["Tools","Work IQ through MCP, Fabric data agents as tools, any MCP server"],["Connected agents","A Foundry agent as a connected agent*"],["Models","Models deployed in Foundry, billed in Azure"],["Charged by","Copilot Credits for the agent, Fabric capacity for data agent questions, Azure for Foundry models"]],"src":[{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"},{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"}],"go":"arch","focus":1}}]},"c":"#34D399"},{"id":"dev","t":"Developer or AI engineer","d":"Code-level control of models, orchestration and evaluation","next":{"q":"What does the solution need?","opts":[{"id":"prompt","t":"An agent defined by instructions and tools","d":"Questions, summaries and tool calls, without custom code","res":{"t":"Foundry prompt agent","why":"Start with a prompt agent when its configuration options meet the need; prompt agents are not limited to prototypes.","rows":[["Build with","Foundry portal, or Foundry Toolkit for Visual Studio Code: model, instructions, tools and knowledge"],["Quality","Evaluation and tracing in Foundry; each saved change becomes a version"],["Context","Foundry IQ, Fabric IQ tool*, Work IQ, Web IQ and any source through MCP"],["Charged by","Model tokens and tools; prompt agents add no charge of their own"],["When it grows","A hosted agent, when more control over execution is needed"]],"src":[{"label":"Create an agent with Foundry Toolkit for Visual Studio Code","url":"https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/create-agent-visual-studio-code"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"}],"go":"options","focus":3}},{"id":"hosted","t":"Custom orchestration or multi-agent workflows","d":"Own code, framework and runtime behaviour","res":{"t":"Foundry hosted agent","why":"A hosted agent runs custom logic in code; Foundry manages the hosting infrastructure and scaling.","rows":[["Build with","Microsoft Agent Framework or another framework; samples and local runs in Foundry Toolkit for Visual Studio Code"],["Patterns","Single agents, graph-based workflows with human-in-the-loop steps, and a harness agent for long, multi-step tasks"],["Identity","Azure role-based access and Microsoft Entra agent identities"],["Charged by","Model tokens plus hosted agent compute per hour"]],"src":[{"label":"Microsoft Agent Framework overview","url":"https://learn.microsoft.com/en-us/agent-framework/overview/"},{"label":"Create an agent with Foundry Toolkit for Visual Studio Code","url":"https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/create-agent-visual-studio-code"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"}],"go":"options","focus":3}},{"id":"ground","t":"Grounding in company knowledge and data","d":"Choose the context the agent needs","next":{"q":"Which context does the agent need?","opts":[{"id":"docs","t":"Documents and curated knowledge","d":"Policies, manuals, SharePoint and OneLake files","res":{"t":"Foundry IQ knowledge base","why":"Foundry IQ turns curated content into knowledge bases on Azure AI Search that Foundry agents query.","rows":[["Sources","SharePoint, OneLake, Blob storage and Azure AI Search; an ontology as a knowledge source*"],["Permissions","Permission-aware sources such as indexed SharePoint"],["Used by","Foundry agents, through knowledge bases and MCP tools"],["Charged by","Through Azure AI Search; a usage-based serverless option is announced"]],"src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"},{"label":"Introducing the new Microsoft IQ","url":"https://azure.microsoft.com/en-us/blog/introducing-the-new-microsoft-iq-putting-your-organizations-intelligence-to-work-in-every-agent/"}],"go":"arch","focus":2}},{"id":"bizdata","t":"Business data and its meaning in Fabric","d":"Semantic models, ontologies, lakehouses","res":{"t":"Fabric IQ tool in a Foundry agent*","why":"The Fabric IQ tool connects a Foundry agent to business data in Fabric, with meaning from semantic models and ontologies.","rows":[["Sources","Lakehouses, warehouses, semantic models, eventhouses and ontologies*"],["Permissions","Queries run as the signed-in user; row-level and column-level security apply"],["Alternatives","A Fabric data agent as a tool, or an ontology as a Foundry IQ knowledge source*"],["Charged by","Fabric capacity for each question and the queries it runs"],["Boundary","Data agent answers sent to another service follow that service's terms"]],"src":[{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"},{"label":"Fabric data agent consumption","url":"https://learn.microsoft.com/en-us/fabric/fundamentals/data-agent-consumption"}],"go":"arch","focus":1}},{"id":"work","t":"Work context from Microsoft 365","d":"Mail, meetings, chats and files people can access","res":{"t":"Work IQ as a tool","why":"Work IQ adds the context of how people work, limited to what the signed-in user can already access.","rows":[["Connect through","Work IQ tools over MCP in a Foundry agent"],["Boundary","Data might be sent outside the Azure compliance boundary"],["Charged by","Copilot Credits for calls from other agents; some tools also need a Microsoft 365 Copilot licence"],["Governed in","Microsoft 365 admin center and Microsoft Purview"]],"src":[{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"go":"arch","focus":0}},{"id":"pubweb","t":"Fresh information from the public web","d":"Public sites, news and current facts","res":{"t":"Web IQ through the Web Search tool","why":"Web IQ powers the Web Search tool in Foundry for fresh public web context.","rows":[["Control","Scopes include or exclude specific sites and domains; Azure admins can restrict the web search tool"],["Boundary","Data might be sent outside the Azure compliance boundary"],["Charged by","Azure resource, billed per call"]],"src":[{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"},{"label":"Web IQ is now broadly available","url":"https://blogs.bing.com/webiq/2026/11/web-iq-is-now-broadly-available-build-better-agents-that-keep-up-with-the-world/"}],"go":"arch","focus":3}}]}},{"id":"reach","t":"Reaching people and other agents","d":"Microsoft 365, applications or agent-to-agent","next":{"q":"Where should the agent reach people?","opts":[{"id":"m365","t":"Microsoft 365 Copilot and Teams","d":"Inside the apps people already use","res":{"t":"Foundry agent in Microsoft 365","why":"Foundry agents can be published into Microsoft 365 Copilot and Teams.","rows":[["Options","Publish the Foundry agent to Microsoft 365 and Teams, or build a custom engine agent with Microsoft 365 Agents Toolkit"],["Custom engine agent","Only when Copilot's orchestrator or models cannot meet the requirement"],["Governed in","Agent 365: inventory, identity, policies and security"]],"src":[{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"},{"label":"Microsoft 365 Agents Toolkit","url":"https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/overview-agents-toolkit"},{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"}],"go":"arch","focus":4}},{"id":"app","t":"Own web or mobile application","d":"Customer-facing or internal applications","res":{"t":"Foundry agent behind an API","why":"Applications call a Foundry agent through an API.","rows":[["Build with","Client code generated in Foundry Toolkit for Visual Studio Code"],["Identity","Azure role-based access and Microsoft Entra agent identities"],["Charged by","Model tokens; hosted agents per compute hour"]],"src":[{"label":"Create an agent with Foundry Toolkit for Visual Studio Code","url":"https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/create-agent-visual-studio-code"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"}],"go":"arch","focus":4}},{"id":"a2a","t":"Other agents","d":"Hand-offs between agents across platforms","res":{"t":"Agent2Agent (A2A) protocol","why":"Foundry agents reach other agents through the A2A protocol, and Copilot Studio agents can hand work to a Foundry agent.","rows":[["Patterns","Other agents through A2A; a Foundry agent as a connected agent in Copilot Studio*"],["Governed in","Agent 365: inventory, identity, policies and security for Microsoft and partner agents"]],"src":[{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"},{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"}],"go":"arch","focus":4}}]}}]},"c":"#A78BFA"},{"id":"data","t":"Data analyst or data owner","d":"Owns business data in Fabric","next":{"q":"What is the goal?","opts":[{"id":"ask","t":"Plain-language questions over Fabric data","d":"For business users, with security intact","res":{"t":"Fabric data agent","why":"Built inside Fabric by the people who own the data; it turns each question into a SQL, DAX or KQL query.","rows":[["Sources","Lakehouses, warehouses, semantic models, eventhouses and ontologies*"],["Build with","Sources, instructions and example queries, configured in Fabric"],["Permissions","Queries run as the signed-in user; row-level and column-level security apply"],["Charged by","Fabric capacity, for each question and the queries it runs"],["Governed in","Fabric admin portal"]],"src":[{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Fabric data agent consumption","url":"https://learn.microsoft.com/en-us/fabric/fundamentals/data-agent-consumption"}],"go":"options","focus":4}},{"id":"onto","t":"Shared business meaning across sources","d":"Entities, relationships and rules","res":{"t":"Fabric IQ ontology*","why":"An ontology describes business entities, relationships and rules over OneLake data, so every agent uses the same meaning.","rows":[["Built over","OneLake data and semantic models"],["Used by","Fabric data agents*, Foundry IQ knowledge bases* and the Fabric IQ tool in Foundry*"],["Status","The Fabric IQ workload is generally available; ontologies are in preview"],["Runs on","Fabric capacity"]],"src":[{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"},{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"go":"layers","focus":"fabiq"}},{"id":"share","t":"Data available to agents built by others","d":"Copilot Studio, Foundry and Microsoft 365","res":{"t":"Data agent as a tool for other agents","why":"A Fabric data agent can become a tool of a larger agent, built by another team.","rows":[["Copilot Studio","A tool of a Copilot Studio agent"],["Foundry","The Fabric IQ tool in a Foundry agent*"],["Microsoft 365","Published to Microsoft 365 Copilot*"],["Boundary","Answers sent to another service follow that service's terms"]],"src":[{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Fabric data agent in Microsoft 365 Copilot","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-365-copilot"}],"go":"arch","focus":1}},{"id":"build","t":"Help while building reports and pipelines","d":"Copilot inside Fabric and Power BI","res":{"t":"Copilot in Fabric and Power BI","why":"The Copilot built into Fabric and Power BI helps inside their own screens.","rows":[["Runs in","Fabric and Power BI"],["Charged by","Draws from Fabric capacity"],["Governed in","Fabric admin portal"],["When it grows","A Fabric data agent for business users' questions"]],"src":[{"label":"Fabric licences and capacity","url":"https://learn.microsoft.com/en-us/fabric/enterprise/licenses"}],"go":"options","focus":1}}]},"c":"#00B39F"},{"id":"admin","t":"IT, security or compliance admin","d":"Governs agents, data and access","next":{"q":"What needs governing?","opts":[{"id":"all","t":"Every agent across the organization","d":"Microsoft and partner agents","res":{"t":"Agent 365","why":"Agent 365 brings inventory, identity, policies and security to Microsoft and partner agents.","rows":[["Works with","Microsoft Entra, Microsoft Purview and Microsoft Defender"],["Charged by","Per user, standalone or in Microsoft 365 E7; one licence covers every agent the person uses, owns or sponsors"],["Note","Neither Agent 365 nor Microsoft 365 Copilot requires the other"]],"src":[{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"},{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}],"go":"layers","focus":"a365"}},{"id":"m365","t":"Microsoft 365 Copilot and its agents","d":"Copilot settings and data protection","res":{"t":"Microsoft 365 admin center","why":"Microsoft 365 Copilot and its agents run inside the Microsoft 365 service boundary.","rows":[["Data protection","Microsoft Purview: sensitivity labels, data loss prevention and audit"],["Grounding","Limited to content each user can already access"],["Agents","Declarative agents reuse Copilot's orchestrator; custom engine agents bring their own"]],"src":[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"}],"go":"options","focus":0}},{"id":"pp","t":"Agents built by makers","d":"Copilot Studio environments","res":{"t":"Power Platform admin center","why":"Copilot Studio agents live in a Power Platform environment, where admins apply policies.","rows":[["Controls","Environment and connector policies, and managed environments"],["Permissions","Authentication set by the maker, within those policies"]],"src":[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Copilot Studio licensing","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing"}],"go":"options","focus":2}},{"id":"az","t":"Agents and models in Azure","d":"Foundry projects and tools","res":{"t":"Azure governance for Foundry","why":"Foundry runs in the customer's Azure subscription.","rows":[["Identity","Azure role-based access and Microsoft Entra agent identities"],["Web grounding","Azure admins can restrict the web search tool"],["Boundary","Calls to Work IQ or Web IQ can leave the Azure compliance boundary"],["Threats","Microsoft Defender threat protection for AI workloads"]],"src":[{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"},{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"},{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"}],"go":"options","focus":3}},{"id":"fab","t":"Data agents and data in Fabric","d":"Fabric capacity and workspaces","res":{"t":"Fabric admin portal","why":"The Fabric data agent runs on Fabric capacity and queries data as the signed-in user.","rows":[["Permissions","Row-level and column-level security still apply"],["Boundary","Answers sent to another service follow that service's terms"],["Charged by","Fabric capacity"]],"src":[{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Fabric data agent consumption","url":"https://learn.microsoft.com/en-us/fabric/fundamentals/data-agent-consumption"}],"go":"options","focus":4}}]},"c":"#FBBF24"}]}},{"id":"options","type":"compare","section":"s2","slide":4,"short":"Options side by side","kicker":"03 · COMPARE","title":"Options side by side","subtitle":"Purpose, customization, boundaries and cost of the five options that can be compared","tags":["use","build","run"],"preview":true,"sources":[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"},{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"License options for Microsoft Copilot","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-license-options"}],"feats":[["Microsoft 365 Copilot","use"],["Copilot in a product","use"],["Copilot Studio","build"],["Microsoft Foundry","build"],["Fabric data agent","build"]],"rows":[["Purpose","AI assistant across the Microsoft 365 apps","Help inside one product, such as Dynamics 365","Low-code agents with connectors and workflows","Pro-code agents with model choice and evaluation","Plain-language questions over governed Fabric data"],["Customization","Agent Builder and declarative agents","Admin settings; some products add prebuilt agents","Topics, tools, connectors, agent flows; Foundry models","Prompt agents, or hosted agents in any framework","Data sources, instructions and example queries"],["Context","Work IQ built in, Copilot connectors","Data of that product","Knowledge, connectors, Work IQ, data agents","Foundry IQ, Fabric IQ tool*, Work IQ, Web IQ, MCP","Lakehouses, warehouses, semantic models, ontologies*"],["Runs in","Microsoft 365 service boundary","The service of each product","Power Platform environment","Customer's Azure subscription","Fabric capacity in the tenant"],["Admin","Microsoft 365 admin center","Admin settings of each product","Power Platform admin center","Azure portal and Foundry","Fabric admin portal"],["Charged by","Per user: add-on licence, or in Microsoft 365 E7","Each product's own licence model","Copilot Credits, per use or prepaid","Model tokens; hosted agents per compute hour","Fabric capacity, for each question and its queries"]],"band":["MICROSOFT FABRIC","is not one of these options: it is the data platform they read from, through Fabric IQ and data agents, charged by Fabric capacity."],"notes":"This table answers the comparison in one view. Only options that do the same kind of job are compared: two ways to get ready-made assistance, Microsoft 365 Copilot and the Copilot inside a product, and three ways to build a custom agent, Copilot Studio, Microsoft Foundry and the Fabric data agent. Each row is one question the audience asked about: what it is for, how far it can be customized, what context it uses, where it runs, where it is administered and how it is charged. Microsoft Fabric is deliberately not a column, because it is the data platform the agents read from, not an alternative to them. Agent 365, Microsoft Entra and Microsoft Purview govern agents from every column. Select a column heading to highlight one option. A likely question: is one option the strategic choice? No. Microsoft guidance is to start with the lightest option that fits and move later; a single solution often combines several columns, for example a Fabric data agent used as a tool by a Foundry agent."},{"id":"arch","type":"arch","section":"s3","slide":7,"short":"End-to-end integration","kicker":"04 · COMBINE","title":"End-to-end integration","subtitle":"How data, Microsoft IQ, agents and channels connect into one end-to-end solution","tags":["ground","build","use"],"preview":true,"sources":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"}],"notes":"This is the combine side of the story in one picture, read from left to right. Data stays where it already lives: Microsoft 365, Microsoft Fabric, document stores and indexes, and the public web. Microsoft IQ turns each source into context agents can use: Work IQ for how people work, Fabric IQ for the state of the business, Foundry IQ for curated knowledge, which can include an ontology as a knowledge source in preview, and Web IQ for fresh web context. Agents reach that context through MCP tools and knowledge bases. A Foundry agent can use all four IQs; a Copilot Studio agent can add Work IQ and Fabric data agents as tools, and can hand work to a Foundry agent as a connected agent. On the right, agents reach people through applications, other agents over A2A, Microsoft 365 Copilot and Teams, and websites. Governance runs underneath. Likely question: does a solution need every path? No. Most start with one agent and one or two IQs.","mcp":"MCP tools and knowledge bases","connected":"Foundry agent as a connected agent*","data":[{"t":"Microsoft 365","d":"Mail, files, meetings, chats, CRM and ERP records","kicker":"Data","detail":"Work data stays in Microsoft 365.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}]},{"t":"Microsoft Fabric","d":"OneLake, semantic models, ontologies*, data agents","kicker":"Data","detail":"Business data in OneLake, with semantic models and ontologies* that give it business meaning.","src":[{"label":"Fabric licences and capacity","url":"https://learn.microsoft.com/en-us/fabric/enterprise/licenses"}]},{"t":"Documents and indexes","d":"SharePoint, OneLake, Blob storage, Azure AI Search","kicker":"Data","detail":"Documents stay where they are; Foundry IQ indexes and retrieves them.","src":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"}]},{"t":"Public web","d":"Pages, news, images, videos, places, weather","kicker":"Data","detail":"Reached through Web IQ.","src":[{"label":"Web IQ is now broadly available","url":"https://blogs.bing.com/webiq/2026/11/web-iq-is-now-broadly-available-build-better-agents-that-keep-up-with-the-world/"}]}],"iq":[{"t":"Work IQ","d":"How people work, with Microsoft 365 permissions","kicker":"Microsoft IQ","detail":"Requests run as the signed-in user and honour Microsoft 365 permissions.","src":[{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"}]},{"t":"Fabric IQ","d":"State of the business: entities, metrics and rules","kicker":"Microsoft IQ","detail":"Foundry agents query Fabric data through the Fabric IQ tool*; queries run as the signed-in user.","src":[{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"}]},{"t":"Foundry IQ","d":"Knowledge bases over documents and ontologies*","kicker":"Microsoft IQ","detail":"Knowledge bases can include an ontology as a knowledge source*.","src":[{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"}]},{"t":"Web IQ","d":"Fresh context from the public web","kicker":"Microsoft IQ","detail":"Powers the Web Search tool in Foundry.","src":[{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"}]}],"agents":[{"t":"Foundry agent","d":"Models, tools, evaluation and tracing; can use all four IQs","kicker":"Agent","detail":"A Foundry agent can use all four IQs through MCP tools and knowledge bases, and is published to applications, Microsoft 365 and other agents.","src":[{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"},{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"},{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"}]},{"t":"Copilot Studio agent","d":"Topics, tools and agent flows; Work IQ and Fabric data agents as tools","kicker":"Agent","detail":"A Copilot Studio agent can add Work IQ and Fabric data agents as tools, and can hand work to a Foundry agent as a connected agent*.","src":[{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"}]}],"channels":[{"t":"Applications and other agents","d":"Through API and the Agent2Agent (A2A) protocol","kicker":"Channel or caller","detail":"Foundry agents are called from applications through an API, and from other agents over A2A.","src":[{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"}]},{"t":"Microsoft 365 Copilot and Teams","d":"Work IQ grounding built in","kicker":"Channel","detail":"Both Foundry agents and Copilot Studio agents can be published here.","src":[{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"}]},{"t":"Websites and other channels","d":"Published from Copilot Studio","kicker":"Channel","detail":"Copilot Studio publishes agents to websites and other channels.","src":[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"}]}],"govern":["Agent 365  ·  Microsoft Entra  ·  Microsoft Purview  ·  Microsoft Defender","Agent inventory, identity, policies, data protection and threat protection across every agent"],"band":["PERMISSIONS TRAVEL WITH THE REQUEST","Work IQ honours Microsoft 365 permissions, and Fabric queries run as the signed-in user, so Fabric permissions and row-level security apply in every channel."],"pathsLabel":"Example paths (illustrative):","paths":[{"t":"Work IQ","w":["dq0","qm0","mc","cm"],"n":["d0","q0","mcp","cs","c1"],"say":"A Copilot Studio agent with Work IQ as a tool, used in Microsoft 365 Copilot and Teams."},{"t":"Fabric IQ","w":["dq1","qm1","mf","fm"],"n":["d1","q1","mcp","fdy","c1"],"say":"A Foundry agent with the Fabric IQ tool*, published into Microsoft 365 Copilot."},{"t":"Foundry IQ","w":["dq2","qm2","mf","fa"],"n":["d2","q2","mcp","fdy","c0"],"say":"A Foundry agent with a Foundry IQ knowledge base, called from an application."},{"t":"Web IQ","w":["dq3","qm3","mf","fa"],"n":["d3","q3","mcp","fdy","c0"],"say":"A Foundry agent grounded with Web IQ, called by another agent over A2A."},{"t":"Channels","w":["fa","fm","cm","cw"],"n":["fdy","cs","c0","c1","c2"],"say":"Where agents reach people: applications and agents, Microsoft 365 Copilot and Teams, websites."}]},{"id":"refs","type":"refs","section":"s4","slide":10,"short":"References","kicker":"05 · REFERENCES","title":"References","subtitle":"Official documentation, licensing guides and pricing pages checked on 20 November 2026","notes":"These are the pages used to build the deck, all checked on 20 November 2026. The left column covers Microsoft 365 Copilot and its licence options, the official guidance on choosing between Agent Builder and Copilot Studio, the two ways to extend Copilot with agents, Copilot Studio harnesses and licensing, connected Foundry agents, and how Fabric data agents work and are consumed. The right column covers the Fabric IQ connection from Foundry, ontologies as Foundry IQ knowledge sources, Foundry billing, Fabric capacity and data agent consumption, the Agent 365 licensing questions and answers, the pricing pages for Security Copilot, GitHub Copilot and Dynamics 365 Sales, the Azure Copilot overview, and a Microsoft Inside Track article that describes how Microsoft itself chooses between these options, followed by the Microsoft IQ documentation and announcement, Work IQ and web grounding in Foundry, and the Web IQ availability announcement. Licensing details change often and several capabilities named in this deck are in preview, so check these pages again before any commercial discussion. Likely question: is there a calculator? Yes: the Copilot Studio agent usage estimator and the Azure pricing calculator.","groups":[["Microsoft 365 Copilot and agents",[{"label":"Microsoft 365 Copilot overview","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-overview"},{"label":"License options for Microsoft Copilot","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/copilot-license-options"},{"label":"Copilot pay-as-you-go overview","url":"https://learn.microsoft.com/en-us/copilot/plan/pay-as-you-go-overview"},{"label":"Choose between Agent Builder and Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/copilot-studio-experience"},{"label":"Declarative and custom engine agents","url":"https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/agents-overview"},{"label":"Microsoft 365 Agents Toolkit","url":"https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/overview-agents-toolkit"},{"label":"Choosing the right Microsoft agent architecture","url":"https://www.microsoft.com/insidetrack/blog/start-light-scale-intentionally-choosing-the-right-microsoft-agent-architecture/"},{"label":"Azure Copilot overview","url":"https://learn.microsoft.com/en-us/azure/copilot/overview"}]],["Copilot Studio and Foundry",[{"label":"Harnesses in Copilot Studio","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/harnesses-overview"},{"label":"Copilot Studio licensing","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/billing-licensing"},{"label":"Add a Foundry agent as a connected agent","url":"https://learn.microsoft.com/en-us/microsoft-copilot-studio/agents-experience/add-agent-foundry"},{"label":"Create an agent with Foundry Toolkit for Visual Studio Code","url":"https://learn.microsoft.com/en-us/azure/foundry/how-to/develop/create-agent-visual-studio-code"},{"label":"Microsoft Agent Framework overview","url":"https://learn.microsoft.com/en-us/agent-framework/overview/"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"},{"label":"Connect Foundry agents to Work IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/work-iq"},{"label":"Web grounding tools in Foundry (Web IQ)","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/web-overview"},{"label":"Connect Foundry agents to Fabric IQ","url":"https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/fabric-iq"}]],["Fabric and Microsoft IQ",[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Introducing the new Microsoft IQ","url":"https://azure.microsoft.com/en-us/blog/introducing-the-new-microsoft-iq-putting-your-organizations-intelligence-to-work-in-every-agent/"},{"label":"Fabric data agent data sources","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-add-datasources"},{"label":"Fabric data agent as a tool in Copilot Studio","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-copilot-studio-tool"},{"label":"Fabric data agent in Microsoft 365 Copilot","url":"https://learn.microsoft.com/en-us/fabric/data-science/data-agent-microsoft-365-copilot"},{"label":"Ontology as a Foundry IQ knowledge source","url":"https://learn.microsoft.com/en-us/fabric/iq/ontology/how-to-create-agent-foundry-iq"},{"label":"Web IQ is now broadly available","url":"https://blogs.bing.com/webiq/2026/11/web-iq-is-now-broadly-available-build-better-agents-that-keep-up-with-the-world/"}]],["Licensing and pricing",[{"label":"Fabric licences and capacity","url":"https://learn.microsoft.com/en-us/fabric/enterprise/licenses"},{"label":"Fabric data agent consumption","url":"https://learn.microsoft.com/en-us/fabric/fundamentals/data-agent-consumption"},{"label":"Agent 365 licensing FAQ","url":"https://www.microsoft.com/licensing/faqs/122"},{"label":"Security Copilot pricing","url":"https://www.microsoft.com/en-us/security/pricing/microsoft-security-copilot"},{"label":"GitHub Copilot seats and billing","url":"https://docs.github.com/en/copilot/concepts/billing/billing-for-enterprises"},{"label":"Dynamics 365 Sales pricing","url":"https://www.microsoft.com/en-us/dynamics-365/products/sales/pricing"}]]],"currentLabel":"STAYING CURRENT","current":[{"label":"Microsoft IQ documentation","url":"https://learn.microsoft.com/en-us/microsoft-iq/"},{"label":"Copilot pay-as-you-go overview","url":"https://learn.microsoft.com/en-us/copilot/plan/pay-as-you-go-overview"},{"label":"Billing concepts for Microsoft Foundry","url":"https://learn.microsoft.com/en-us/azure/foundry/concepts/billing-concepts"}]}]}</script>
+<script>
+/* interactive-deck-story engine 1.0.1 — core renderers; topic renderers are injected at the TOPIC RENDERERS marker by build_story.py */
+(function () {
+"use strict";
+var STORY = JSON.parse(document.getElementById("story-data").textContent);
+var META = STORY.meta, SC = STORY.scenes, STRAT = STORY.strategies;
+var W = 1600, H = 900, NS = "http://www.w3.org/2000/svg";
+var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var COLORS = {avoid:"#34D399", hide:"#38BDF8", reduce:"#A78BFA", steady:"#FBBF24", measure:"#C7D2EC",
+  teal:"#00B39F", tealhi:"#2CE5CB", client:"#38BDF8", azure:"#7C8FE0", foundry:"#00B39F"};
+var stage = document.getElementById("stage"), viewport = document.getElementById("viewport");
+var G = null, cur = -1, beat = 0, cameFrom = null, autoplay = null;
+var IDX = {}; SC.forEach(function (s, i) { IDX[s.id] = i; });
+Object.keys(STRAT || {}).forEach(function (k) { if (STRAT[k].color) COLORS[k] = STRAT[k].color; });
+var HUB = (SC.filter(function (s) { return s.type === "map"; })[0] || {}).id;
+function slideLabel(s, pre) { if (!s.slide) return ""; var l = [].concat(s.slide); return pre + (l.length > 1 ? "slides " + l.join(", ") : "slide " + l[0]); }
+function LBL(k, d) { return (META.labels && META.labels[k]) || d; }
+
+/* ------------------------------------------------------------------ helpers */
+function el(tag, a) {
+  var e = document.createElement(tag); a = a || {};
+  Object.keys(a).forEach(function (k) {
+    var v = a[k]; if (v === null || v === undefined || v === false) return;
+    if (k === "class") e.className = v; else if (k === "style") e.style.cssText = v;
+    else if (k === "text") e.textContent = v; else if (k === "html") e.innerHTML = v;
+    else if (k.slice(0, 2) === "on" && typeof v === "function") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  });
+  for (var i = 2; i < arguments.length; i++) add(e, arguments[i]);
+  return e;
+}
+function add(e) {
+  for (var i = 1; i < arguments.length; i++) {
+    var c = arguments[i];
+    if (c === null || c === undefined || c === false) continue;
+    if (Array.isArray(c)) { c.forEach(function (x) { add(e, x); }); continue; }
+    e.appendChild(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+}
+function sv(tag, a, parent) {
+  var e = document.createElementNS(NS, tag); a = a || {};
+  Object.keys(a).forEach(function (k) {
+    var v = a[k]; if (v === null || v === undefined) return;
+    if (k === "text") e.textContent = v; else if (k === "class") e.setAttribute("class", v);
+    else if (k.slice(0, 2) === "on" && typeof v === "function") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  });
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function px(x, y, w, h) { return "left:" + x + "px;top:" + y + "px;" + (w != null ? "width:" + w + "px;" : "") + (h != null ? "height:" + h + "px;" : ""); }
+function box(x, y, w, h, cls, b, d, extra) {
+  var e = el("div", {class: "box " + (cls || ""), style: px(x, y, w, h) + (d ? "--d:" + d + "s;" : "") + (extra || "")});
+  if (b !== undefined && b !== null) e.setAttribute("data-b", b);
+  return e;
+}
+function chip(k) { return el("span", {class: "chip c-" + k, style: COLORS[k] ? "color:" + COLORS[k] : null, text: (STRAT[k] || {label: k}).label}); }
+function clickable(e, fn, label) {
+  e.classList.add("click"); e.setAttribute("tabindex", "0"); e.setAttribute("role", "button");
+  if (label) e.setAttribute("aria-label", label);
+  e.addEventListener("click", function (ev) { if (ev.target.closest(".dive,.walk,a")) return; fn(ev); });
+  e.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); ev.stopPropagation(); fn(ev); } });
+  return e;
+}
+function wire(svg, d, b, del, cls) {
+  return sv("path", {d: d, class: "wire " + (cls || ""), pathLength: "1", "data-b": b === null ? null : String(b), style: del ? "--d:" + del + "s" : null}, svg);
+}
+function curve(x1, y1, x2, y2) { var mx = (x1 + x2) / 2; return "M" + x1 + "," + y1 + " C" + mx + "," + y1 + " " + mx + "," + y2 + " " + x2 + "," + y2; }
+function later(fn, ms) { var t = setTimeout(fn, ms); G && G.timers.push(t); return t; }
+function every(fn, ms) { var t = setInterval(fn, ms); G && G.intervals.push(t); return t; }
+function links(list) { var f = document.createDocumentFragment(); (list || []).forEach(function (s, i) { if (i) f.appendChild(document.createTextNode("  ·  ")); f.appendChild(el("a", {href: s.url, target: "_blank", rel: "noopener", text: s.label})); }); return f; }
+
+/* ------------------------------------------------------------------ particles */
+function flow(path, o) {
+  o = o || {}; var f = {path: path, layer: o.layer || G.pt, color: o.color || COLORS.tealhi, every: o.every || 900, speed: o.speed || 260, r: o.r || 4, when: o.when, acc: Math.random() * (o.every || 900), burst: o.burst || 1};
+  G.flows.push(f); return f;
+}
+function spawn(path, layer, color, speed, r, done) {
+  if (RM || !G) return;
+  var L = path.getTotalLength(); if (!L) return;
+  var c = sv("circle", {r: r || 4, fill: color || COLORS.tealhi, filter: "url(#glow)"}, layer || G.pt);
+  G.parts.push({c: c, path: path, L: L, s: 0, v: speed || 260, done: done});
+}
+var last = performance.now();
+function tick(now) {
+  var dt = Math.min(60, now - last); last = now;
+  if (G && !RM) {
+    G.flows.forEach(function (f) {
+      if (f.when && !f.when()) return;
+      f.acc += dt;
+      if (f.acc >= f.every) { f.acc = 0; for (var b = 0; b < f.burst; b++) (function (k) { setTimeout(function () { if (G && G.flows.indexOf(f) >= 0) spawn(f.path, f.layer, f.color, f.speed, f.r); }, k * 110); })(b); }
+    });
+    for (var i = G.parts.length - 1; i >= 0; i--) {
+      var p = G.parts[i]; p.s += p.v * dt / 1000;
+      if (p.s >= p.L) { p.c.remove(); G.parts.splice(i, 1); if (p.done) p.done(); continue; }
+      var pt = p.path.getPointAtLength(p.s);
+      p.c.setAttribute("cx", pt.x.toFixed(1)); p.c.setAttribute("cy", pt.y.toFixed(1));
+      p.c.setAttribute("opacity", Math.max(0, Math.min(1, p.s / 24, (p.L - p.s) / 24)).toFixed(2));
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ------------------------------------------------------------------ drawer, notes, toast */
+var drawer = document.getElementById("drawer"), notesEl = document.getElementById("notes"), railEl = document.getElementById("rail");
+function openDrawer(o) {
+  var body = drawer.querySelector(".body"); body.innerHTML = "";
+  add(body, el("div", {class: "dk", text: o.kicker || ""}));
+  var h = el("h2", {text: o.title || ""}); add(body, h);
+  if (o.preview) add(h, el("span", {class: "badge", style: "margin-inline-start:10px;vertical-align:4px", text: "PREVIEW"}));
+  if (o.tag) add(body, chip(o.tag));
+  if (o.body) add(body, el("p", {text: o.body}));
+  if (o.list) add(body, el("ul", {}, o.list.map(function (t) { return el("li", {text: t}); })));
+  if (o.src && o.src.length) add(body, el("div", {class: "srcs"}, el("div", {class: "h-sm", text: "Sources"}), o.src.map(function (s) { return el("a", {href: s.url, target: "_blank", rel: "noopener", text: s.label + " ↗"}); })));
+  if (o.go && IDX[o.go] !== undefined) {
+    add(body, el("div", {class: "act"}, el("button", {class: "tb primary", text: "Open " + SC[IDX[o.go]].short + "  ›", onclick: function () { closeDrawer(); go(o.go, {from: o.from, focus: o.focus}); }})));
+  }
+  drawer.classList.add("open"); drawer.setAttribute("aria-hidden", "false");
+  setTimeout(function () { drawer.querySelector(".x").focus({preventScroll: true}); }, 50);
+}
+function closeDrawer() { drawer.classList.remove("open"); drawer.setAttribute("aria-hidden", "true"); }
+drawer.querySelector(".x").addEventListener("click", closeDrawer);
+function setNotes() {
+  var s = SC[cur]; var p = notesEl.querySelector("p"); p.innerHTML = "";
+  var txt = s.notes || "";
+  var parts = txt.split("A likely question:");
+  add(p, parts[0]);
+  if (parts[1]) { add(p, el("br")); add(p, el("br")); add(p, el("b", {text: "Likely question: "})); add(p, parts[1].trim()); }
+}
+function toggle(elm, btn, force) {
+  var on = force !== undefined ? force : !elm.classList.contains("open");
+  elm.classList.toggle("open", on); if (btn) btn.setAttribute("aria-pressed", on ? "true" : "false");
+}
+var toastT;
+function toast(t, ms) { var e = document.getElementById("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { e.classList.remove("on"); }, ms || 1600); }
+
+/* ------------------------------------------------------------------ scene chrome */
+function chrome(s, root) {
+  add(root, el("div", {class: "kicker", text: s.kicker}));
+  add(root, el("h1", {class: "title", text: s.title}));
+  add(root, el("p", {class: "subtitle", text: s.subtitle}));
+  if (s.tags && s.tags.length) add(root, el("div", {class: "tags"}, s.tags.map(chip)));
+  var src = el("span", {class: "src"}, (s.sources && s.sources.length ? "Sources: " : ""), links(s.sources));
+  add(root, el("div", {class: "foot"}, src, el("span", {text: META.footer + slideLabel(s, " · deck ")})));
+  if (s.preview) add(root, el("div", {class: "pnote", text: META.previewNote}));
+}
+
+/* ------------------------------------------------------------------ renderers */
+var R = {};
+
+R.title = function (s, root, svg) {
+  add(root, el("div", {class: "hero-k", text: META.kicker}));
+  add(root, el("div", {class: "hero-bar"}));
+  add(root, el("h1", {class: "hero-t", text: META.title}));
+  add(root, el("p", {class: "hero-s", text: META.subtitle}));
+  add(root, el("div", {class: "hero-go"},
+    el("button", {class: "tb primary", text: "Start the story  ›", onclick: function () { next(); }}),
+    (HUB ? el("button", {class: "tb", text: LBL("jumpHub", "Jump to the main decision tree"), onclick: function () { go(HUB); }}) : null)));
+  add(root, el("div", {class: "hero-keys", html: "<kbd>→</kbd> or <kbd>Space</kbd> next step &nbsp; <kbd>←</kbd> back &nbsp; <kbd>M</kbd> main tree &nbsp; <kbd>C</kbd> chapters &nbsp; <kbd>N</kbd> presenter notes &nbsp; <kbd>W</kbd> walk a tree &nbsp; <kbd>F</kbd> full screen"}));
+  var toc = el("div", {class: "toc"}, el("div", {class: "h-sm", text: "In this story"}));
+  s.chapters.forEach(function (c) { add(toc, el("button", {onclick: function () { go(c[2]); }}, el("b", {text: c[0]}), el("span", {text: c[1]}))); });
+  add(root, toc);
+  add(root, el("div", {class: "hero-meta"}, el("span", {text: "Paired deck: " + META.deck}), el("span", {text: "Facts checked " + META.checked})));
+  // decorative token stream
+  var p = sv("path", {d: "M70,792 C500,760 900,820 1530,780", fill: "none", stroke: "rgba(0,179,159,.25)", "stroke-width": 1.5}, svg);
+  flow(p, {every: 260, speed: 420, r: 3});
+  var p2 = sv("path", {d: "M70,804 C600,840 1000,770 1530,806", fill: "none", stroke: "rgba(56,189,248,.18)", "stroke-width": 1.2}, svg);
+  flow(p2, {every: 520, speed: 300, r: 2.5, color: COLORS.hide});
+};
+
+R.turn = function (s, root, svg) {
+  add(root, el("div", {class: "barlab", style: px(70, 196), text: s.barLabel || "ONE USER TURN — ILLUSTRATIVE PROPORTIONS"}));
+  var mk = s.marker;
+  var bar = el("div", {class: "box turnbar", style: px(70, 224, 1460, 58), "data-b": "0"});
+  var x = 0, ftx = 0;
+  s.bar.forEach(function (b, i) {
+    var w = b[1] * 1460;
+    add(bar, el("div", {class: "seg " + b[2], style: px(x + 2, 0, w - 4, 58) + "--d:" + (i * .55) + "s" + (b[3] ? ";background:" + b[3] : ""), text: b[0]}));
+    if (mk && (b[2] === mk.after || i === mk.after)) ftx = x + w;
+    x += w;
+  });
+  add(root, bar);
+  if (mk) add(root, el("div", {class: "ftmark", style: px(70 + ftx - 6, 290) + "--d:2.6s", "data-b": "0", text: "▲ " + mk.text}));
+  s.cards.forEach(function (c, i) {
+    var col = i % 3, row = Math.floor(i / 3);
+    var b = box(70 + col * 495, 340 + row * 186, 470, 168, "card src-card", 1, (i * .08).toFixed(2));
+    add(b, el("div", {class: "n", text: "0" + (i + 1)}), el("h3", {text: c.t}), el("p", {text: c.d}),
+      el("div", {class: "lev"}, el("span", {text: s.leverLabel || "MAIN LEVER"}), c.lever), chip(c.tag));
+    clickable(b, function () { openDrawer({kicker: s.cardKicker || "Cause", title: c.t, body: c.detail, tag: c.tag, src: c.src, go: c.go}); }, c.t);
+    add(root, b);
+  });
+  var band = s.principle && el("div", {class: "band", style: "top:722px", "data-b": "2"}, el("span", {class: "h-sm", text: s.principleLabel || "DESIGN PRINCIPLE"}), el("span", {text: s.principle}));
+  add(root, band);
+  s.beats = 2;
+};
+
+R.map = function (s, root, svg) {
+  var Q = s.questions, nQ = Q.length, qx = 400, qw = 420, qh = nQ >= 5 ? 84 : 104, LAST = nQ + 1;
+  var pQ = nQ > 1 ? Math.min(120, (456 - qh) / (nQ - 1)) : 0, tQ = (nQ - 1) * pQ + qh, yQ = 268 + (456 - tQ) / 2;
+  var ys = Q.map(function (q, i) { return yQ + i * pQ; });
+  var rx = 70, ry = 404, rw = 260, rh = 140;
+  // measure + govern bands
+  if (s.measure) {
+    var mb = el("div", {class: "mband", style: "top:196px", "data-b": "0"}, el("b", {text: s.measure.t}), el("span", {text: s.measure.d}), el("span", {class: "go", text: "Open ›"}));
+    clickable(mb, function () { go(s.measure.go, {from: mb}); }, s.measure.t); add(root, mb);
+  }
+  if (s.govern) {
+    var gb = el("div", {class: "mband", style: "top:752px", "data-b": String(LAST)}, el("b", {text: s.govern.t}), el("span", {text: s.govern.d}), el("span", {class: "go", text: "Open ›"}));
+    clickable(gb, function () { go(s.govern.go, {from: gb}); }, s.govern.t); add(root, gb);
+  }
+  // root
+  var rn = box(rx, ry, rw, rh, "node-root", 0);
+  add(rn, el("h3", {text: s.root.t}), el("p", {text: s.root.d}));
+  add(root, rn);
+  var orderEl = s.order ? el("div", {class: "order", "data-b": String(LAST)}, el("b", {text: s.orderLabel || "WHY THIS ORDER"}), s.order) : null;
+  if (orderEl) add(root, orderEl);
+  if (s.measure) wire(svg, "M398,217 L" + (rx + rw / 2) + ",217 L" + (rx + rw / 2) + "," + ry, 0, .2);
+  if (s.govern) wire(svg, "M" + (rx + rw / 2) + "," + (ry + rh) + " L" + (rx + rw / 2) + ",772 L398,772", LAST, 0);
+  var qEls = [], qWires = [], leafEls = [], leafWires = [];
+  Q.forEach(function (q, i) {
+    var k = q.k, col = COLORS[k];
+    var w = wire(svg, curve(rx + rw, ry + rh / 2, qx, ys[i] + qh / 2), 0, .3 + i * .15);
+    qWires.push(w);
+    var n = box(qx, ys[i], qw, qh, "card qnode", 0, (.35 + i * .15).toFixed(2), "--k:" + col + ";");
+    add(n, el("div", {class: "lab", text: (i + 1) + " · " + STRAT[k].label.toUpperCase()}), el("h3", {text: q.q}), el("p", {text: q.d}), el("span", {class: "cnt", text: q.leaves.length + " " + (s.leafWord || "levers")}));
+    clickable(n, function () { G.manual = i; if (beat < 1) beat = 1; applyBeat(); }, q.q);
+    qEls.push(n); add(root, n);
+    var n2 = q.leaves.length, pitch = 88, lh = 76, top = 496 - (n2 * pitch - (pitch - lh)) / 2;
+    leafEls[i] = []; leafWires[i] = [];
+    q.leaves.forEach(function (lf, j) {
+      var ly = top + j * pitch;
+      var lw = wire(svg, curve(qx + qw, ys[i] + qh / 2, 930, ly + lh / 2), null, j * .07);
+      lw.style.stroke = col; lw.style.opacity = 0; leafWires[i].push(lw);
+      var tgt = SC[IDX[lf.go]];
+      var L = box(930, ly, 600, lh, "card leaf", null, (j * .07).toFixed(2), "--k:" + col + ";");
+      add(L, el("h4", {text: lf.t}), el("div", {class: "to", text: "Deep dive: " + (tgt ? tgt.short : lf.go)}));
+      var dv = el("button", {class: "dive", "aria-label": "Open " + (tgt ? tgt.short : ""), text: "›", onclick: function (ev) { ev.stopPropagation(); go(lf.go, {from: L, focus: lf.focus}); }});
+      add(L, dv);
+      clickable(L, function () { openDrawer({kicker: STRAT[k].label + " · " + q.q, title: lf.t, body: lf.detail, tag: k, src: lf.src, go: lf.go, focus: lf.focus, from: L}); }, lf.t);
+      leafEls[i].push(L); add(root, L);
+      var fl = flow(lw, {color: col, every: 1300 + j * 140, speed: 320, r: 3.5, when: function () { return G.active === i; }});
+    });
+    flow(w, {color: col, every: 1500, speed: 260, r: 3.5, when: function () { return G.active === i || (G.active === null && beat >= 0); }});
+  });
+  var hint = el("div", {class: "map-hint", style: "top:470px", text: "Press → to unfold each question, or select one"});
+  add(root, hint);
+  add(root, el("div", {class: "edit-note", text: META.editorial}));
+  G.active = null;
+  function setActive(i, user) {
+    G.active = i;
+    qEls.forEach(function (e, j) { e.classList.toggle("act", j === i); e.classList.toggle("mute", i !== null && j !== i); });
+    qWires.forEach(function (w, j) { w.classList.toggle("dim", i !== null && j !== i); });
+    leafEls.forEach(function (arr, j) { arr.forEach(function (L) { L.classList.toggle("show", j === i); }); });
+    leafWires.forEach(function (arr, j) { arr.forEach(function (w) { w.style.opacity = j === i ? 1 : 0; w.classList.toggle("on", j === i); }); });
+    hint.style.opacity = (i === null && beat < LAST) ? 1 : 0;
+    if (orderEl) orderEl.style.visibility = i === null ? "visible" : "hidden";
+  }
+  G.onBeat = function (b) {
+    var a = (G.manual !== null && G.manual !== undefined) ? G.manual : ((b >= 1 && b <= nQ) ? b - 1 : null);
+    G.manual = null; setActive(a);
+    if (b === LAST) hint.textContent = "Select any question to unfold it again";
+  };
+  G.setActive = setActive;
+  s.beats = LAST;
+};
+
+R.path = function (s, root, svg) {
+  var nH = s.hops.length, chain = s.chain || nH, cx = [], CY = 292, w = 150, hgt = 76, d = 36, LASTB = Math.floor((nH - 1) / 2) + 2;
+  s.hops.forEach(function (h, i) { cx.push(70 + (1460 / nH) * (i + .5)); });
+  // wires first (behind cubes)
+  var ws = [];
+  for (var i = 0; i < chain - 1; i++) ws.push(wire(svg, "M" + cx[i] + "," + CY + " L" + cx[i + 1] + "," + CY, 0, .3 + i * .2, "on"));
+  ws.forEach(function (p, i) { flow(p, {every: 900, speed: 240, r: 4, color: COLORS.tealhi}); });
+  if (s.loop) {
+    var lp = s.loop, el5 = wire(svg, "M" + cx[lp[0]] + "," + (CY - 30) + " L" + cx[lp[0]] + ",206 L" + cx[lp[1]] + ",206 L" + cx[lp[1]] + "," + (CY - 30), 0, 1.2);
+    flow(el5, {every: 1100, speed: 300, r: 4, color: COLORS.azure});
+  }
+  var cubes = sv("g", {}, svg);
+  s.hops.forEach(function (h, i) {
+    var col = COLORS[h.kind], x = cx[i], y = CY;
+    var g = sv("g", {class: "cube float", style: "animation-delay:" + (-i * .8) + "s;pointer-events:auto", tabindex: "0", role: "button", "aria-label": h.t}, cubes);
+    var top = [[x, y - hgt / 2], [x + w / 2, y], [x, y + hgt / 2], [x - w / 2, y]];
+    var left = [[x - w / 2, y], [x, y + hgt / 2], [x, y + hgt / 2 + d], [x - w / 2, y + d]];
+    var right = [[x, y + hgt / 2], [x + w / 2, y], [x + w / 2, y + d], [x, y + hgt / 2 + d]];
+    var P = function (a) { return a.map(function (p) { return p.join(","); }).join(" "); };
+    sv("polygon", {points: P(left), fill: col, opacity: .55}, g);
+    sv("polygon", {points: P(right), fill: col, opacity: .32}, g);
+    sv("polygon", {class: "top", points: P(top), fill: col, opacity: h.optional ? .55 : .9, stroke: "#fff", "stroke-opacity": h.optional ? .9 : .5, "stroke-width": h.optional ? 2 : 1, "stroke-dasharray": h.optional ? "9 6" : null}, g);
+    var inner = [[x, y - hgt / 2 + 14], [x + w / 2 - 28, y], [x, y + hgt / 2 - 14], [x - w / 2 + 28, y]];
+    sv("polygon", {points: P(inner), fill: "none", stroke: "#fff", "stroke-opacity": .35}, g);
+    var open = function () { openDrawer({kicker: (s.hopWord || "Hop") + " " + (i + 1) + " · " + (s.pathName || "request path"), title: h.t, body: h.detail, list: h.lev, src: s.sources}); };
+    g.addEventListener("click", open);
+    g.addEventListener("keydown", function (ev) { if (ev.key === "Enter") open(); });
+    add(root, el("div", {class: "hoplab", style: px(x - 112, 372), "data-b": "0"}, el("h4", {text: h.t}), el("p", {text: h.d})));
+    h.lev.forEach(function (t, j) {
+      var bb = Math.floor(i / 2) + 1;
+      add(root, el("div", {class: "lchip", style: px(x - 112, 446 + j * 57) + "--d:" + (j * .08 + (i % 2) * .25) + "s", "data-b": String(bb), text: t}));
+    });
+  });
+  // step badges
+  for (var bi = 0; bi < chain - 1; bi++) {
+    var mx = (cx[bi] + cx[bi + 1]) / 2;
+    sv("circle", {cx: mx, cy: CY, r: 13, fill: COLORS.tealhi}, svg); sv("text", {x: mx, y: CY + 4.5, "text-anchor": "middle", class: "stepb", text: String(bi + 1)}, svg);
+  }
+  if (s.loop) {
+    var lx = (cx[s.loop[0]] + cx[s.loop[1]]) / 2;
+    sv("circle", {cx: lx, cy: 206, r: 13, fill: COLORS.azure}, svg); sv("text", {x: lx, y: 210.5, "text-anchor": "middle", class: "stepb", text: String(chain)}, svg);
+  }
+  if (s.obs) add(root, el("div", {class: "band", style: "top:704px", "data-b": String(LASTB)}, el("span", {class: "h-sm", text: s.obsLabel || "OBSERVABILITY ACROSS EVERY HOP"}), el("span", {text: s.obs})));
+  var lg = s.legend || [["Client", "client"], ["Azure resource", "azure"], ["Foundry service", "foundry"]];
+  add(root, el("div", {class: "legend"},
+    lg.map(function (l) { return el("span", {}, el("i", {style: "background:" + (COLORS[l[1]] || l[1])}), l[0]); }),
+    el("span", {}, el("i", {style: "background:transparent;border:1.5px dashed #fff"}), "Optional"),
+    el("span", {text: "Select a block for details"})));
+  s.beats = LASTB;
+};
+
+R.table = function (s, root, svg) {
+  var t = el("table", {class: "tbl big", style: px(70, 192, 1460), "data-b": "0"});
+  var cg = el("colgroup"); s.widths.forEach(function (w) { add(cg, el("col", {style: "width:" + w + "px"})); }); add(t, cg);
+  add(t, el("thead", {}, el("tr", {}, s.cols.map(function (c) { return el("th", {text: c}); }))));
+  var tb = el("tbody"), jit = [];
+  s.rows.forEach(function (r, ri) {
+    var tr = el("tr", {style: "height:82px"});
+    r.forEach(function (c) {
+      if (typeof c === "object") {
+        var td = el("td");
+        if (c.text) { add(td, el("span", {style: "font-size:13px;color:var(--dim)", text: c.text})); }
+        else {
+          var js = sv("svg", {width: 170, height: 46, viewBox: "0 0 170 46"});
+          sv("line", {x1: 0, y1: 23, x2: 170, y2: 23, stroke: "rgba(185,194,214,.2)", "stroke-dasharray": "3 4"}, js);
+          var pl = sv("polyline", {fill: "none", stroke: ri === 2 ? COLORS.teal : (ri === 1 ? COLORS.hide : COLORS.steady), "stroke-width": 2}, js);
+          jit.push({pl: pl, a: c.jitter, drop: c.drop, gaps: c.gaps, seed: ri * 7.3});
+          add(td, js);
+        }
+        add(tr, td);
+      } else add(tr, el("td", {text: c}));
+    });
+    tr.addEventListener("click", function () { tb.querySelectorAll("tr").forEach(function (x) { x.classList.toggle("sel", x === tr && !tr.classList.contains("sel")); }); });
+    add(tb, tr);
+  });
+  add(t, tb); add(root, t);
+  var ph = 0;
+  function upd() {
+    ph += 1;
+    jit.forEach(function (j) {
+      var pts = [];
+      for (var x = 0; x <= 170; x += 5) {
+        var k = x / 5 + ph;
+        var n = Math.sin(k * 1.7 + j.seed) * .5 + Math.sin(k * .63 + j.seed * 2) * .35 + Math.sin(k * 3.1 + j.seed) * .15;
+        var y = 23 - n * j.a * 20;
+        if (j.drop && ((k + Math.floor(j.seed)) % 23) > 19) y = 23 - 16;
+        if (j.gaps && ((k + 3) % 17) > 13) { pts.push(null); continue; }
+        pts.push(x + "," + y.toFixed(1));
+      }
+      j.pl.setAttribute("points", pts.filter(Boolean).join(" "));
+      if (j.gaps) j.pl.setAttribute("stroke-dasharray", "14 6");
+    });
+  }
+  upd(); if (!RM) every(upd, 140);
+  add(root, el("div", {class: "band", style: "top:716px", "data-b": "1"}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  s.beats = 1;
+};
+
+R.tree = function (s, root, svg) {
+  var Q = s.qs, n = Q.length, rows = n + 1, top = 196, avail = 580, pitch = Math.min(112, avail / rows), ch = pitch - 30;
+  var qx = 96, qw = 494, rx = 660, rw = 470;
+  var rowsEls = [], yesW = [], noW = [], walking = false, wIdx = 0;
+  Q.forEach(function (q, i) {
+    var y = top + i * pitch, b = String(i);
+    var qe = box(qx, y, qw, ch, "q row", b);
+    add(qe, el("span", {text: q.q}));
+    clickable(qe, function () { openDrawer({kicker: s.title, title: q.q, body: q.detail, src: q.src}); }, q.q);
+    add(root, qe);
+    add(root, el("div", {class: "num", style: px(qx - 20, y + ch / 2 - 20), "data-b": b, text: String(i + 1)}));
+    var yw = wire(svg, "M" + (qx + qw) + "," + (y + ch / 2) + " L" + (rx - 4) + "," + (y + ch / 2), i, .25, "");
+    yw.setAttribute("marker-end", "url(#arr)"); yesW.push(yw);
+    add(root, el("div", {class: "yn", style: px(qx + qw + 18, y + ch / 2 - 22) + "--d:.3s", "data-b": b, text: "Yes"}));
+    var pv = /\*$/.test(q.t);
+    var re = box(rx, y, rw, ch, "rec row", b, .35);
+    add(re, el("b", {text: q.t}), el("span", {text: q.s}));
+    clickable(re, function () { openDrawer({kicker: "Recommended option · question " + (i + 1), title: q.t.replace(/\*$/, ""), preview: pv, body: q.detail, src: q.src}); }, q.t);
+    add(root, re);
+    var nw = wire(svg, "M" + (qx + 54) + "," + (y + ch) + " L" + (qx + 54) + "," + (y + pitch - 4), i + 1, 0, "");
+    nw.setAttribute("marker-end", "url(#arr)"); noW.push(nw);
+    add(root, el("div", {class: "yn no", style: px(qx + 64, y + ch + 4), "data-b": String(i + 1), text: "No"}));
+    rowsEls.push([qe, re]);
+    flow(yw, {every: 1400, speed: 160, r: 3.5, when: function () { return yw.classList.contains("on") && (!walking || G.win === i); }});
+  });
+  var oy = top + n * pitch;
+  var oe = box(qx, oy, qw, ch, "qo row", String(n)); add(oe, el("span", {text: "Otherwise"})); add(root, oe);
+  var ow = wire(svg, "M" + (qx + qw) + "," + (oy + ch / 2) + " L" + (rx - 4) + "," + (oy + ch / 2), n, .25, "");
+  ow.setAttribute("marker-end", "url(#arr)");
+  var fe = box(rx, oy, rw, ch, "fb row", String(n), .35);
+  add(fe, el("b", {text: s.other.t}), el("span", {text: s.other.s}));
+  clickable(fe, function () { openDrawer({kicker: "Fallback option", title: s.other.t, body: s.other.detail, src: s.other.src}); }, s.other.t);
+  add(root, fe);
+  rowsEls.push([oe, fe]);
+  flow(ow, {every: 1400, speed: 160, r: 3.5, color: COLORS.measure, when: function () { return ow.classList.contains("on") && (!walking || G.win === n); }});
+  var asH = oy + ch - top;
+  var as = box(1170, top, 360, asH, "card aside", String(n + 1));
+  add(as, el("div", {class: "h-sm", text: s.aside.h}));
+  s.aside.items.forEach(function (it) { add(as, el("div", {class: "it"}, el("b", {text: it[0]}), el("span", {text: it[1]}))); });
+  add(root, as);
+  add(root, el("div", {class: "legend"},
+    el("span", {}, el("i", {style: "background:rgba(235,239,247,.16);border:1px solid rgba(185,194,214,.4)"}), "Question"),
+    el("span", {}, el("i", {style: "background:rgba(0,179,159,.35);border:1.5px solid #00B39F"}), "Recommended option"),
+    el("span", {}, el("i", {style: "border:1.5px dashed rgba(185,194,214,.6)"}), "Fallback option"),
+    el("span", {text: "Select any box for details"})));
+  if (s.next) add(root, el("button", {class: "nextlink", text: s.next.t + "  ›", onclick: function () { go(s.next.go); }}));
+  // walk mode
+  var wb = el("div", {class: "walkbar"}, el("button", {class: "tb", "aria-pressed": "false", html: "Walk the tree <kbd>W</kbd>"}));
+  add(root, wb);
+  var wbtn = wb.querySelector("button");
+  var ctrl = el("div", {class: "walk", style: "display:none"},
+    el("button", {class: "y", text: "Yes", onclick: function (ev) { ev.stopPropagation(); answer(true); }}),
+    el("button", {class: "n", text: "No", onclick: function (ev) { ev.stopPropagation(); answer(false); }}));
+  add(root, ctrl);
+  var restart = el("button", {class: "tb", style: "display:none", text: "Restart", onclick: function () { startWalk(); }});
+  add(wb, restart);
+  function paint() {
+    rowsEls.forEach(function (r, i) {
+      var vis = walking ? (i <= wIdx) : true;
+      r.forEach(function (e) { e.classList.remove("win", "dim", "pending"); });
+      if (walking) {
+        if (G.win !== null) { r.forEach(function (e) { if (i !== G.win) e.classList.add("dim"); }); if (i === G.win) r[1].classList.add("win"); }
+        else if (i !== wIdx) r.forEach(function (e) { e.classList.add("dim"); });
+        else { r[1].classList.add("dim"); if (G.win === null) r[1].classList.add("pending"); }
+      }
+    });
+    yesW.concat([ow]).forEach(function (w, i) { w.classList.toggle("hot", walking && G.win === i); });
+    noW.forEach(function (w, i) { w.classList.toggle("hot", walking && i < wIdx); });
+    if (walking && G.win === null && wIdx < n) {
+      var y = top + wIdx * pitch; ctrl.style.cssText = px(rx + rw / 2 - 72, y + ch / 2 - 17); ctrl.style.display = "flex";
+    } else ctrl.style.display = "none";
+  }
+  function startWalk() { walking = true; wIdx = 0; G.win = null; beat = s.beats; applyBeat(true); wbtn.setAttribute("aria-pressed", "true"); restart.style.display = ""; paint(); }
+  function stopWalk() { walking = false; G.win = null; wbtn.setAttribute("aria-pressed", "false"); restart.style.display = "none"; paint(); }
+  function answer(yes) {
+    if (yes) { G.win = wIdx; paint(); var q = Q[wIdx]; later(function () { openDrawer({kicker: "Result of the walk", title: q.t.replace(/\*$/, ""), preview: /\*$/.test(q.t), body: q.detail, src: q.src}); }, 500); }
+    else { wIdx++; if (wIdx >= n) { G.win = n; paint(); later(function () { openDrawer({kicker: "Result of the walk", title: s.other.t, body: s.other.detail, src: s.other.src}); }, 500); } else paint(); }
+  }
+  wbtn.addEventListener("click", function () { walking ? stopWalk() : startWalk(); });
+  G.walk = function () { walking ? stopWalk() : startWalk(); };
+  G.win = null;
+  G.focus = function (i) {
+    later(function () {
+      var r = rowsEls[Math.min(i, rowsEls.length - 1)];
+      r.forEach(function (e) { e.classList.add("focus"); });
+      later(function () { r.forEach(function (e) { e.classList.remove("focus"); }); }, 5200);
+    }, 700);
+  };
+  s.beats = n + 1;
+};
+
+var DG = {
+  direct: {n: [[40, 85, "App", "app"], [188, 85, "Model", "mt"]], e: [[0, 1, -26], [1, 0, -26]], seq: [[0], [1]]},
+  single: {n: [[40, 85, "Agent", "ag"], [188, 38, "Model", "mt"], [188, 136, "Tool", "mt"]], e: [[0, 1, 0], [1, 0, 0], [0, 2, 0], [2, 0, 0]], seq: [[0], [1], [2], [3], [0], [1]]},
+  seq: {n: [[34, 85, "A", "ag"], [114, 85, "B", "ag"], [194, 85, "C", "ag"]], e: [[0, 1, 0], [1, 2, 0]], seq: [[0], [1]]},
+  conc: {n: [[34, 85, "Start", "app"], [180, 30, "A", "ag"], [180, 85, "B", "ag"], [180, 140, "C", "ag"]], e: [[0, 1, 0], [0, 2, 0], [0, 3, 0]], seq: [[0, 1, 2]]},
+  hand: {n: [[40, 132, "A", "ag"], [114, 40, "B", "ag"], [188, 132, "C", "ag"]], e: [[0, 1, 0], [1, 2, 0]], seq: [[0], [1]]},
+  group: {n: [[114, 34, "Manager", "ag"], [40, 138, "A", "ag"], [114, 138, "B", "ag"], [188, 138, "C", "ag"]], e: [[0, 1, 0], [1, 0, 0], [0, 2, 0], [2, 0, 0], [0, 3, 0], [3, 0, 0]], seq: [[0], [1], [2], [3], [4], [5]]}
+};
+R.spectrum = function (s, root, svg) {
+  var nC = s.cols.length, w = 228, gap = nC > 1 ? Math.min(60, (1460 - nC * w) / (nC - 1)) : 0, x0 = 70 + (1460 - (nC * w + (nC - 1) * gap)) / 2;
+  s.cols.forEach(function (c, i) {
+    var x = x0 + i * (w + gap);
+    var b = box(x, 190, w, 420, "card pcol", String(i));
+    add(b, el("h3", {text: c.t}), el("div", {class: "lab", text: s.callsLabel || "CALLS IN SERIES"}), el("div", {class: "calls", text: c.calls}));
+    var ds = sv("svg", {width: w, height: 180, viewBox: "0 0 " + w + " 180"}); add(b, ds);
+    var D = typeof c.dg === "string" ? DG[c.dg] : c.dg, paths = [];
+    D.e.forEach(function (e) {
+      var a = D.n[e[0]], z = D.n[e[1]], bend = e[2] || 0;
+      var dx = z[0] - a[0], dy = z[1] - a[1], L = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / L, uy = dy / L;
+      var x1 = a[0] + ux * 17, y1 = a[1] + uy * 17, x2 = z[0] - ux * 17, y2 = z[1] - uy * 17;
+      var off = bend || ((e[0] > e[1]) ? 10 : -10) * (D.e.some(function (o) { return o[0] === e[1] && o[1] === e[0]; }) ? 1 : 0);
+      var mx = (x1 + x2) / 2 - uy * off, my = (y1 + y2) / 2 + ux * off;
+      paths.push(sv("path", {d: "M" + x1 + "," + y1 + " Q" + mx + "," + my + " " + x2 + "," + y2, fill: "none", stroke: "rgba(185,194,214,.32)", "stroke-width": 1.6}, ds));
+    });
+    D.n.forEach(function (nn) {
+      var col = nn[3] === "app" ? COLORS.client : nn[3] === "ag" ? COLORS.teal : COLORS.azure;
+      sv("circle", {cx: nn[0], cy: nn[1], r: 16, fill: col, opacity: .9}, ds);
+      var ly = nn[2].length > 1 ? (nn[1] < 60 ? nn[1] - 24 : nn[1] + 34) : nn[1] + 5;
+      var t = sv("text", {x: nn[0], y: ly, "text-anchor": "middle", class: "svgt " + (nn[2].length > 1 ? "" : "b"), text: nn[2]}, ds);
+      t.style.fontSize = nn[2].length > 1 ? "12px" : "13px";
+    });
+    var k = 0;
+    every(function () {
+      if (!b.classList.contains("on")) return;
+      D.seq[k % D.seq.length].forEach(function (ei) { spawn(paths[ei], ds, COLORS.tealhi, 150, 4); });
+      k++;
+    }, 900);
+    add(b, el("div", {class: "cap", text: c.cap}));
+    clickable(b, function () { openDrawer({kicker: "Orchestration pattern", title: c.t, body: c.detail, src: s.sources}); }, c.t);
+    add(root, b);
+  });
+  if (s.arrow) add(root, el("div", {class: "arrowband", style: "top:636px", "data-b": String(nC), text: s.arrow}));
+  if (s.band) add(root, el("div", {class: "band", style: "top:700px;padding:12px 22px", "data-b": String(nC)}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend", style: "top:792px"},
+    el("span", {}, el("i", {style: "background:" + COLORS.client}), "Application"), el("span", {}, el("i", {style: "background:" + COLORS.teal}), "Agent"),
+    el("span", {}, el("i", {style: "background:" + COLORS.azure}), "Model or tool"), el("span", {}, el("i", {style: "background:" + COLORS.tealhi}), "Call")));
+  s.beats = nC;
+};
+
+R.trace = function (s, root, svg) {
+  var bx = 360, bw = 680, y0 = 214, pitch = 62;
+  var spanCol = {agent: COLORS.teal, model: COLORS.reduce, tool: COLORS.hide}, hasFt = s.ft !== undefined && s.ft !== null;
+  var bars = [];
+  s.spans.forEach(function (sp, i) {
+    var y = y0 + i * pitch, indent = i === 0 ? 0 : 18;
+    add(root, el("div", {class: "span-l", style: px(70 + indent, y + 2) + "--d:" + (i * .1) + "s", "data-b": "0"}, el("code", {text: sp[0]}), sp[1]));
+    sv("rect", {x: bx, y: y + 6, width: bw, height: 34, rx: 5, fill: "rgba(185,194,214,.06)"}, svg);
+    var r = sv("rect", {x: bx + sp[2] * bw, y: y + 6, width: Math.max(4, (sp[3] - sp[2]) * bw), height: 34, rx: 5, fill: spanCol[sp[4]] || COLORS[sp[4]] || COLORS.teal, class: "grow", style: "transform:scaleX(0)"}, svg);
+    bars.push({r: r, a: sp[2], b: sp[3]});
+  });
+  var yb = y0 + s.spans.length * pitch;
+  var fx = bx + (hasFt ? s.ft : 0) * bw;
+  var fl = sv("line", {x1: fx, y1: y0 - 6, x2: fx, y2: yb, stroke: COLORS.steady, "stroke-width": 2, "stroke-dasharray": "5 5", opacity: 0}, svg);
+  var ftl = sv("text", {x: fx + 8, y: yb + 2, class: "svgt", text: s.ftLabel || "first token reaches the client", opacity: 0}, svg); ftl.setAttribute("fill", COLORS.steady); ftl.style.fontWeight = "700"; ftl.style.fontSize = "14px";
+  var ph = sv("line", {x1: bx, y1: y0 - 10, x2: bx, y2: yb, stroke: "#fff", "stroke-width": 1.5, opacity: .7}, svg);
+  add(root, el("div", {style: "position:absolute;" + px(70, yb + 22, 980) + "font-size:14px;color:var(--muted)", "data-b": "0", text: s.caption}));
+  var timers = [];
+  function play() {
+    timers.forEach(clearTimeout); timers = [];
+    bars.forEach(function (b) { b.r.style.transition = "none"; b.r.style.transform = "scaleX(0)"; });
+    fl.setAttribute("opacity", 0); ftl.setAttribute("opacity", 0);
+    void svg.getBoundingClientRect();
+    var T = RM ? 0 : 4200, start = performance.now();
+    bars.forEach(function (b) {
+      timers.push(setTimeout(function () { b.r.style.transition = "transform " + ((b.b - b.a) * T / 1000) + "s linear"; b.r.style.transform = "scaleX(1)"; }, b.a * T));
+    });
+    if (hasFt) timers.push(setTimeout(function () { fl.setAttribute("opacity", 1); ftl.setAttribute("opacity", 1); }, s.ft * T));
+    function mv() { var k = Math.min(1, (performance.now() - start) / (T || 1)); ph.setAttribute("x1", bx + k * bw); ph.setAttribute("x2", bx + k * bw); if (k < 1 && G) requestAnimationFrame(mv); }
+    requestAnimationFrame(mv);
+  }
+  G.cleanups.push(function () { timers.forEach(clearTimeout); });
+  later(play, 300); every(play, 7000);
+  var mon = box(1100, 196, 430, 420, "card mon", 1);
+  add(mon, el("div", {class: "h-sm", style: "margin-bottom:8px", text: s.monitorLabel || "What to monitor"}));
+  s.monitor.forEach(function (m) { add(mon, el("div", {class: "it"}, el("b", {text: m[0]}), el("span", {text: m[1]}))); });
+  add(root, mon);
+  add(root, el("div", {class: "band", style: "top:704px", "data-b": "2"}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend"},
+    el("span", {}, el("i", {style: "background:" + COLORS.teal}), "Agent span"), el("span", {}, el("i", {style: "background:" + COLORS.reduce}), "Model call span"),
+    el("span", {}, el("i", {style: "background:" + COLORS.hide}), "Tool span"), el("span", {text: "Illustrative trace"})));
+  s.beats = 2;
+};
+
+R.compare = function (s, root, svg) {
+  var nF = s.feats.length, qw = 250, cx0 = 340, gap = 12, cw = (1530 - cx0 - (nF - 1) * gap) / nF, hy = 192, hh = 70, ry0 = hy + hh + 10, rh = 66, rg = 7;
+  var cells = [], sel = null;
+  s.feats.forEach(function (f, j) {
+    var x = cx0 + j * (cw + gap);
+    var h = box(x, hy, cw, hh, "card cmp-h", String(j));
+    add(h, el("b", {text: f[0]}), chip(f[1]));
+    clickable(h, function () { spot(sel === j ? null : j); }, f[0]);
+    add(root, h);
+  });
+  s.rows.forEach(function (r, i) {
+    var y = ry0 + i * (rh + rg);
+    add(root, box(70, y, qw, rh, "cmp-q", "0", (i * .04).toFixed(2)));
+    root.lastChild.textContent = r[0];
+    cells[i] = [];
+    for (var j = 0; j < nF; j++) {
+      var c = box(cx0 + j * (cw + gap), y, cw, rh, "cmp-c", String(j), (i * .05).toFixed(2));
+      c.textContent = r[j + 1]; cells[i].push(c); add(root, c);
+    }
+  });
+  function spot(j) {
+    sel = j;
+    cells.forEach(function (row) { row.forEach(function (c, k) { c.classList.toggle("hl", j !== null && k === j); c.classList.toggle("lo", j !== null && k !== j); }); });
+  }
+  G.focus = function (j) { beat = s.beats; applyBeat(true); later(function () { spot(j); }, 500); };
+  if (s.band) add(root, el("div", {class: "band", style: "top:" + (ry0 + s.rows.length * (rh + rg) + 8) + "px", "data-b": String(nF)}, el("span", {class: "h-sm", text: s.band[0]}), el("span", {text: s.band[1]})));
+  add(root, el("div", {class: "legend", style: "top:806px"}, el("span", {text: "Select a feature heading to compare its column"})));
+  s.beats = nF;
+};
+
+R.phases = function (s, root, svg) {
+  var nP = s.phases.length, w = 300, step = nP > 1 ? (1460 - w) / (nP - 1) : 0;
+  var hold = el("div", {style: px(0, 0, 1600, 900) + "pointer-events:none"});
+  s.phases.forEach(function (p, i) {
+    var x = 70 + i * step, col = COLORS[p[1]];
+    var c = el("div", {class: "chev", style: px(x, 196, w) + "background:linear-gradient(90deg," + col + "55," + col + "22);--d:0s", "data-b": String(i)}, el("span", {class: "pn", text: String(i + 1)}), el("span", {text: p[0]}));
+    if (i === 0) c.style.clipPath = "polygon(0 0,90% 0,100% 50%,90% 100%,0 100%)";
+    add(root, c);
+    var b = box(x + 6, 300, step - 18 + (i === nP - 1 ? w - step : 0), 260, "card pbul", String(i), .15);
+    p[2].forEach(function (t) { add(b, el("div", {text: t})); });
+    add(root, b);
+  });
+  var pr = box(70, 590, 1460, 196, "card prove", String(nP));
+  add(pr, el("div", {class: "h-sm", text: s.proveLabel || "Prove first"}));
+  var grid = el("div", {style: "display:grid;grid-template-columns:1fr 1fr;column-gap:40px"});
+  s.prove.forEach(function (t, i) { add(grid, el("div", {class: "pv"}, el("i", {text: "✓"}), el("span", {text: t}))); });
+  add(pr, grid); add(root, pr);
+  var line = sv("path", {d: "M70,238 L1530,238", fill: "none", stroke: "none"}, svg);
+  flow(line, {every: 2400, speed: 420, r: 5, color: "#fff", when: function () { return beat >= nP - 1; }});
+  s.beats = nP;
+};
+
+R.status = function (s, root, svg) {
+  var t = el("table", {class: "tbl", style: px(70, 192, 1460)});
+  add(t, el("colgroup", {}, el("col", {style: "width:380px"}), el("col"), el("col", {style: "width:130px"})));
+  var sc = s.cols || ["Capability", "Note or recent change", "Status"];
+  add(t, el("thead", {}, el("tr", {}, el("th", {text: sc[0]}), el("th", {text: sc[1]}), el("th", {text: sc[2]}))));
+  var tb = el("tbody");
+  s.rows.forEach(function (r) {
+    var tr = el("tr", {"data-p": r[2] ? "1" : "0"}, el("td", {text: r[0] + (r[2] ? "*" : "")}), el("td", {text: r[1]}), el("td", {}, r[2] ? el("span", {class: "badge", text: "PREVIEW"}) : ""));
+    tr.style.height = "38px"; add(tb, tr);
+  });
+  add(t, tb); add(root, t);
+  var fb = el("div", {class: "filters"});
+  [["All", "all"], ["Preview only", "p"], ["Without preview label", "g"]].forEach(function (f, i) {
+    add(fb, el("button", {class: "tb", "aria-pressed": i === 0 ? "true" : "false", text: f[0], onclick: function (ev) {
+      fb.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", b === ev.currentTarget ? "true" : "false"); });
+      tb.querySelectorAll("tr").forEach(function (tr) { var p = tr.getAttribute("data-p") === "1"; tr.style.display = (f[1] === "all" || (f[1] === "p" && p) || (f[1] === "g" && !p)) ? "" : "none"; });
+    }}));
+  });
+  add(root, fb);
+  s.beats = 0;
+};
+
+R.refs = function (s, root, svg) {
+  var nG = s.groups.length, w = (1460 - (nG - 1) * 20) / nG;
+  s.groups.forEach(function (g, i) {
+    var b = box(70 + i * (w + 20), 190, w, 560, "card refcol", null);
+    add(b, el("h3", {text: g[0]}));
+    g[1].forEach(function (l) { add(b, el("a", {href: l.url, target: "_blank", rel: "noopener", title: l.url, text: l.label + " ↗"})); });
+    add(root, b);
+  });
+  if (s.current) add(root, el("div", {class: "band", style: "top:770px;padding:10px 22px"}, el("span", {class: "h-sm", text: s.currentLabel || "STAYING CURRENT"}), links(s.current)));
+  s.beats = 0;
+};
+
+/* ------------------------------------------------------------------ TOPIC RENDERERS (injected by build_story.py --extra-js) */
+/* Topic renderers for the Microsoft AI platform decision guide story.
+ * layers (slide 2), duo (slide 3), ladder (slide 5), bounds (slide 6), arch (slide 7), lic (slide 8).
+ * Injected into the engine closure by build_story.py --extra-js; every core helper is in scope.
+ * The styles below use only the engine palette and are added once, when the page loads. */
+(function () {
+  var css = [
+    ".dg-lab{padding:12px 16px;background:rgba(16,26,60,.6);border:1px solid var(--line);border-inline-start:4px solid var(--k)}",
+    ".dg-lab b{display:block;font-size:21px;color:var(--k);margin-bottom:6px}",
+    ".dg-lab span{display:block;font-size:13px;line-height:1.35;color:var(--muted)}",
+    ".dg-blk{padding:10px 13px;border-radius:10px;background:rgba(16,26,60,.84);border:1px solid var(--line);border-top:3px solid var(--k);overflow:hidden}",
+    ".dg-blk h4{margin:0 0 5px;font-size:16px;line-height:1.2}",
+    ".dg-blk p{margin:0;font-size:13px;line-height:1.36;color:var(--muted)}",
+    ".dg-blk.rel{box-shadow:0 0 0 2px var(--k),0 0 22px rgba(0,179,159,.28);background:rgba(24,40,86,.96)}",
+    ".scene .dimx,.scene .dimx.on[data-b]{opacity:.24}",
+    ".dg-tag{display:flex;flex-direction:column;justify-content:center;padding:0 12px;border:1px dashed var(--line2)}",
+    ".dg-tag b{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--k)}",
+    ".dg-tag span{font-size:12.5px;line-height:1.3;color:var(--muted);margin-top:4px}",
+    ".dg-hd{position:absolute;font-size:13px;font-weight:700;letter-spacing:.16em;color:var(--teal)}",
+    ".dg-cc{padding:14px 18px;border-inline-start:4px solid var(--k)}",
+    ".dg-cc h3{margin:0 0 10px;font-size:18px}",
+    ".dg-opts{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:10px}",
+    ".dg-opt{font-size:13.5px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--k);background:rgba(6,11,28,.5)}",
+    ".dg-x{color:var(--dim);font-size:14px}",
+    ".dg-cc p{margin:0;font-size:14px;line-height:1.4;color:var(--muted)}",
+    ".dg-st{padding:12px 16px;background:rgba(16,26,60,.84);border:1px solid var(--line);border-inline-start:4px solid var(--k)}",
+    ".dg-st b{display:block;font-size:16px;margin-bottom:5px}",
+    ".dg-st span{font-size:13.5px;color:var(--muted)}",
+    ".dg-st.hot,.dg-n.hot{box-shadow:0 0 0 2px var(--k),0 0 26px rgba(0,179,159,.3)}",
+    ".dg-gov{display:flex;align-items:center;justify-content:center;background:rgba(199,210,236,.08);border:1px solid rgba(199,210,236,.35)}",
+    ".dg-gov span,.dg-mcp span{writing-mode:vertical-rl;transform:rotate(180deg)}",
+    ".dg-gov span{font-size:14px;color:var(--muted)}",
+    ".dg-pairs{padding:14px 22px}",
+    ".dg-pairs .r1{display:flex;gap:10px;align-items:center;flex-wrap:wrap}",
+    ".dg-pairs .tb{height:30px;font-size:13px}",
+    ".dg-pairs p{margin:10px 0 0;font-size:16px}",
+    ".dg-ret{position:absolute;right:70px;top:66px;height:32px;font-size:13.5px;z-index:6;border-color:var(--teal-hi)}",
+    ".dg-focus{box-shadow:0 0 0 2px var(--teal-hi),0 0 30px rgba(44,229,203,.35)!important}",
+    ".dg-lv{display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:rgba(16,26,60,.8);border:1px solid var(--line2)}",
+    ".dg-lv.sel{border-color:var(--teal);background:rgba(0,179,159,.2)}",
+    ".dg-arrow{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;letter-spacing:.14em;background:linear-gradient(90deg,rgba(56,189,248,.18),rgba(167,139,250,.55));clip-path:polygon(0 0,98.6% 0,100% 50%,98.6% 100%,0 100%)}",
+    ".dg-rl{display:flex;align-items:center;padding:0 16px;font-size:16px;font-weight:700;background:rgba(16,26,60,.6);border:1px solid var(--line);border-inline-start:4px solid var(--k)}",
+    ".dg-cell{display:flex;align-items:center;padding:8px 12px;font-size:14px;line-height:1.36;border-radius:10px;background:rgba(24,36,78,.62);border:1px solid var(--line)}",
+    ".dg-cell.none{color:var(--dim);background:transparent;border-style:dashed;font-size:13px}",
+    ".dg-cell.hl{border-color:var(--teal);background:rgba(0,179,159,.16)}",
+    ".scene .dg-cell.lo.on{opacity:.3}",
+    ".dg-bd{display:flex;flex-direction:column;padding:12px 12px 10px;border-radius:14px;border:1.5px dashed rgba(185,194,214,.5)}",
+    ".dg-bd .rn{font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}",
+    ".dg-bd .rt{font-size:14px;line-height:1.3;color:var(--muted);margin:3px 0 8px}",
+    ".dg-bd .in{margin-top:auto;padding:9px 12px;border-radius:10px;background:rgba(16,26,60,.92);border:1px solid var(--line2);border-top:3px solid var(--k)}",
+    ".dg-bd .in b{display:block;font-size:17px}",
+    ".dg-bd.sel{border-color:var(--teal);border-style:solid;background:rgba(0,179,159,.08)}",
+    ".dg-iq{padding:10px 14px;background:rgba(0,179,159,.12);border:1px solid rgba(0,179,159,.5)}",
+    ".dg-iq b{display:block;font-size:15.5px;margin-bottom:4px}",
+    ".dg-iq span{font-size:13px;line-height:1.35;color:var(--muted)}",
+    ".dg-iq.sel{background:rgba(0,179,159,.26);border-color:var(--teal-hi)}",
+    ".dg-xb{display:none;position:absolute;right:8px;top:8px;font-size:11px;font-weight:800;letter-spacing:.04em;color:#1B1300;background:var(--steady);border-radius:999px;padding:2px 8px}",
+    ".dg-cross{box-shadow:0 0 0 2px var(--steady),0 0 24px rgba(251,191,36,.35)}",
+    ".dg-cross .dg-xb{display:block}",
+    ".dg-iq .dg-xb,.dg-bd .dg-xb{color:#1B1300;font-size:11px}",
+    ".dg-iq .dg-xb{top:auto;bottom:8px}",
+    ".dg-pan{display:grid;grid-template-columns:300px 1fr 1fr;gap:14px 24px;padding:18px 22px}",
+    ".dg-pan h3{margin:0 0 8px;font-size:24px;line-height:1.2}",
+    ".dg-pan .k{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--teal);text-transform:uppercase;margin-bottom:4px}",
+    ".dg-pan .v{font-size:15.5px;line-height:1.4}",
+    ".dg-pan .s{font-size:14px;line-height:1.4;color:var(--muted)}",
+    ".dg-n{padding:9px 14px;background:rgba(16,26,60,.9);border:1px solid var(--line);border-inline-start:4px solid var(--k)}",
+    ".dg-n b{display:block;font-size:16px;margin-bottom:4px}",
+    ".dg-n span{display:block;font-size:13px;line-height:1.35;color:var(--muted)}",
+    ".dg-grp{border-radius:16px;border:1.5px dashed rgba(0,179,159,.6);background:rgba(0,179,159,.05)}",
+    ".dg-mcp{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,179,159,.6),rgba(0,129,115,.6))}",
+    ".dg-mcp span{font-size:13px;font-weight:700;letter-spacing:.06em}",
+    ".dg-govbar{display:flex;align-items:center;gap:18px;padding:0 22px;background:rgba(199,210,236,.08);border:1px solid rgba(199,210,236,.35);font-size:15px}",
+    ".dg-govbar b{white-space:nowrap}",
+    ".dg-govbar span{font-size:14px;color:var(--muted)}",
+    ".dg-ca{position:absolute;font-size:12.5px;line-height:1.3;color:var(--muted)}",
+    ".dg-paths{display:flex;gap:8px;align-items:center}",
+    ".dg-paths .tb{height:30px;font-size:13px;padding:0 10px}",
+    ".dg-say{position:absolute;font-size:14px;color:var(--teal-hi)}",
+    ".dg-lh{display:flex;gap:16px;align-items:center;padding:12px 18px;border-top:3px solid var(--k)}",
+    ".dg-lh svg{flex:none}",
+    ".dg-lh b{display:block;font-size:22px}",
+    ".dg-lh span{font-size:14px;color:var(--muted)}",
+    ".dg-li{padding:8px 14px;border-radius:10px;background:rgba(16,26,60,.82);border:1px solid var(--line);border-inline-start:3px solid var(--k)}",
+    ".dg-li b{display:block;font-size:15px;margin-bottom:3px}",
+    ".dg-li span{font-size:13px;line-height:1.35;color:var(--muted)}",
+    ".dg-band2{position:absolute;left:70px;width:1460px;padding:10px 22px;font-size:15px;line-height:1.45;border-radius:12px;background:linear-gradient(90deg,rgba(0,179,159,.16),rgba(16,26,60,.7));border:1px solid rgba(0,179,159,.35)}",
+    ".dg-band2 .h-sm{margin-inline-end:12px}",
+    ".dg-band2 button{margin-inline-start:12px;height:28px;font-size:12.5px}"
+  ].join("\n");
+  var st = document.createElement("style");
+  st.textContent = css;
+  document.head.appendChild(st);
+})();
+
+function dgCol(k) { return COLORS[k] || k || COLORS.teal; }
+function dgPrev(t) { return /\*$/.test(t || ""); }
+
+/* ---------------------------------------------------------------- layers: building blocks by layer */
+R.layers = function (s, root, svg) {
+  var top = 192, rh = 106, gap = 10, bx = 284, bw0 = 1086, tagx = 1384;
+  var byId = {}, els = {}, sel = null;
+  s.rows.forEach(function (r) { r.blocks.forEach(function (b) { byId[b.id] = b; b.row = r; b.relSet = {}; }); });
+  // symmetric relations: when A names B, B also shows A
+  s.rows.forEach(function (r) { r.blocks.forEach(function (b) {
+    (b.rel || []).forEach(function (o) { if (o === "*") return; b.relSet[o] = 1; if (byId[o]) byId[o].relSet[b.id] = 1; });
+  }); });
+  s.rows.forEach(function (r, i) {
+    var y = top + i * (rh + gap), col = dgCol(r.k), b = String(i);
+    var lab = box(70, y, 200, rh, "dg-lab", b, 0, "--k:" + col + ";");
+    add(lab, el("b", {text: r.name}), el("span", {text: r.who}));
+    add(root, lab);
+    var n = r.blocks.length, bw = (bw0 - (n - 1) * 10) / n;
+    r.blocks.forEach(function (bk, j) {
+      var e = box(bx + j * (bw + 10), y, bw, rh, "dg-blk", b, (.08 * j).toFixed(2), "--k:" + col + ";");
+      add(e, el("h4", {text: bk.t}), el("p", {text: bk.d}));
+      clickable(e, function () { pick(bk.id); }, bk.t);
+      els[bk.id] = e; add(root, e);
+    });
+    var tg = box(tagx, y, 146, rh, "dg-tag", "5", (.06 * i).toFixed(2), "--k:" + col + ";");
+    add(tg, el("b", {text: r.tag[0]}), el("span", {text: r.tag[1]}));
+    add(root, tg);
+  });
+  var clear = el("button", {class: "tb", text: "Show all blocks", style: "height:28px;font-size:12.5px", onclick: function () { pick(null); }});
+  add(root, el("div", {class: "legend"}, el("span", {text: s.hint}), clear));
+  function related(id) {
+    var b = byId[id], out = {};
+    if (!b) return out;
+    if ((b.rel || []).indexOf("*") >= 0) { Object.keys(byId).forEach(function (k) { out[k] = 1; }); return out; }
+    out[id] = 1; Object.keys(b.relSet).forEach(function (k) { out[k] = 1; });
+    Object.keys(byId).forEach(function (k) { if ((byId[k].rel || []).indexOf("*") >= 0) out[k] = 1; });
+    return out;
+  }
+  function paint() {
+    var rel = sel ? related(sel) : null;
+    Object.keys(els).forEach(function (k) {
+      els[k].classList.toggle("rel", !!rel && !!rel[k]);
+      els[k].classList.toggle("dimx", !!rel && !rel[k]);
+    });
+  }
+  function pick(id) {
+    sel = (id && id !== sel) ? id : null; paint();
+    if (!sel) { closeDrawer(); return; }
+    var b = byId[sel], rel = related(sel), names = [];
+    Object.keys(rel).forEach(function (k) { if (k !== sel && (byId[k].rel || []).indexOf("*") < 0) names.push(byId[k].t + "  ·  " + byId[k].row.name); });
+    var gov = (b.rel || []).indexOf("*") >= 0;
+    openDrawer({kicker: b.row.name + " layer", title: b.t.replace(/\*$/, ""), preview: dgPrev(b.t) || b.preview,
+      body: b.detail + " " + (gov ? s.govLine : s.relLabel),
+      list: gov ? null : names, src: b.src, go: b.go});
+  }
+  G.focus = function (id) { later(function () { pick(id); }, 600); };
+  s.beats = 5;
+};
+
+/* ---------------------------------------------------------------- duo: compare or combine */
+R.duo = function (s, root, svg) {
+  add(root, el("div", {class: "dg-hd", style: px(70, 190), "data-b": "0", text: s.compareLabel}));
+  add(root, el("div", {class: "dg-hd", style: px(830, 190), "data-b": "1", text: s.combineLabel}));
+  var cards = [];
+  s.compare.forEach(function (c, i) {
+    var col = dgCol(c.k), y = 222 + i * 150;
+    var e = box(70, y, 700, 138, "card dg-cc", "0", (.12 * i).toFixed(2), "--k:" + col + ";");
+    var opts = el("div", {class: "dg-opts"});
+    c.opts.forEach(function (o, j) { if (j) add(opts, el("span", {class: "dg-x", text: "↔"})); add(opts, el("span", {class: "dg-opt", style: "--k:" + col, text: o})); });
+    add(e, el("h3", {text: c.t}), opts, el("p", {text: c.by}));
+    clickable(e, function () { openDrawer({kicker: s.compareLabel, title: c.t, body: c.detail, src: c.src, go: c.go}); }, c.t);
+    cards.push(e); add(root, e);
+  });
+  var rows = [], ys = [];
+  s.combine.forEach(function (r, i) {
+    var y = 222 + i * 114, col = dgCol(r.k); ys.push(y);
+    var e = box(830, y, 600, 96, "dg-st", "1", (.1 * (3 - i)).toFixed(2), "--k:" + col + ";");
+    add(e, el("b", {text: r.t}), el("span", {text: r.d}));
+    clickable(e, function () { openDrawer({kicker: s.combineLabel, title: r.t, body: r.detail, src: r.src}); }, r.t);
+    rows.push(e); add(root, e);
+    if (i > 0) {
+      var w = wire(svg, "M1130," + y + " L1130," + (ys[i - 1] + 96), 1, .3 + .15 * i);
+      w.setAttribute("marker-end", "url(#arr)");
+      flow(w, {every: 1100 + i * 120, speed: 90, r: 3.5});
+    }
+    var g = wire(svg, "M1430," + (y + 48) + " L1450," + (y + 48), 1, .6);
+  });
+  var gv = box(1450, 222, 80, 438, "dg-gov", "1", .5);
+  add(gv, el("span", {text: s.govern}));
+  add(root, gv);
+  var band = el("div", {class: "box card dg-pairs", style: px(70, 680, 1460, 104), "data-b": "2"});
+  var r1 = el("div", {class: "r1"}, el("span", {class: "h-sm", text: s.pairsLabel}));
+  var say = el("p", {text: s.pairsIntro});
+  var btns = [];
+  s.pairs.forEach(function (p, i) {
+    var b = el("button", {class: "tb", "aria-pressed": "false", text: p.t, onclick: function () { setPair(i); }});
+    btns.push(b); add(r1, b);
+  });
+  add(band, r1, say); add(root, band);
+  var curPair = null;
+  function setPair(i) {
+    curPair = curPair === i ? null : i;
+    btns.forEach(function (b, j) { b.setAttribute("aria-pressed", j === curPair ? "true" : "false"); });
+    rows.forEach(function (r, j) { r.classList.toggle("hot", curPair !== null && s.pairs[curPair].rows.indexOf(j) >= 0); });
+    say.textContent = curPair === null ? s.pairsIntro : s.pairs[curPair].text;
+  }
+  G.focus = function (i) { later(function () { var c = cards[i]; if (!c) return; c.classList.add("dg-focus"); later(function () { c.classList.remove("dg-focus"); }, 4200); }, 700); };
+  s.beats = 2;
+};
+
+/* ---------------------------------------------------------------- ladder: customization levels */
+R.ladder = function (s, root, svg) {
+  var x0 = 336, cw = 290, g = 8, y0 = 284, rh = 80, rg = 8, sel = null, cells = [], heads = [];
+  s.levels.forEach(function (l, j) {
+    var h = box(x0 + j * (cw + g), 192, cw, 50, "dg-lv", String(j));
+    h.textContent = (j + 1) + "  ·  " + l;
+    clickable(h, function () { spot(sel === j ? null : j); }, l);
+    heads.push(h); add(root, h);
+  });
+  var ar = box(x0, 250, 4 * cw + 3 * g, 24, "dg-arrow", "0", .3); ar.textContent = s.arrow; add(root, ar);
+  s.rows.forEach(function (r, i) {
+    var y = y0 + i * (rh + rg), col = dgCol(r.k);
+    var lab = box(70, y, 250, rh, "dg-rl", "0", (.05 * i).toFixed(2), "--k:" + col + ";");
+    lab.textContent = r.t;
+    clickable(lab, function () {
+      openDrawer({kicker: "Customization levels", title: r.t, body: r.detail, preview: r.cells.some(dgPrev),
+        list: r.cells.map(function (c, j) { return (j + 1) + " · " + s.levels[j] + ": " + c; }), src: r.src});
+    }, r.t);
+    add(root, lab);
+    cells[i] = [];
+    r.cells.forEach(function (c, j) {
+      var none = /^—/.test(c);
+      var e = box(x0 + j * (cw + g), y, cw, rh, "dg-cell" + (none ? " none" : ""), String(j), (.05 * i).toFixed(2));
+      e.textContent = c; cells[i].push(e); add(root, e);
+    });
+  });
+  add(root, el("div", {class: "dg-band2", style: "top:730px", "data-b": "4"}, el("span", {class: "h-sm", text: s.band[0]}), s.band[1]));
+  add(root, el("div", {class: "legend", style: "top:800px"}, el("span", {text: s.hint})));
+  function spot(j) {
+    sel = j;
+    heads.forEach(function (h, k) { h.classList.toggle("sel", k === j); });
+    cells.forEach(function (row) { row.forEach(function (c, k) { c.classList.toggle("hl", j !== null && k === j); c.classList.toggle("lo", j !== null && k !== j); }); });
+  }
+  G.focus = function (j) { later(function () { spot(j); }, 500); };
+  s.beats = 4;
+};
+
+/* ---------------------------------------------------------------- bounds: architectural boundaries */
+R.bounds = function (s, root, svg) {
+  var opEls = [], iqEls = [], crossing = false;
+  s.opts.forEach(function (o, i) {
+    var e = box(70 + i * 294, 192, 284, 150, "dg-bd", "0", (.08 * i).toFixed(2), "--k:" + dgCol(o.k) + ";");
+    var inner = el("div", {class: "in"}, el("b", {text: o.t}));
+    add(e, el("div", {class: "rn", text: "Runs in"}), el("div", {class: "rt", text: o.runs}), inner, el("span", {class: "dg-xb", text: o.cross || ""}));
+    clickable(e, function () { show("o", i); }, o.t);
+    opEls.push(e); add(root, e);
+  });
+  s.iqs.forEach(function (q, i) {
+    var e = box(70 + i * 367, 356, 359, 92, "dg-iq", "1", (.08 * i).toFixed(2));
+    add(e, el("b", {text: q.t + "  ·  " + q.where}), el("span", {text: q.d}), el("span", {class: "dg-xb", text: q.cross || ""}));
+    clickable(e, function () { show("q", i); }, q.t);
+    iqEls.push(e); add(root, e);
+  });
+  var pan = box(70, 462, 1460, 196, "card dg-pan", "2");
+  add(root, pan);
+  function cell(k, v) { return el("div", {}, el("div", {class: "k", text: k}), el("div", {class: "v", text: v})); }
+  function show(kind, i) {
+    opEls.forEach(function (e, j) { e.classList.toggle("sel", kind === "o" && j === i); });
+    iqEls.forEach(function (e, j) { e.classList.toggle("sel", kind === "q" && j === i); });
+    pan.innerHTML = "";
+    if (kind === "o") {
+      var o = s.opts[i];
+      add(pan, el("div", {style: "grid-row:span 2"}, el("div", {class: "k", text: s.optLabel}), el("h3", {text: o.t}), el("div", {class: "s", text: "Runs in: " + o.runs})),
+        cell("Model and orchestration", o.model), cell("Context it can reach", o.ctx), cell("Identity and access", o.id), cell("Administered in", o.admin));
+    } else {
+      var q = s.iqs[i];
+      add(pan, el("div", {style: "grid-row:span 2"}, el("div", {class: "k", text: s.iqLabel}), el("h3", {text: q.t}), el("div", {class: "s", text: "Runs in: " + q.where})),
+        cell("What it provides", q.what), cell("Whose permissions apply", q.d), el("div", {style: "grid-column:span 2"}, el("div", {class: "s", text: q.detail})));
+    }
+  }
+  show("o", 0);
+  var btn = el("button", {class: "tb", "aria-pressed": "false", text: s.crossBtn, onclick: function () { setCross(!crossing); }});
+  add(root, el("div", {class: "dg-band2", style: "top:672px", "data-b": "3"}, el("span", {class: "h-sm", text: s.cross[0]}), s.cross[1], btn));
+  function setCross(on) {
+    crossing = on; btn.setAttribute("aria-pressed", on ? "true" : "false");
+    s.opts.forEach(function (o, j) { opEls[j].classList.toggle("dg-cross", on && !!o.cross); });
+    s.iqs.forEach(function (q, j) { iqEls[j].classList.toggle("dg-cross", on && !!q.cross); });
+  }
+  G.focus = function (i) { later(function () { show("o", i); }, 500); };
+  s.beats = 3;
+};
+
+/* ---------------------------------------------------------------- arch: integration architecture */
+R.arch = function (s, root, svg) {
+  var N = {}, W = {}, hotSet = null;
+  function node(id, x, y, w, h, n, k, b, d) {
+    var e = box(x, y, w, h, "dg-n", String(b), d || 0, "--k:" + dgCol(k) + ";");
+    add(e, el("b", {text: n.t}), el("span", {text: n.d}));
+    clickable(e, function () { openDrawer({kicker: n.kicker || "", title: n.t.replace(/\*$/, ""), preview: dgPrev(n.t), body: n.detail, src: n.src}); }, n.t);
+    N[id] = e; add(root, e); return e;
+  }
+  function W_(id, d, b, del) { var w = wire(svg, d, b, del); W[id] = w; return w; }
+  [["DATA", 70, 0], ["MICROSOFT IQ  ·  CONTEXT", 380, 1], ["AGENTS", 790, 2], ["WHERE IT IS USED", 1190, 3]].forEach(function (h) {
+    add(root, el("div", {class: "dg-hd", style: px(h[1], 190), "data-b": String(h[2]), text: h[0]}));
+  });
+  add(root, box(366, 214, 298, 388, "dg-grp", "1"));
+  s.data.forEach(function (n, i) {
+    var y = 222 + i * 96;
+    node("d" + i, 70, y, 250, 82, n, "azure", 0, (.08 * i).toFixed(2));
+    node("q" + i, 380, y, 270, 82, s.iq[i], "teal", 1, (.08 * i).toFixed(2));
+    W_("dq" + i, "M320," + (y + 41) + " L380," + (y + 41), 1, .1 + .08 * i);
+    W_("qm" + i, "M650," + (y + 41) + " L690," + (y + 41), 2, .1 + .08 * i);
+  });
+  var mcp = box(690, 222, 40, 370, "dg-mcp", "2"); add(mcp, el("span", {text: s.mcp})); add(root, mcp); N.mcp = mcp;
+  node("fdy", 790, 232, 320, 140, s.agents[0], "build", 2, .2);
+  node("cs", 790, 452, 320, 130, s.agents[1], "build", 2, .3);
+  W_("mf", "M730,302 L790,302", 2, .3);
+  W_("mc", "M730,517 L790,517", 2, .4);
+  var ca = sv("path", {d: "M950,452 L950,376", fill: "none", stroke: "rgba(185,194,214,.75)", "stroke-width": 2, "stroke-dasharray": "6 5", "marker-end": "url(#arr)", "data-b": "2"}, svg);
+  add(root, el("div", {class: "dg-ca", style: px(962, 396, 230), "data-b": "2", text: s.connected}));
+  node("c0", 1190, 232, 340, 92, s.channels[0], "use", 3, 0);
+  node("c1", 1190, 352, 340, 92, s.channels[1], "use", 3, .1);
+  node("c2", 1190, 472, 340, 92, s.channels[2], "use", 3, .2);
+  W_("fa", curve(1110, 278, 1190, 278), 3, .1);
+  W_("fm", curve(1110, 330, 1190, 392), 3, .2);
+  W_("cm", curve(1110, 490, 1190, 412), 3, .3);
+  W_("cw", curve(1110, 540, 1190, 518), 3, .4);
+  Object.keys(W).forEach(function (k) {
+    flow(W[k], {every: 1600 + Math.random() * 900, speed: 120, r: 3.5, when: function () { return W[k].classList.contains("on") && (!hotSet || hotSet[k]); }});
+  });
+  var gb = box(70, 614, 1460, 52, "dg-govbar", "4");
+  add(gb, el("b", {text: s.govern[0]}), el("span", {text: s.govern[1]}));
+  add(root, gb);
+  add(root, el("div", {class: "dg-band2", style: "top:678px", "data-b": "4"}, el("span", {class: "h-sm", text: s.band[0]}), s.band[1]));
+  var say = el("div", {class: "dg-say", style: px(70, 758, 1460), "data-b": "4", text: ""});
+  add(root, say);
+  var bar = el("div", {class: "legend dg-paths", style: "top:786px"}, el("span", {text: s.pathsLabel}));
+  var pbtn = [];
+  s.paths.forEach(function (p, i) {
+    var b = el("button", {class: "tb", "aria-pressed": "false", text: p.t, onclick: function () { setPath(curP === i ? null : i); }});
+    pbtn.push(b); add(bar, b);
+  });
+  add(root, bar);
+  var curP = null;
+  function setPath(i) {
+    curP = i; var p = i === null ? null : s.paths[i];
+    hotSet = p ? {} : null; if (p) p.w.forEach(function (k) { hotSet[k] = 1; });
+    pbtn.forEach(function (b, j) { b.setAttribute("aria-pressed", j === i ? "true" : "false"); });
+    Object.keys(W).forEach(function (k) { W[k].classList.toggle("hot", !!p && !!hotSet[k]); W[k].classList.toggle("dim", !!p && !hotSet[k]); });
+    Object.keys(N).forEach(function (k) { N[k].classList.toggle("hot", !!p && p.n.indexOf(k) >= 0); N[k].classList.toggle("dimx", !!p && p.n.indexOf(k) < 0); });
+    say.textContent = p ? p.say : "";
+  }
+  G.focus = function (i) { later(function () { setPath(i); }, 600); };
+  s.beats = 4;
+};
+
+/* ---------------------------------------------------------------- lic: licensing and cost models */
+R.lic = function (s, root, svg) {
+  var colsEls = [], sel = null;
+  function icon(kind, col) {
+    var g = sv("svg", {width: 96, height: 72, viewBox: "0 0 96 72", "aria-hidden": "true"});
+    if (kind === "user") {
+      var ps = [];
+      for (var i = 0; i < 4; i++) {
+        var p = sv("g", {opacity: RM ? 1 : .2, style: "transition:opacity .4s"}, g);
+        sv("circle", {cx: 12 + i * 24, cy: 26, r: 7, fill: col}, p);
+        sv("path", {d: "M" + (2 + i * 24) + ",52 a10,11 0 0 1 20,0 z", fill: col}, p);
+        sv("rect", {x: 6 + i * 24, y: 58, width: 12, height: 5, rx: 2, fill: "#fff", opacity: .7}, p);
+        ps.push(p);
+      }
+      if (!RM) { var k = 0; every(function () { k = (k + 1) % 6; ps.forEach(function (p, j) { p.setAttribute("opacity", j < k ? 1 : .2); }); }, 600); }
+    } else if (kind === "cap") {
+      sv("rect", {x: 6, y: 8, width: 52, height: 58, rx: 6, fill: "none", stroke: col, "stroke-width": 2}, g);
+      var lv = sv("rect", {x: 8, y: 30, width: 48, height: 34, rx: 4, fill: col, opacity: .55}, g);
+      [0, 1, 2].forEach(function (j) { sv("circle", {cx: 78, cy: 18 + j * 20, r: 6, fill: "#fff", opacity: .75}, g); sv("line", {x1: 58, y1: 37, x2: 72, y2: 18 + j * 20, stroke: col, "stroke-width": 1.5}, g); });
+      if (!RM) { var t = 0; every(function () { t += .25; var h = 30 + Math.sin(t) * 8; lv.setAttribute("y", 64 - h); lv.setAttribute("height", h); }, 120); }
+    } else {
+      var ticks = [];
+      for (var m = 0; m < 8; m++) ticks.push(sv("rect", {x: 4 + m * 11, y: 22, width: 8, height: 28, rx: 2, fill: col, opacity: RM ? .9 : .15}, g));
+      sv("text", {x: 48, y: 66, "text-anchor": "middle", class: "svgt", fill: "#B9C2D6", style: "font-size:11px", text: "metered by use"}, g);
+      if (!RM) { var c = 0; every(function () { c = (c + 1) % 10; ticks.forEach(function (r, j) { r.setAttribute("opacity", j < c ? .9 : .15); }); }, 380); }
+    }
+    return g;
+  }
+  s.cols.forEach(function (c, i) {
+    var x = 70 + i * 490, col = dgCol(c.k), b = String(i), els = [];
+    var h = box(x, 192, 480, 104, "card dg-lh", b, 0, "--k:" + col + ";");
+    add(h, icon(c.icon, col), el("div", {}, el("b", {text: c.t}), el("span", {text: c.d})));
+    clickable(h, function () { spot(sel === i ? null : i); }, c.t);
+    els.push(h); add(root, h);
+    c.items.forEach(function (it, j) {
+      var e = box(x, 308 + j * 82, 480, 76, "dg-li", b, (.07 * (j + 1)).toFixed(2), "--k:" + col + ";");
+      add(e, el("b", {text: it.t}), el("span", {text: it.d}));
+      clickable(e, function () { openDrawer({kicker: c.t, title: it.t, body: it.detail || it.d, src: it.src || s.sources}); }, it.t);
+      els.push(e); add(root, e);
+    });
+    colsEls.push(els);
+  });
+  add(root, el("div", {class: "dg-band2", style: "top:722px", "data-b": "3"}, el("span", {class: "h-sm", text: s.band[0]}), s.band[1]));
+  function spot(i) {
+    sel = i;
+    colsEls.forEach(function (els, j) { els.forEach(function (e) { e.classList.toggle("dimx", i !== null && j !== i); }); });
+  }
+  G.focus = function (i) { later(function () { spot(i); }, 500); };
+  s.beats = 3;
+};
+
+/* ---------------------------------------------------------------- path: decision path by role (branching tree) */
+(function () {
+  var css = [
+    ".dg-pc{display:flex;flex-direction:column;justify-content:center;padding:8px 14px;border-radius:10px;background:rgba(16,26,60,.86);border:1px solid var(--line);border-inline-start:4px solid var(--k);overflow:hidden;transition:opacity .35s,box-shadow .3s,background .3s,transform .3s}",
+    ".dg-pc b{display:block;font-size:15.5px;line-height:1.22}",
+    ".dg-pc span{display:block;font-size:12.5px;line-height:1.3;color:var(--muted);margin-top:4px}",
+    ".dg-pc .more{position:absolute;right:10px;top:50%;margin-top:-10px;font-size:16px;color:var(--k);opacity:.8}",
+    ".dg-pc.sel{box-shadow:0 0 0 2px var(--k),0 0 26px rgba(0,179,159,.22);background:rgba(28,44,92,.97)}",
+    ".dg-pc.off{opacity:.32}",
+    ".dg-pc.off:hover{opacity:.75}",
+    "@keyframes dgIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}",
+    ".dg-pc.new{animation:dgIn .45s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--i,0s)}",
+    "@keyframes dgDraw{to{stroke-dashoffset:0}}",
+    ".dg-pw{fill:none;stroke:var(--line2);stroke-width:1.6;opacity:.75;stroke-dasharray:1;stroke-dashoffset:1;animation:dgDraw .6s ease forwards;animation-delay:var(--i,0s)}",
+    ".dg-pw.hot{stroke:var(--k);stroke-width:3;opacity:1}",
+    ".dg-ph{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;border-radius:12px;border:1.5px dashed var(--line2);color:var(--dim);font-size:14px;line-height:1.4}",
+    ".dg-res{display:flex;flex-direction:column;padding:18px 22px;border-radius:14px;border-top:4px solid var(--k);overflow:hidden}",
+    ".dg-res.new{animation:dgIn .5s cubic-bezier(.2,.7,.2,1) both}",
+    ".dg-res h3{margin:6px 0 6px;font-size:23px;line-height:1.2;color:var(--k)}",
+    ".dg-res .why{margin:0 0 12px;font-size:14px;line-height:1.42;color:var(--ink)}",
+    ".dg-res dl{display:grid;grid-template-columns:118px 1fr;gap:8px 12px;margin:0;flex:1;align-content:start}",
+    ".dg-res dt{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--k);padding-top:2px}",
+    ".dg-res dd{margin:0;font-size:13.2px;line-height:1.36;color:var(--muted)}",
+    ".dg-res .acts{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:10px}",
+    ".dg-res .acts .tb{height:30px;font-size:12.5px}",
+    ".dg-rule{margin-top:16px;padding:12px 14px;border-radius:10px;text-align:start;color:var(--muted);background:linear-gradient(90deg,rgba(0,179,159,.16),rgba(16,26,60,.7));border:1px solid rgba(0,179,159,.35)}",
+    ".dg-rule .h-sm{display:block;margin-bottom:6px}",
+    ".dg-crumb{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;max-width:1180px;overflow:hidden}",
+    ".dg-crumb .c{padding:3px 10px;border-radius:999px;border:1px solid var(--k);color:var(--ink);white-space:nowrap;font-size:12.5px}",
+    ".dg-crumb .s{color:var(--dim)}",
+    ".dg-hd.dim{opacity:.35}"
+  ].join("\n");
+  var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+})();
+
+/* Decision path memory: the last state picked by hand, and the return button shown on a scene opened from a starting point. */
+var RP = {last: null, from: null, names: []};
+function rpReturn(target) {
+  if (!G || !SC[cur] || SC[cur].id !== target || !RP.from || IDX[RP.from] === undefined) return;
+  var crumbs = RP.names.join("  ›  ");
+  add(G.root, el("button", {class: "tb dg-ret", title: crumbs, "aria-label": "Back to " + SC[IDX[RP.from]].short + (crumbs ? ": " + crumbs : ""),
+    text: "‹  Back to " + SC[IDX[RP.from]].short, onclick: function () { go(RP.from, {full: true}); }}));
+}
+R.rolepath = function (s, root, svg) {
+  var TOP = 228, BOT = 770, X = [70, 400, 770, 1110], WD = [280, 320, 290, 420];
+  var chosen = [], layer = el("div", {}), wl = sv("g", {}, svg), color = COLORS.teal;
+  add(root, layer);
+  var heads = s.heads.map(function (h, i) { var e = el("div", {class: "dg-hd", style: px(X[i], 198), "data-b": "0", text: h}); add(root, e); return e; });
+  function fit(n) { var g = 12, h = Math.min(98, (BOT - TOP - g * (n - 1)) / n); return {h: h, g: g}; }
+  function hasStar(t) { return /\*/.test(t || ""); }
+  /* column 1 is static */
+  var c1 = [], f1 = fit(s.root.opts.length);
+  s.root.opts.forEach(function (o, i) {
+    var e = box(X[0], TOP + i * (f1.h + f1.g), WD[0], f1.h, "dg-pc", "0", (.06 * i).toFixed(2), "--k:" + o.c + ";");
+    add(e, el("b", {text: o.t}), el("span", {text: o.d}));
+    clickable(e, function () { choose(chosen[0] === o.id ? [] : [o.id]); }, o.t);
+    add(root, e); c1.push(e);
+  });
+  /* bottom bar: path crumbs, back, start over */
+  var crumb = el("div", {class: "dg-crumb"});
+  var back = el("button", {class: "tb", text: "‹ " + s.backLabel, style: "height:28px;font-size:12.5px", onclick: function () { choose(chosen.slice(0, -1)); }});
+  var reset = el("button", {class: "tb", text: s.resetLabel, style: "height:28px;font-size:12.5px", onclick: function () { choose([]); }});
+  add(root, el("div", {class: "legend dg-paths", style: "top:786px", "data-b": "0"}, el("span", {class: "h-sm", text: s.pathLabel}), crumb, back, reset));
+  function manual() { beat = s.beats; updateBars(); }
+  function choose(p) { manual(); set(p); RP.last = chosen.slice(); }
+  function leave(list) { RP.last = chosen.slice(); RP.from = s.id; RP.names = list.map(function (o) { return o.t.replace(/\*$/, ""); }); }
+  function nodeAt(path) { var n = s.root, o = null, list = [];
+    for (var i = 0; i < path.length; i++) { o = null; n.opts.forEach(function (x) { if (x.id === path[i]) o = x; }); if (!o) break; list.push(o); if (o.next) n = o.next; else break; }
+    return list; }
+  function mid(e) { return {x: parseFloat(e.style.left), y: parseFloat(e.style.top) + parseFloat(e.style.height) / 2, r: parseFloat(e.style.left) + parseFloat(e.style.width)}; }
+  function link(a, b, hot, i) {
+    var p = sv("path", {d: curve(a.r + 2, a.y, b.x - 4, b.y), class: "dg-pw" + (hot ? " hot" : ""), pathLength: "1", style: "--k:" + color + ";--i:" + (RM ? 0 : (.05 * i).toFixed(2)) + "s"}, wl);
+    if (hot && !RM) flow(p, {color: color, every: 1200, speed: 230, r: 3.5, when: function () { return p.isConnected; }});
+    return p;
+  }
+  function set(path) {
+    var list = nodeAt(path); chosen = list.map(function (o) { return o.id; });
+    layer.innerHTML = ""; while (wl.firstChild) wl.removeChild(wl.firstChild);
+    G.flows = G.flows.filter(function (f) { return f.path.isConnected; });
+    color = list.length ? list[0].c : COLORS.teal;
+    c1.forEach(function (e, i) { var id = s.root.opts[i].id; e.classList.toggle("sel", chosen[0] === id); e.classList.toggle("off", !!chosen[0] && chosen[0] !== id); });
+    crumb.innerHTML = "";
+    if (!list.length) add(crumb, el("span", {class: "s", text: s.placeholder[1]}));
+    list.forEach(function (o, i) { if (i) add(crumb, el("span", {class: "s", text: "›"})); add(crumb, el("span", {class: "c", style: "--k:" + color, text: o.t.replace(/\*$/, "")})); });
+    back.disabled = !list.length; reset.disabled = !list.length;
+    var prevEl = list.length ? c1[s.root.opts.map(function (o) { return o.id; }).indexOf(list[0].id)] : null;
+    var col = 1, node = list.length ? list[0].next : null, depth = 1, leaf = null;
+    while (node && col < 3) {
+      var f = fit(node.opts.length), pick = list[depth] || null, els = [];
+      node.opts.forEach(function (o, i) {
+        var e = box(X[col], TOP + i * (f.h + f.g), WD[col], f.h, "dg-pc new", null, null, "--k:" + color + ";--i:" + (RM ? 0 : (.06 * i + .1).toFixed(2)) + "s;");
+        add(e, el("b", {text: o.t.replace(/\*$/, "")}), el("span", {text: o.d}));
+        if (o.next) add(e, el("i", {class: "more", text: "›"}));
+        if (pick) { e.classList.toggle("sel", pick.id === o.id); e.classList.toggle("off", pick.id !== o.id); }
+        var base = chosen.slice(0, depth);
+        clickable(e, function () { choose(pick && pick.id === o.id ? base : base.concat([o.id])); }, o.t);
+        add(layer, e); els.push(e);
+        link(mid(prevEl), mid(e), !!pick && pick.id === o.id, i);
+      });
+      heads[col].classList.remove("dim");
+      if (!pick) break;
+      prevEl = els[node.opts.indexOf(pick)];
+      if (pick.res) { leaf = pick; break; }
+      node = pick.next; col++; depth++;
+    }
+    for (var h = col + 1; h < 3; h++) heads[h].classList.add("dim");
+    if (!list.length) { heads[1].classList.add("dim"); heads[2].classList.add("dim"); }
+    if (leaf && col < 2) heads[2].classList.add("dim");
+    /* result column */
+    var rx = X[3], rw = WD[3];
+    if (leaf) {
+      var r = leaf.res, panel = box(rx, TOP, rw, BOT - TOP, "card dg-res new", null, null, "--k:" + color + ";");
+      var h3 = el("h3", {text: r.t.replace(/\*$/, "")});
+      if (hasStar(r.t)) add(h3, el("span", {class: "badge", style: "margin-inline-start:10px;vertical-align:4px", text: "PREVIEW"}));
+      var dl = el("dl", {});
+      r.rows.forEach(function (row) { add(dl, el("dt", {text: row[0]}), el("dd", {text: row[1]})); });
+      var acts = el("div", {class: "acts"});
+      add(acts, el("button", {class: "tb", text: s.detailLabel, onclick: function () {
+        openDrawer({kicker: s.resKicker + " · " + list.map(function (o) { return o.t.replace(/\*$/, ""); }).join(" › "), title: r.t.replace(/\*$/, ""), preview: hasStar(r.t), body: r.why,
+          list: r.rows.map(function (row) { return row[0] + ": " + row[1]; }), src: r.src, go: r.go, focus: r.focus});
+        var db = drawer.querySelector(".body .act button");
+        if (db && r.go) { leave(list); db.addEventListener("click", function () { rpReturn(r.go); }); } }}));
+      if (r.go && IDX[r.go] !== undefined) add(acts, el("button", {class: "tb primary", text: "Open " + SC[IDX[r.go]].short + "  ›", onclick: function () { leave(list); go(r.go, {from: panel, focus: r.focus}); rpReturn(r.go); }}));
+      add(panel, el("div", {class: "h-sm", text: s.resKicker}), h3, el("p", {class: "why", text: r.why}), dl, acts);
+      add(layer, panel);
+      var pm = mid(prevEl); link(pm, {x: rx, y: Math.min(Math.max(pm.y, TOP + 60), BOT - 60)}, true, 0);
+      heads[3].classList.remove("dim");
+    } else {
+      var ph = box(rx, TOP, rw, BOT - TOP, "dg-ph", null);
+      var msg = !list.length ? s.placeholder : ["Select a " + (list.length === 1 ? "need" : "detail"), "The starting point appears here, with its tools, context, channels, governance and cost model."];
+      add(ph, el("div", {class: "h-sm", style: "color:var(--dim)", text: msg[0]}), el("p", {text: msg[1]}));
+      var rule = el("div", {class: "dg-rule"}, el("span", {class: "h-sm", text: s.rule.h}), s.rule.t);
+      clickable(rule, function () { openDrawer({kicker: s.title, title: s.rule.h, body: s.rule.t, src: s.rule.src}); }, s.rule.h);
+      add(ph, rule); add(layer, ph);
+      heads[3].classList.add("dim");
+    }
+  }
+  set([]);
+  s.beats = s.demo.length;
+  var first = true;
+  G.onBeat = function (b) {
+    if (first) { first = false; if (b >= s.beats && RP.last && RP.last.length) { set(RP.last); return; } }
+    if (b <= s.demo.length) set(s.demo.slice(0, b));
+  };
+  G.focus = function (p) { later(function () { set(Array.isArray(p) ? p : [p]); }, 500); };
+};
+
+/* Title scene: this guide has no hub map, so list only the shortcuts that apply. */
+(function () {
+  var baseTitle = R.title;
+  R.title = function (s, root, svg) {
+    baseTitle(s, root, svg);
+    var k = root.querySelector(".hero-keys");
+    if (k) k.innerHTML = "<kbd>→</kbd> or <kbd>Space</kbd> next step &nbsp; <kbd>←</kbd> back &nbsp; <kbd>C</kbd> chapters &nbsp; <kbd>N</kbd> presenter notes &nbsp; <kbd>F</kbd> full screen";
+  };
+})();
+
+
+/* ------------------------------------------------------------------ build and navigate */
+function build(i) {
+  var s = SC[i];
+  var root = el("div", {class: "scene", "data-id": s.id, role: "region", "aria-label": s.title || META.title});
+  var svg = sv("svg", {class: "wires", viewBox: "0 0 1600 900", "aria-hidden": "true"});
+  sv("defs", {}, svg).innerHTML = '<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="rgba(185,194,214,.7)"/></marker>';
+  add(root, svg);
+  G = {root: root, svg: svg, pt: null, flows: [], parts: [], timers: [], intervals: [], cleanups: [], onBeat: null, focus: null, walk: null, active: null};
+  G.pt = sv("g", {}, svg);
+  if (s.type !== "title") chrome(s, root);
+  if (!R[s.type]) throw new Error("No renderer for scene type " + s.type + " (scene " + s.id + ")");
+  R[s.type](s, root, svg);
+  svg.appendChild(G.pt);
+  return G;
+}
+function teardown(g) {
+  if (!g) return;
+  g.timers.forEach(clearTimeout); g.intervals.forEach(clearInterval); g.cleanups.forEach(function (f) { f(); });
+  g.flows = []; g.parts = [];
+}
+function applyBeat(instant) {
+  if (!G) return;
+  G.root.querySelectorAll("[data-b]").forEach(function (e) { e.classList.toggle("on", +e.getAttribute("data-b") <= beat); });
+  if (G.onBeat) G.onBeat(beat);
+  updateBars();
+}
+function go(target, opt) {
+  opt = opt || {};
+  var i = typeof target === "number" ? target : IDX[target];
+  if (i === undefined || i < 0 || i >= SC.length) return;
+  closeDrawer();
+  var oldG = G, oldEl = G && G.root, dir = i >= cur ? 1 : -1;
+  if (oldEl) {
+    if (opt.from && !RM) {
+      var r = opt.from.getBoundingClientRect(), sr = stage.getBoundingClientRect(), k = sr.width / W;
+      oldEl.style.transformOrigin = ((r.left + r.width / 2 - sr.left) / k) + "px " + ((r.top + r.height / 2 - sr.top) / k) + "px";
+      oldEl.classList.add("dive");
+    } else oldEl.classList.add("leave");
+    teardown(oldG);
+    setTimeout(function () { oldEl.remove(); }, RM ? 0 : 560);
+  }
+  if (SC[cur] && SC[cur].type === "map" && i !== cur) cameFrom = "map";
+  else if (SC[i].type === "map") cameFrom = null;
+  cur = i;
+  var g = build(i);
+  g.root.classList.add(opt.from && SC[i].type !== "map" ? "rise" : "enter");
+  stage.appendChild(g.root);
+  beat = opt.full ? (SC[i].beats || 0) : 0;
+  if (opt.focus !== undefined && opt.focus !== null) beat = SC[i].beats || 0;
+  applyBeat(true);
+  requestAnimationFrame(function () { requestAnimationFrame(function () { g.root.classList.remove("enter", "rise"); }); });
+  if (opt.focus !== undefined && opt.focus !== null && g.focus) g.focus(opt.focus);
+  if (location.hash.slice(1) !== SC[i].id) {
+    try { history.replaceState(null, "", "#" + SC[i].id); }
+    catch (e) { /* Sandboxed previews may have an opaque origin; scene navigation still works without updating the hash. */ }
+  }
+  setNotes(); updateRail(); updateCrumb();
+  document.getElementById("walkBtn").classList.toggle("hidden", SC[i].type !== "tree");
+}
+function next() {
+  var s = SC[cur];
+  if (beat < (s.beats || 0)) { beat++; applyBeat(); return true; }
+  if (cur < SC.length - 1) { go(cur + 1); return true; }
+  return false;
+}
+function prev() {
+  if (beat > 0) { beat--; applyBeat(); return; }
+  if (cur > 0) go(cur - 1, {full: true});
+}
+
+/* ------------------------------------------------------------------ chrome: progress, rail, crumb */
+var progress = document.getElementById("progress"), beatsEl = document.getElementById("beats"), counter = document.getElementById("counter");
+SC.forEach(function (s, i) {
+  add(progress, el("button", {class: s.type === "map" ? "hub" : "", title: s.short, "aria-label": s.short, onclick: function () { go(i); }}));
+});
+function updateBars() {
+  progress.querySelectorAll("button").forEach(function (b, i) { b.classList.toggle("cur", i === cur); b.classList.toggle("done", i < cur); });
+  beatsEl.innerHTML = "";
+  for (var k = 0; k <= (SC[cur].beats || 0); k++) add(beatsEl, el("i", {class: k <= beat ? "on" : ""}));
+  counter.textContent = (cur + 1) + " / " + SC.length;
+}
+function buildRail() {
+  var body = railEl.querySelector(".body"); body.innerHTML = "";
+  STORY.sections.forEach(function (sec) {
+    add(body, el("h3", {text: (sec.num === "00" ? "" : sec.num + " · ") + sec.name}));
+    SC.forEach(function (s, i) {
+      if (s.section !== sec.id) return;
+      var dots = el("span", {class: "dots"}, (s.tags || []).map(function (t) { return el("i", {style: "background:" + COLORS[t]}); }));
+      add(body, el("button", {"data-i": i, onclick: function () { go(i); toggle(railEl, document.getElementById("railBtn"), false); }}, el("span", {text: s.short}), dots, el("small", {text: slideLabel(s, "")})));
+    });
+  });
+}
+function updateRail() { railEl.querySelectorAll("button[data-i]").forEach(function (b) { b.classList.toggle("cur", +b.getAttribute("data-i") === cur); }); }
+function updateCrumb() {
+  var c = document.getElementById("crumb"); c.innerHTML = "";
+  var s = SC[cur], sec = STORY.sections.filter(function (x) { return x.id === s.section; })[0];
+  if (s.type !== "map" && s.type !== "title") {
+    if (HUB) add(c, el("button", {text: LBL("hub", "Main decision tree"), onclick: function () { go(HUB, {full: true}); }}), "  ›  ");
+  }
+  add(c, el("span", {text: (sec && sec.num !== "00" ? sec.num + " " + sec.name + "  ›  " : "")}), el("b", {text: s.short}));
+}
+
+/* ------------------------------------------------------------------ fit, background, events */
+function fit() {
+  var r = viewport.getBoundingClientRect(), k = Math.min(r.width / W, r.height / H);
+  var x = (r.width - W * k) / 2, y = (r.height - H * k) / 2;
+  stage.style.transform = "translate(" + x + "px," + y + "px) scale(" + k + ")";
+}
+window.addEventListener("resize", fit);
+
+(function bg() {
+  var cv = document.getElementById("bg"), ctx = cv.getContext("2d"), pts = [], DPR = Math.min(2, window.devicePixelRatio || 1);
+  function size() { cv.width = innerWidth * DPR; cv.height = innerHeight * DPR; }
+  size(); window.addEventListener("resize", size);
+  for (var i = 0; i < 70; i++) pts.push({x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .00012, vy: (Math.random() - .5) * .00012});
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    var Wd = cv.width, Hd = cv.height;
+    pts.forEach(function (p) { if (!RM) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > 1) p.vx *= -1; if (p.y < 0 || p.y > 1) p.vy *= -1; } });
+    for (var a = 0; a < pts.length; a++) for (var b = a + 1; b < pts.length; b++) {
+      var dx = (pts[a].x - pts[b].x) * Wd, dy = (pts[a].y - pts[b].y) * Hd, d = Math.sqrt(dx * dx + dy * dy), lim = 170 * DPR;
+      if (d < lim) { ctx.strokeStyle = "rgba(0,179,159," + (0.09 * (1 - d / lim)).toFixed(3) + ")"; ctx.lineWidth = DPR; ctx.beginPath(); ctx.moveTo(pts[a].x * Wd, pts[a].y * Hd); ctx.lineTo(pts[b].x * Wd, pts[b].y * Hd); ctx.stroke(); }
+    }
+    pts.forEach(function (p) { ctx.fillStyle = "rgba(44,229,203,.35)"; ctx.beginPath(); ctx.arc(p.x * Wd, p.y * Hd, 1.6 * DPR, 0, 6.3); ctx.fill(); });
+    if (!RM) requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+document.getElementById("nextBtn").addEventListener("click", function () { next(); });
+document.getElementById("prevBtn").addEventListener("click", prev);
+document.getElementById("railBtn").addEventListener("click", function (e) { toggle(railEl, e.currentTarget); });
+document.getElementById("notesBtn").addEventListener("click", function (e) { toggle(notesEl, e.currentTarget); });
+document.getElementById("mapBtn").addEventListener("click", function () { if (HUB) go(HUB, {full: true}); });
+if (!HUB) document.getElementById("mapBtn").classList.add("hidden");
+document.getElementById("walkBtn").addEventListener("click", function () { if (G && G.walk) G.walk(); });
+document.getElementById("fsBtn").addEventListener("click", fullscreen);
+document.getElementById("playBtn").addEventListener("click", function (e) { setAuto(!autoplay); });
+var uiT, viewOnly = false;
+/* Full screen: standard API, webkit-prefixed fallback (older Safari), and a toolbar-free view when the
+   browser or the hosting page blocks the API (an embedded preview, a sandboxed frame or a browser policy). */
+function fsEl() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+function pres() {
+  var on = !!fsEl() || viewOnly;
+  document.body.classList.toggle("pres", on); fit();
+  document.getElementById("fsBtn").setAttribute("aria-pressed", on ? "true" : "false");
+  if (on) { poke(); }
+}
+function poke() { document.body.classList.add("ui"); clearTimeout(uiT); uiT = setTimeout(function () { document.body.classList.remove("ui"); }, 2600); }
+function setViewOnly(on) { viewOnly = on; if (!on) { clearTimeout(toastT); document.getElementById("toast").classList.remove("on"); } pres(); }
+function fsBlocked() {
+  if (fsEl() || viewOnly) return;
+  setViewOnly(true);
+  toast("Full screen is blocked in this view, so the toolbars are hidden instead. F11 gives browser full screen; F or Esc restores the toolbars.", 6000);
+}
+document.addEventListener("fullscreenchange", pres);
+document.addEventListener("webkitfullscreenchange", pres);
+document.addEventListener("fullscreenerror", fsBlocked);
+document.addEventListener("webkitfullscreenerror", fsBlocked);
+document.addEventListener("mousemove", function () { if (document.body.classList.contains("pres")) poke(); });
+function fullscreen() {
+  if (fsEl()) { var x = document.exitFullscreen || document.webkitExitFullscreen; if (x) x.call(document); return; }
+  if (viewOnly) { setViewOnly(false); return; }
+  var d = document.documentElement, req = d.requestFullscreen || d.webkitRequestFullscreen;
+  var enabled = document.fullscreenEnabled !== undefined ? document.fullscreenEnabled : document.webkitFullscreenEnabled;
+  if (!req || enabled === false) { fsBlocked(); return; }
+  try { var r = req.call(d); if (r && typeof r.then === "function") r.then(null, fsBlocked); }
+  catch (e) { fsBlocked(); }
+}
+function setAuto(on) {
+  var b = document.getElementById("playBtn");
+  if (autoplay) { clearInterval(autoplay); autoplay = null; }
+  if (on) { autoplay = setInterval(function () { if (!next()) setAuto(false); }, 4500); toast("Autoplay on"); }
+  b.setAttribute("aria-pressed", on ? "true" : "false");
+  b.querySelector("span").textContent = on ? "Pause" : "Play";
+}
+document.addEventListener("keydown", function (e) {
+  if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var k = e.key;
+  if (k === "ArrowRight" || k === "PageDown" || (k === " " && !(e.target && e.target.closest && e.target.closest("button,[role=button]")))) { e.preventDefault(); next(); }
+  else if (k === "ArrowLeft" || k === "PageUp") { e.preventDefault(); prev(); }
+  else if (k === "Home") go(0);
+  else if (k === "End") go(SC.length - 1, {full: true});
+  else if (k === "Escape") { if (viewOnly) setViewOnly(false); closeDrawer(); toggle(railEl, document.getElementById("railBtn"), false); toggle(notesEl, document.getElementById("notesBtn"), false); }
+  else if (k === "n" || k === "N") toggle(notesEl, document.getElementById("notesBtn"));
+  else if (k === "c" || k === "C") toggle(railEl, document.getElementById("railBtn"));
+  else if ((k === "m" || k === "M") && HUB) go(HUB, {full: true});
+  else if (k === "f" || k === "F") fullscreen();
+  else if (k === "p" || k === "P") setAuto(!autoplay);
+  else if ((k === "w" || k === "W") && G && G.walk) G.walk();
+});
+window.addEventListener("hashchange", function () { var id = location.hash.slice(1); if (IDX[id] !== undefined && IDX[id] !== cur) go(id); });
+
+window.__story = {count: SC.length, go: function (id, full) { go(id, {full: !!full}); }, state: function () { return {i: cur, id: SC[cur].id, beat: beat, beats: SC[cur].beats || 0}; }};
+buildRail(); fit();
+var start = IDX[location.hash.slice(1)];
+go(start !== undefined ? start : 0);
+requestAnimationFrame(tick);
+})();
+
+</script>
+</body>
+</html>

@@ -8,8 +8,8 @@
 kit:
   name: Microsoft Foundry What's New and Deep-Dive Kit
   manifest_version: 1
-  skills_version: 1.3.0          # see skills/CHANGELOG.md
-  updated: 2026-11-16
+  skills_version: 1.4.0          # see skills/CHANGELOG.md
+  updated: 2026-11-19
   python_kernel: "3.12"          # notebooks (devcontainer)
   hosted_agent_runtime: ["3.13"]   # agent/azure.yaml and private-agent/azure.yaml — separate from the kernel
 
@@ -39,7 +39,7 @@ naming:
     same pull request once the new edition is in decks/ (git history and decks/CHANGELOG.md are
     the rollback). Never rename or renumber another contributor's file.
 
-next_notebook_number: 11
+next_notebook_number: 12
 
 decks:
   - file: Microsoft-Foundry-Whats-New-2026-11.pptx
@@ -100,6 +100,12 @@ decks:
     slides: 18
     pairs_with: [10]        # related: NB1 priority processing, NB4 prompt caching, NB8 semantic caching
     note: latency best practices and decision trees (model, capacity, orchestration pattern, agent runtime and framework, tools and protocols) with the Foundry features that shorten response time; customer-neutral kit copy (built after a customer latency review); carries a Microsoft sensitivity label with encryption applied in OneDrive — see known_issues
+  - file: "Microsoft Foundry Microsoft IQ.pptx"
+    kind: deep-dive
+    edition: 2026-11
+    slides: 18
+    pairs_with: [11]        # NB11 steps carry slides 5-9; related: NB9 (Foundry IQ knowledge base and Fabric IQ ontology), NB10 step 12 (knowledge base retrieval)
+    note: Microsoft IQ as announced at Ignite 2026, with Foundry IQ in depth (Azure AI Search renamed, knowledge sources, agentic retrieval, Agent Service integration, permissions and network boundaries, November updates), then Work IQ, Fabric IQ and Web IQ (APIs, crawling and index engine, data security and Zero Query Logging), a comparison of the four and selection guidance; named with "Microsoft IQ" in full so it is not mistaken for a Foundry IQ deck; kit copy without a presenter line; carries a Microsoft sensitivity label with encryption applied in OneDrive — see known_issues
 
 # Offline interactive HTML stories built from decks by interactive-deck-story (owned by that skill).
 # Paths in an entry are relative to paths.interactive_stories; deck entries above are never changed for a story.
@@ -160,6 +166,11 @@ notebooks:
     env_block: core + NB10_SMALL_MODEL_NAME (optional, step 3), NB10_KNOWLEDGE_BASE (optional, step 12); optional steps reuse FOUNDRY_DECISIONS_NAME (3), FOUNDRY_ROUTER_NAME (4), HOSTED_AGENT_NAME (11), AZURE_SEARCH_ENDPOINT (12)
     reuses: [2, 9]          # step 11 calls notebook 2's hosted agent; step 12 queries notebook 9's knowledge base
     status: written 2026-11-14 against agent-framework 1.25.0 and agent-framework-foundry 1.16.2; not yet run against Azure
+  - n: 11
+    file: foundry-demo-11-microsoft-iq.ipynb
+    deck: "Microsoft Foundry Microsoft IQ.pptx"   # edition 2026-11; step headings carry its slide numbers (5-9)
+    env_block: AZURE_SEARCH_ENDPOINT + AZURE_SUBSCRIPTION_ID + NB11_SEARCH_RESOURCE_GROUP; optional NB11_SEARCH_MGMT_API_VERSION, NB11_SERVERLESS_* (step 1), NB11_CU_* (step 6), NB11_GRAPH_* (step 10), FOUNDRY_PROJECT_ENDPOINT and FOUNDRY_MODEL_NAME (steps 6, 7, 9c)
+    status: written 2026-11-19 against azure-search-documents 12.2.0b1, Search Management REST 2026-11-01 and Search Service REST 2026-10-01 / 2026-11-01-preview; not yet run against Azure
 
 samples:
   - name: games-operations
@@ -187,20 +198,20 @@ samples:
 # Shared variables: a new notebook reuses one ONLY with the identical meaning;
 # otherwise it adds a prefixed name (feature prefix or NB<n>_).
 env:
-  FOUNDRY_PROJECT_ENDPOINT: {meaning: "Foundry project endpoint https://<resource>.services.ai.azure.com/api/projects/<project>", notebooks: [1, 2, 4, 5, 7, 8, 9, 10]}
-  FOUNDRY_MODEL_NAME:       {meaning: "chat model deployment name (or the Model Router deployment)", notebooks: [1, 4, 5, 9, 10]}
+  FOUNDRY_PROJECT_ENDPOINT: {meaning: "Foundry project endpoint https://<resource>.services.ai.azure.com/api/projects/<project>", notebooks: [1, 2, 4, 5, 7, 8, 9, 10, 11]}
+  FOUNDRY_MODEL_NAME:       {meaning: "chat model deployment name (or the Model Router deployment)", notebooks: [1, 4, 5, 9, 10, 11]}
   FOUNDRY_ROUTER_NAME:      {meaning: "Model Router deployment name", notebooks: [1, 10]}
   FOUNDRY_EMBEDDING_NAME:   {meaning: "embedding model deployment name", notebooks: [1, 9]}
   FOUNDRY_DECISIONS_NAME:   {meaning: "optional gpt-6-luna deployment name for the Decisions API step; blank skips the step", notebooks: [1, 10]}
   FOUNDRY_PROJECT_NAME:     {meaning: "Foundry project name matching FOUNDRY_PROJECT_ENDPOINT; NB1 and NB9 derive it when blank or unset, NB7 requires it for Voice Live with an agent", notebooks: [1, 7, 9]}
   FOUNDRY_ACCOUNT_NAME:     {meaning: "optional NB1 override of the Foundry account name; blank or unset derives it from FOUNDRY_PROJECT_ENDPOINT", notebooks: [1, 10]}
-  AZURE_SUBSCRIPTION_ID:    {meaning: "shared subscription containing the kit's Foundry and API Management resources; PRIVATE_DEMO_SUBSCRIPTION_ID must use the same subscription", notebooks: [1, 8, 9]}
+  AZURE_SUBSCRIPTION_ID:    {meaning: "shared subscription containing the kit's Foundry and API Management resources; PRIVATE_DEMO_SUBSCRIPTION_ID must use the same subscription", notebooks: [1, 8, 9, 11]}
   AZURE_RESOURCE_GROUP:     {meaning: "Foundry resource group containing the account and project", notebooks: [1, 9]}
   APIM_RESOURCE_GROUP:      {meaning: "API Management resource group in the shared AZURE_SUBSCRIPTION_ID", notebooks: [8]}
   APIM_GATEWAY_URL:         {meaning: "API Management base URL https://<apim>.azure-api.net, without the API suffix (INFERENCE_API_PATH supplies it)", notebooks: [8]}
   AZURE_EXPERIMENTAL_ENABLE_GENAI_TRACING: {meaning: "opt-in for client-side generative AI tracing", notebooks: [1, 9]}
   OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT: {meaning: "record prompts and completions in traces (dev only, default false)", notebooks: [1, 9]}
-  AZURE_SEARCH_ENDPOINT:    {meaning: "Azure AI Search service endpoint https://<service>.search.windows.net (Basic tier or higher)", notebooks: [9, 10]}
+  AZURE_SEARCH_ENDPOINT:    {meaning: "Azure AI Search service endpoint https://<service>.search.windows.net (Basic tier or higher)", notebooks: [9, 10, 11]}
   FABRIC_WORKSPACE_ID:      {meaning: "Fabric workspace ID holding the games-operations items", notebooks: [9]}
   FABRIC_LAKEHOUSE_ID:      {meaning: "Fabric lakehouse item ID (GamesLakehouse) whose Files area holds the sample PDFs", notebooks: [9]}
   FABRIC_ONTOLOGY_ID:       {meaning: "Fabric ontology item ID (GamesOperationsOntology)", notebooks: [9]}
@@ -210,6 +221,14 @@ env:
   FABRIC_RLS_TEST_USER:     {meaning: "sign-in name of the Norway-only test user for the permission test (workspace Viewer, member of the semantic model role)", notebooks: [9]}
   NB10_SMALL_MODEL_NAME:    {meaning: "optional small model deployment for notebook 10's classification comparison, e.g. gpt-5.4-mini; blank skips that row", notebooks: [10]}
   NB10_KNOWLEDGE_BASE:      {meaning: "optional knowledge base on AZURE_SEARCH_ENDPOINT with a model configuration; blank uses notebook 9's games-kb", notebooks: [10]}
+  NB11_SEARCH_RESOURCE_GROUP: {meaning: "resource group of the search service in AZURE_SEARCH_ENDPOINT, in AZURE_SUBSCRIPTION_ID; blank skips step 1", notebooks: [11]}
+  NB11_SEARCH_MGMT_API_VERSION: {meaning: "optional Search Management REST API version for step 1; blank uses 2026-11-01", notebooks: [11]}
+  NB11_SERVERLESS_SERVICE_NAME: {meaning: "optional name of a new Serverless search service created in step 1 (chargeable); blank skips", notebooks: [11]}
+  NB11_SERVERLESS_LOCATION: {meaning: "optional region of the step 1 Serverless service; blank uses the existing service's region", notebooks: [11]}
+  NB11_CU_STORAGE_RESOURCE_ID: {meaning: "optional storage account resource ID for step 6 (Content Understanding semantic chunking); blank skips step 6", notebooks: [11]}
+  NB11_CU_CONTAINER:        {meaning: "optional blob container with a few PDF files for step 6", notebooks: [11]}
+  NB11_GRAPH_KNOWLEDGE_BASE: {meaning: "optional knowledge base with an entity or topic graph on AZURE_SEARCH_ENDPOINT for step 10; blank skips", notebooks: [11]}
+  NB11_GRAPH_KNOWLEDGE_SOURCE: {meaning: "optional graph knowledge source of NB11_GRAPH_KNOWLEDGE_BASE", notebooks: [11]}
 
 known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted for the owner's changes of 2026-10-11 (notebook 2 gateway removed, outputs cleared); re-run after every pull
   - "NB5 installs packages with %pip in two cells (azure-ai-projects>=2.5.0 vs root >=2.7.0,<3) — move to requirements.txt"
@@ -219,8 +238,10 @@ known_issues:   # kit_check.py over all eight notebooks on 2026-10-11, adjusted 
   - "decks/CHANGELOG.md lists editions 2026-09 to 2026-10-26 whose files are no longer in decks/ (only the newest edition is kept there); history kept on purpose"
   - "Microsoft Foundry Copilot Harness Prompt Agents.pptx carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
   - "Microsoft Foundry Latency Optimization for Models and Agents.pptx (added 2026-11-14) carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
+  - "Microsoft Foundry Microsoft IQ.pptx (added 2026-11-19) carries a Microsoft sensitivity label with encryption applied in OneDrive; people outside the tenant cannot open it from GitHub until the owner sets the label in PowerPoint"
   - "samples/games-operations: the Fabric notebooks and KQL script have not yet been run in a Fabric workspace; ontology generation is a portal action (no public API), so the ontology is finished with agent prompts and checked by notebook 03; export TMDL with getDefinition once built"
   - "samples/games-operations: evaluation questions say 'NOC' in both themes; the neutral theme labels the entity 'National Committee'"
+  - "NB11 (2026-11-19): not yet executed against Azure; azure-search-documents raised to >=12.2.0b1,<12.3 for 2026-11-01-preview (Microsoft Retriever 1, knowledge base tools, knowledge graph) — NB9 and NB10 not yet re-run with 12.2.0b1 (NB9 passes api_version 2026-08-01-preview explicitly); 12.2.0b1 is on PyPI (2026-11-16) while its CHANGELOG still says Unreleased"
   - "NB9 (2026-11-09): written against azure-search-documents 12.1.0b2 and REST API 2026-08-01-preview, not yet executed against Azure; Fabric MCP token scopes and Content Understanding with the OneLake indexer are open verify items"
   - "NB9 steps 5-6 (2026-11-10): not yet executed against Azure; azure-ai-projects raised to >=2.9.0,<2.11 for the Copilot harness (preview cap closes the azure-ai-projects known issue above); the hosted agent runs in process as the user and needs an OAuth toolbox connection or another production option before deployment (samples/games-operations/hosted-agent/README.md)"
   - "NB9 step 7 (2026-11-11): not yet executed against Azure; needs a real test user (workspace Viewer, mapped in fabric/03 TEST_USERS) and an interactive browser sign-in; whether ontology queries enforce OneLake security row rules is an open verify item"

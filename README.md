@@ -18,6 +18,7 @@ These are hands-on presentation demos, not production application templates. Not
 | [Notebook 8: AI gateway governance](foundry-demo-8-ai-gateway-governance.ipynb) | Govern an existing API Management instance in front of Foundry | Per-team token limits and quotas, usage attribution, content safety, semantic caching, backend pools, MCP and A2A governance, AI Gateway in Foundry, and end-to-end tracing |
 | [Notebook 9: Fabric IQ and Foundry IQ agents](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb) | Connect a Fabric IQ ontology and indexed documents to Foundry IQ for agents | Ontology MCP and Fabric IQ MCP tools, OneLake indexing with Content Understanding, search index, indexed OneLake and Fabric ontology knowledge sources, reasoning effort and citations; one toolbox, three agent patterns (prompt, Copilot harness, hosted) with evaluations and traces; a permission test with a NOC-restricted user; publishing to Microsoft 365 Copilot and Teams, a web app call and an A2A call |
 | [Notebook 10: Latency optimization for models and agents](foundry-demo-10-latency-optimization-for-models-and-agents.ipynb) | Measure where the time goes in model calls and agent patterns | Time to first token and generation time, reasoning effort, classification by a small model and the Decisions API, Model Router, standard, priority and flex processing, five orchestration patterns on one travel-desk question (direct call, single agent, sequential, concurrent, hand-off), hosted-agent cold and warm starts, Foundry IQ retrieval effort, and a latency budget check |
+| [Notebook 11: Foundry IQ at Ignite 2026](foundry-demo-11-microsoft-iq.ipynb) | Test the November 2026 Foundry IQ releases on the new REST API versions and the latest SDK | Search Management 2026-11-01 and Serverless services, Search Service 2026-10-01 side by side with 2026-11-01-preview, cursor pagination, find similar documents, Content Understanding semantic chunking and image descriptions, Microsoft Retriever 1, knowledge base tools over REST and MCP, knowledge graph retrieval, and the Foundry IQ skills for GitHub Copilot CLI |
 
 ## Slide Decks
 
@@ -25,7 +26,7 @@ The [decks/](decks/) folder holds the PowerPoint presentations that accompany th
 
 | Deck | Pairs with |
 | --- | --- |
-| [Microsoft-Foundry-Whats-New-2026-10-26.pptx](<decks/Microsoft-Foundry-Whats-New-2026-10-26.pptx>) | Notebook 1: platform features (slide references still follow edition 2026-10; see `kit.yaml` → `known_issues`) |
+| [Microsoft-Foundry-Whats-New-2026-11.pptx](<decks/Microsoft-Foundry-Whats-New-2026-11.pptx>) | Notebook 1: platform features (slide references follow edition 2026-11) |
 | [Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx](<decks/Microsoft Foundry Guardrails - Tuning Without Over-Blocking.pptx>) | Notebook 1: guardrails section |
 | [Microsoft Foundry Hosted Agents.pptx](<decks/Microsoft Foundry Hosted Agents.pptx>) | Notebooks 2 and 3: hosted agents |
 | [Microsoft Foundry Prompt Caching.pptx](<decks/Microsoft Foundry Prompt Caching.pptx>) | Notebook 4: prompt caching |
@@ -36,6 +37,7 @@ The [decks/](decks/) folder holds the PowerPoint presentations that accompany th
 | [Microsoft Foundry Copilot Harness Prompt Agents.pptx](<decks/Microsoft Foundry Copilot Harness Prompt Agents.pptx>) | Notebook 9, step 5: prompt, harness and hosted agents compared (no slide references) |
 | [Microsoft Foundry Fabric IQ Ontologies for Agents.pptx](<decks/Microsoft Foundry Fabric IQ Ontologies for Agents.pptx>) | No companion notebook yet; related: notebook 9 (Fabric IQ and Foundry IQ agents) |
 | [Microsoft Foundry Latency Optimization for Models and Agents.pptx](<decks/Microsoft Foundry Latency Optimization for Models and Agents.pptx>) | Notebook 10; related: notebook 1 (priority processing), notebook 4 (prompt caching), notebook 8 (semantic caching) |
+| [Microsoft Foundry Microsoft IQ.pptx](<decks/Microsoft Foundry Microsoft IQ.pptx>) | Notebook 11: Foundry IQ releases of November 2026 (slides 5–9); related: notebook 9 (Fabric IQ and Foundry IQ agents) |
 
 ### Interactive Stories
 
@@ -666,6 +668,30 @@ The agent steps use one scenario: an employee travel desk with three specialists
 
 Steps 6–10 import Agent Framework from the packages that the root `requirements.txt` pulls in through the agent requirements, as notebook 9 does; no new packages are needed apart from listing `opentelemetry-api`, which arrives with `opentelemetry-sdk`. The notebook was written against `agent-framework` 1.25.0 and `agent-framework-foundry` 1.16.2 and has not been run against Azure yet; lines marked `# verify` name the page to check.
 
+## Notebook 11: Foundry IQ at Ignite 2026
+
+[foundry-demo-11-microsoft-iq.ipynb](foundry-demo-11-microsoft-iq.ipynb) is the companion to the deep-dive deck *Microsoft Foundry Microsoft IQ* (edition 2026-11); step headings carry its slide numbers, mostly the Foundry IQ section (slides 5–9). It tests the Foundry IQ releases announced at Ignite in November 2026 on the new REST API versions and `azure-search-documents` 12.2.0b1, following the order of the Foundry IQ episodes in the public [IQ Series](https://github.com/microsoft/iq-series). Foundry IQ is the new name of Azure AI Search: endpoints, APIs, roles and meters are unchanged, so the notebook uses the same `AZURE_SEARCH_ENDPOINT` as notebook 9.
+
+One scenario runs through every step: an HR policy assistant for the fictional company Fabrikam, with twelve short leave, vacation, remote work and travel policies for employees in Canada, Switzerland and Germany (one of them superseded). The policies are created by the notebook; they are invented for the demo and are not legal guidance. Every data-plane client names its API version, so steps can compare the stable 2026-10-01 contract with 2026-11-01-preview on the same service.
+
+| Step | What it shows | Status |
+| --- | --- | --- |
+| 0 | Settings, SDK version check and two sets of clients (2026-10-01 and 2026-11-01-preview) | — |
+| 1 | The search service on Search Management 2026-11-01 (SKU, compute type, knowledge retrieval plan); optional Serverless service | GA |
+| 2 | Sample index with twelve HR policies and a semantic configuration | GA |
+| 3 | Stable and preview data-plane versions side by side: what each accepts | GA, preview |
+| 4 | Cursor pagination for list operations, through the SDK and REST | GA |
+| 5 | Find similar documents (`moreLikeThis`) | GA |
+| 6 | Content Understanding semantic chunking and image descriptions over a blob container (optional) | GA |
+| 7 | Knowledge base on the stable API: minimal effort, and low effort with a model (optional) | GA |
+| 8 | Microsoft Retriever 1: direct agentic search, and query planning in a knowledge base compared with minimal retrieval | preview |
+| 9 | Knowledge base tools: three country tools over REST and MCP, and a model calling one of them (optional) | preview |
+| 10 | Knowledge graph retrieval: topic and entity graphs, and a query on a graph knowledge base built separately (optional) | preview |
+| 11 | Foundry IQ skills for GitHub Copilot CLI (terminal commands and prompts) | preview |
+| 12 | Cleanup | — |
+
+Step 8 needs the search service on the **Standard** knowledge retrieval plan; step 1 shows the current plan. The search management calls use REST because no Python management package targets API version 2026-11-01 yet. The notebook has not been run against Azure yet; lines marked `# verify` name the page to check.
+
 ## Prerequisites
 
 - One Azure subscription for all kit resources and an existing Foundry project with appropriate feature and regional availability. Foundry and API Management may use different resource groups.
@@ -734,6 +760,12 @@ Use [.env.example](.env.example) as the starting point for a root-level `.env`. 
 | `NB10_SMALL_MODEL_NAME` | Notebook 10, optional, step 3: small model deployment for the classification comparison, for example `gpt-5.4-mini`; blank skips that row |
 | `NB10_KNOWLEDGE_BASE` | Notebook 10, optional, step 12: knowledge base on `AZURE_SEARCH_ENDPOINT` with a model configuration; blank uses notebook 9's `games-kb` |
 | `FOUNDRY_DECISIONS_NAME` / `FOUNDRY_ROUTER_NAME` / `HOSTED_AGENT_NAME` / `AZURE_SEARCH_ENDPOINT` | Notebook 10, optional steps 3, 4, 11 and 12: same meaning as in notebooks 1, 2 and 9; blank skips the step or row (notebook 10 also uses `FOUNDRY_PROJECT_ENDPOINT` and `FOUNDRY_MODEL_NAME`) |
+| `NB11_SEARCH_RESOURCE_GROUP` | Notebook 11, step 1: resource group of the search service in `AZURE_SEARCH_ENDPOINT` (in the shared `AZURE_SUBSCRIPTION_ID`); blank skips step 1 |
+| `NB11_SEARCH_MGMT_API_VERSION` | Notebook 11, optional, step 1: Search Management REST API version; defaults to `2026-11-01` |
+| `NB11_SERVERLESS_SERVICE_NAME` / `NB11_SERVERLESS_LOCATION` | Notebook 11, optional, step 1: name and region of a new Serverless search service (chargeable); blank skips the creation |
+| `NB11_CU_STORAGE_RESOURCE_ID` / `NB11_CU_CONTAINER` | Notebook 11, optional, step 6: storage account resource ID and blob container with a few PDF files; blank skips step 6 |
+| `NB11_GRAPH_KNOWLEDGE_BASE` / `NB11_GRAPH_KNOWLEDGE_SOURCE` | Notebook 11, optional, step 10: a knowledge base with an entity or topic graph and its graph knowledge source; blank skips the query |
+| `AZURE_SEARCH_ENDPOINT` / `AZURE_SUBSCRIPTION_ID` / `FOUNDRY_PROJECT_ENDPOINT` / `FOUNDRY_MODEL_NAME` | Notebook 11: same meaning as in notebooks 9 and 1; the project and model settings are optional (steps 6, 7 and 9c) |
 
 Notebook 8's gateway settings are included in [.env.example](.env.example). It combines the APIM base URL with `INFERENCE_API_PATH`, then selects the URL shape with `INFERENCE_API_STYLE`: `v1` uses `/openai/v1/chat/completions`; `azure` uses `/openai/deployments/{deployment}/chat/completions` and `INFERENCE_API_VERSION`. Match these settings and `SUBSCRIPTION_KEY_HEADER` to the imported API.
 
@@ -763,6 +795,7 @@ The hosted services use a separate deployment setting, `AZURE_AI_MODEL_DEPLOYMEN
 10. For notebook 8, run steps 0–5 and 10 live against a non-production gateway, present step 9 as preview, and finish with step 11.
 11. For notebook 9, build the sample's Fabric items the day before, run steps 1–3 ahead of the session (indexing takes several minutes), and run step 4 live. Create the step 5 agents at least five minutes before the session (role assignments take time to apply), ask the three questions live, and start the step 6 runs early so the results are ready to show. For step 7, sign in the test user once before the session (the token stays cached for the kernel's lifetime) and run 7a live: it needs no language model and answers in seconds. Publish in step 9 the day before and open the agent once in Teams as each person to complete the sign-in; then ask the step 7 question live in Teams. Keep the cleanup cells off until the end of the demo.
 12. For notebook 10, run steps 1–5 live in any order, then step 6 and the pattern steps 7–9 ahead of the talk if time is short (each pattern runs a warm-up plus three measured runs) and show the step 10 table live; finish with the step 13 budget check. Steps 11 and 12 need notebook 2's hosted agent and notebook 9's knowledge base.
+13. For notebook 11, check the knowledge retrieval plan in step 1 the day before (step 8 needs Standard), run steps 2 and 3 ahead of the session, then show steps 3 to 5 and 7 to 9 live: they need no model except the optional low-effort knowledge base and step 9c. Run step 6 ahead of time, as indexing takes several minutes, and build the step 10 graph beforehand with the Copilot CLI plugin of step 11.
 
 Avoid blindly using **Run All**: steering is timing-sensitive, some cells modify Azure resources, and notebook 1 ends with a destructive cleanup cell. Repeated setup can also change which agent version subsequent name-only references select.
 
@@ -794,6 +827,8 @@ Notebook 9's step 3 bills content extraction and embeddings to the Foundry resou
 
 Notebook 10 makes only model and service calls: up to 45 short model calls in steps 1–5, and in steps 7–9 four runs per pattern (one warm-up and three measured) of 1 to about 8 model calls each — roughly 100 calls with the defaults. Priority requests in step 5 bill at the priority rate. Step 11 starts hosted-agent sessions whose compute is released after the idle timeout (15 minutes by default) and stores two conversations; step 12 sends six retrieve requests, three of them with query planning on the knowledge base's model. Its cleanup cell closes the clients and deletes nothing in Azure; the model deployments, notebook 2's hosted agent and notebook 9's search service keep billing as before.
 
+Notebook 11 bills Microsoft Retriever 1 planning and reasoning tokens on the Standard knowledge retrieval plan in steps 8 (about seven requests) and 3 (one probe, deleted at once), content extraction, semantic chunking and image descriptions to the Foundry resource in step 6, and the chat model for the optional low-effort knowledge base (step 7), the step 9c call and the step 10 query. The optional Serverless service of step 1 bills by consumption until you delete it. Its cleanup cell (off by default) deletes the knowledge bases, the knowledge source and the indexes, skillset, indexer and data source the notebook created; it does **not** delete the search service, the Serverless service, the storage account, the graph knowledge base of step 10, anything the Copilot CLI plugin created, or the model deployments.
+
 ## Repository Guide
 
 - [foundry-demo-1-what-is-new.ipynb](foundry-demo-1-what-is-new.ipynb): platform features and managed prompt-agent lifecycle.
@@ -807,6 +842,7 @@ Notebook 10 makes only model and service calls: up to 45 short model calls in st
 - [foundry-demo-8-ai-gateway-governance.ipynb](foundry-demo-8-ai-gateway-governance.ipynb): governing models, MCP tools and agents with API Management as the AI gateway.
 - [foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb](foundry-demo-9-fabric-iq-and-foundry-iq-agents.ipynb): Fabric IQ ontology and Fabric IQ MCP endpoints, a OneLake document indexing pipeline, Foundry IQ knowledge sources compared in one knowledge base, and three agent patterns with evaluations and traces, a permission test with a NOC-restricted user, and publishing to Microsoft 365 Copilot, Teams, a web app and A2A.
 - [foundry-demo-10-latency-optimization-for-models-and-agents.ipynb](foundry-demo-10-latency-optimization-for-models-and-agents.ipynb): latency of model calls and agent patterns — first-token and generation time, reasoning effort, model choice, service tiers, five orchestration patterns on one question, hosted-agent start types, retrieval effort and a latency budget.
+- [foundry-demo-11-microsoft-iq.ipynb](foundry-demo-11-microsoft-iq.ipynb): Foundry IQ releases of November 2026 on Search Management 2026-11-01 and Search Service 2026-10-01 and 2026-11-01-preview — Serverless, cursor pagination, similar documents, semantic chunking, Microsoft Retriever 1, knowledge base tools over MCP, knowledge graphs and the Copilot CLI plugin.
 - [decks/](decks/): PowerPoint decks that accompany the notebooks (see [Slide Decks](#slide-decks)).
 - [interactive-stories/](interactive-stories/): offline interactive HTML stories built from the decks, with their sources in `src/` (see [Interactive Stories](#interactive-stories)).
 - [decks/CHANGELOG.md](decks/CHANGELOG.md): dated editions of the what's-new deck (owned by `foundry-whats-new-deck`).

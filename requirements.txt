@@ -1,11 +1,11 @@
-# Microsoft Foundry demo — notebooks 1–10 — Python 3.12 recommended
+# Microsoft Foundry demo — notebooks 1–11 — Python 3.12 recommended
 # Pinned to the minimum versions referenced in the Foundry documentation (September 2026).
 
 # --- Core: project client, OpenAI-compatible surface, identity (NB1 cells 0–4, NB2 all) ---
 azure-ai-projects[voice]>=2.9.0,<2.11  # [voice] adds the realtime transport for NB7 voice agents; >=2.9.0 for the Copilot harness (NB9 step 5b); NB10 step 0 project client; minor cap: preview surfaces used in NB1, NB3, NB7, NB9; untested — written against 2.10.0
 openai>=3.26.0,<4                # OpenAI-compatible surface: Responses API, Model Router, service_tier; also used against the AI gateway; NB1 step 2b Decisions API needs >=3.26.0; NB10 steps 1–5 and 7 (streaming timings, reasoning effort, service_tier incl. flex, Decisions API)
 azure-identity>=1.25.3           # Includes subscription-scoped AzureCliCredential for NB3
-requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints; NB10 step 11: latency debug headers
+requests>=2.32.0                 # NB2: direct calls to hosted-agent Responses endpoints; NB10 step 11: latency debug headers; NB11 steps 1 and 4: Search Management 2026-11-01 over REST (no Python management package targets it yet) and raw cursor pages
 
 # --- Private infrastructure and Teams channel (NB3; resource SDK split packages) ---
 azure-mgmt-resource>=26.0.0,<27
@@ -18,7 +18,7 @@ azure-mgmt-apimanagement>=5.0.0,<6     # AI gateway notebook: products, subscrip
 azure-mgmt-monitor>=6.0.2,<7          # AI gateway notebook: instance diagnostic settings
 
 # --- Toolbox verification over MCP (NB1 cell 3) ---
-mcp>=1.10.0,<2                   # NB1, NB8, NB9: streamablehttp_client; mcp 2.0 removed it (renamed streamable_http_client)
+mcp>=1.10.0,<2                   # NB1, NB8, NB9, NB11 step 9b (knowledge base MCP endpoint): streamablehttp_client; mcp 2.0 removed it (renamed streamable_http_client)
 
 # --- Optional model providers (NB1 cell 1, if you show Claude) ---
 anthropic>=0.40.0                # Claude via the /anthropic Messages surface
@@ -32,8 +32,8 @@ opentelemetry-exporter-otlp>=1.27.0   # only if you export to Aspire Dashboard /
 azure-monitor-query>=2.0.0            # KQL against Application Insights / Log Analytics (NB2 step 3, NB9 step 6); 2.0 keeps LogsQueryClient
 opentelemetry-instrumentation-openai-v2>=2.1b0   # AI gateway notebook: client-side spans for OpenAI calls
 
-# --- Knowledge base setup on Azure AI Search (NB1 cell 3, optional; NB9 steps 3–4) ---
-azure-search-documents>=12.1.0b2,<12.2   # pre-release: NB9 uses REST API 2026-08-01-preview (Fabric ontology knowledge source, answer synthesis, reasoning effort); untested — written against 12.1.0b2; NB10 step 12 reuses NB9's knowledge base (minimal vs low effort)
+# --- Knowledge base setup on Azure AI Search / Foundry IQ (NB1 cell 3, optional; NB9 steps 3–4; NB11 all steps) ---
+azure-search-documents>=12.2.0b1,<12.3   # pre-release: NB11 needs 12.2.0b1 (REST API 2026-11-01-preview: Microsoft Retriever 1, knowledge base tools, knowledge graph) and compares it with 2026-10-01; NB9 sets REST API 2026-08-01-preview explicitly (Fabric ontology knowledge source, answer synthesis, reasoning effort), tested 2026-11-10 with 12.1.0b2; NB10 step 12 reuses NB9's knowledge base; NB9, NB10 and NB11 untested with 12.2.0b1 — written against 12.2.0b1
 
 # --- Offline prompt-prefix token counting (NB4) ---
 tiktoken>=0.8.0
